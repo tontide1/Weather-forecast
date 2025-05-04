@@ -14,72 +14,126 @@ tabs.forEach(tab => {
     // Add active class to clicked tab and corresponding chart
     tab.classList.add('active');
     document.getElementById(`${tabType}Chart`).classList.add('active');
-
-    // Re-draw the chart if it's the temperature tab
-    if (tabType === 'temperature') {
-      setTimeout(() => {
-        drawTemperatureLine();
-      }, 100);
-    }
   });
 });
 
 // Function to draw temperature chart line
 function drawTemperatureLine() {
-  const tempValues = document.querySelectorAll('.temp-value');
-  const temperaturePath = document.querySelector('.temperature-path');
-  const temperatureArea = document.querySelector('.temperature-area');
+  const canvas = document.getElementById('tempCanvas');
+  if (!canvas) return;
 
-  if (!temperaturePath || !temperatureArea || tempValues.length === 0) return;
+  const ctx = canvas.getContext('2d');
+  const tempContainer = document.getElementById('temperatureChart');
+  const values = [32, 31, 31, 28, 27, 26, 26, 29];
 
-  const values = Array.from(tempValues).map(el => {
-    const tempNumber = parseInt(el.textContent || el.querySelector('.temp-number')?.textContent);
-    return tempNumber;
+  // Get container dimensions
+  const width = tempContainer.clientWidth;
+  const height = tempContainer.clientHeight;
+
+  // Set canvas dimensions
+  canvas.width = width;
+  canvas.height = height;
+
+  // Set background color
+  ctx.fillStyle = '#202025';
+  ctx.fillRect(0, 0, width, height);
+
+  // Calculate spacing and positions
+  const padding = { left: 15, right: 15, top: 25, bottom: 20 };
+  const chartWidth = width - padding.left - padding.right;
+  const step = chartWidth / (values.length - 1);
+
+  // Use fixed height scaling to match reference image
+  const chartHeight = height - padding.top - padding.bottom;
+  const baseY = padding.top + (chartHeight * 0.5);
+  const yScale = chartHeight * 0.4;
+
+  // Create points array to reuse for line and filling
+  const points = [];
+
+  values.forEach((temp, i) => {
+    const x = padding.left + (i * step);
+
+    // Scale temp value for height (higher temp = higher on chart = lower y value)
+    const normalizedTemp = (temp - 26) / (32 - 26);
+    const y = baseY - (normalizedTemp * yScale);
+
+    points.push({ x, y, temp });
   });
 
-  const max = Math.max(...values) + 2; // Add 2 to give some top margin
-  const min = Math.min(...values) - 2; // Subtract 2 to give some bottom margin
-  const range = max - min;
+  // Fill the area below the line
+  ctx.beginPath();
+  ctx.moveTo(points[0].x, height - padding.bottom);
 
-  // Calculate points for the path
-  let pathData = '';
-  let areaData = '';
+  // Go to first point
+  ctx.lineTo(points[0].x, points[0].y);
 
-  tempValues.forEach((value, index) => {
-    const tempNumber = parseInt(value.textContent || value.querySelector('.temp-number')?.textContent);
-    const x = (index / (tempValues.length - 1)) * 100;
-    const y = 100 - ((tempNumber - min) / range * 75); // Use 75% of height for better appearance
+  // Connect all points
+  for (let i = 1; i < points.length; i++) {
+    ctx.lineTo(points[i].x, points[i].y);
+  }
 
-    if (index === 0) {
-      pathData = `M${x},${y}`;
-      areaData = `M${x},${y}`;
-    } else {
-      // Use quadratic curves for smoother lines
-      const prevX = ((index - 1) / (tempValues.length - 1)) * 100;
-      const controlX = (prevX + x) / 2;
+  // Complete the path to bottom right then bottom left
+  ctx.lineTo(points[points.length - 1].x, height - padding.bottom);
+  ctx.lineTo(points[0].x, height - padding.bottom);
 
-      pathData += ` Q${controlX},${y} ${x},${y}`;
-      areaData += ` L${x},${y}`;
-    }
+  // Create gradient for the fill
+  const gradient = ctx.createLinearGradient(0, 0, 0, height);
+  gradient.addColorStop(0, 'rgba(249, 171, 0, 0.25)');
+  gradient.addColorStop(1, 'rgba(249, 171, 0, 0.05)');
+  ctx.fillStyle = gradient;
+  ctx.fill();
+
+  // Draw the temperature line
+  ctx.beginPath();
+  ctx.moveTo(points[0].x, points[0].y);
+
+  for (let i = 1; i < points.length; i++) {
+    ctx.lineTo(points[i].x, points[i].y);
+  }
+
+  ctx.strokeStyle = '#f9ab00';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Draw dots on the temperature line
+  points.forEach(point => {
+    // Draw white dot with yellow border
+    ctx.beginPath();
+    ctx.fillStyle = '#ffffff';
+    ctx.arc(point.x, point.y, 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.strokeStyle = '#f9ab00';
+    ctx.lineWidth = 1;
+    ctx.arc(point.x, point.y, 3, 0, Math.PI * 2);
+    ctx.stroke();
   });
 
-  // Complete the area path - extend to bottom corners
-  const lastX = 100;
-  const lastY = 100;
-  areaData += ` L${lastX},${lastY} L0,${lastY} Z`;
+  // Draw temperature values on the line
+  ctx.textAlign = 'center';
+  ctx.font = '11px Roboto';
+  ctx.fillStyle = '#ffffff';
 
-  temperaturePath.setAttribute('d', pathData);
-  temperatureArea.setAttribute('d', areaData);
+  points.forEach(point => {
+    // Draw the temperature value above the line
+    ctx.fillText(point.temp, point.x, point.y - 10);
+  });
 
-  // Animate the drawing of the path
-  const pathLength = temperaturePath.getTotalLength();
-  temperaturePath.style.strokeDasharray = pathLength;
-  temperaturePath.style.strokeDashoffset = pathLength;
+  // Add the time markers
+  const times = ['12:00', '15:00', '18:00', '21:00', '00:00', '03:00', '06:00', '09:00'];
+  const timeMarkers = document.getElementById('timeMarkers');
+  timeMarkers.innerHTML = '';
 
-  setTimeout(() => {
-    temperaturePath.style.transition = 'stroke-dashoffset 1.5s ease-in-out';
-    temperaturePath.style.strokeDashoffset = 0;
-  }, 100);
+  times.forEach((time, i) => {
+    const x = padding.left + (i * step);
+    const marker = document.createElement('div');
+    marker.className = 'time-marker';
+    marker.textContent = time;
+    marker.style.left = `${x}px`;
+    timeMarkers.appendChild(marker);
+  });
 }
 
 // Handle temperature unit toggle when clicking on degrees
@@ -87,7 +141,7 @@ const degreeElement = document.querySelector('.degree');
 if (degreeElement) {
   degreeElement.addEventListener('click', () => {
     const currentUnit = degreeElement.textContent;
-    const tempElements = document.querySelectorAll('.temperature, .temp-number, .temperature-values .temp-value');
+    const tempElements = document.querySelectorAll('.temperature, .temp-number');
 
     if (currentUnit === '°F') {
       // Convert to Celsius
@@ -112,60 +166,13 @@ if (degreeElement) {
   });
 }
 
-// Add stars background animation
-function createStars() {
-  const body = document.body;
-  for (let i = 0; i < 50; i++) {
-    const star = document.createElement('div');
-    star.className = 'star';
-    star.style.width = `${Math.random() * 2 + 1}px`;
-    star.style.height = star.style.width;
-    star.style.left = `${Math.random() * 100}%`;
-    star.style.top = `${Math.random() * 100}%`;
-    star.style.animationDelay = `${Math.random() * 5}s`;
-    body.appendChild(star);
-  }
-}
-
-// Add hover effects for forecast items
-function addForecastHoverEffects() {
-  const forecastItems = document.querySelectorAll('.forecast-item');
-
-  forecastItems.forEach(item => {
-    item.addEventListener('mouseenter', () => {
-      const siblings = Array.from(item.parentElement.children).filter(el => el !== item);
-      siblings.forEach(sibling => {
-        sibling.style.opacity = '0.7';
-        sibling.style.transform = 'scale(0.98)';
-      });
-    });
-
-    item.addEventListener('mouseleave', () => {
-      const siblings = Array.from(item.parentElement.children);
-      siblings.forEach(sibling => {
-        sibling.style.opacity = '1';
-        sibling.style.transform = '';
-      });
-    });
-  });
-}
-
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
   drawTemperatureLine();
-  addForecastHoverEffects();
 
-  // Animate container elements on page load
-  const containers = document.querySelectorAll('.current-weather-container, .current-weather-status, .chart-container, .forecast-days');
-  containers.forEach((container, index) => {
-    container.style.opacity = '0';
-    container.style.transform = 'translateY(20px)';
-
-    setTimeout(() => {
-      container.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-      container.style.opacity = '1';
-      container.style.transform = 'translateY(0)';
-    }, 300 + (index * 150));
+  // Handle window resize
+  window.addEventListener('resize', () => {
+    drawTemperatureLine();
   });
 });
 
@@ -173,8 +180,8 @@ document.addEventListener('DOMContentLoaded', () => {
 const precipitationValues = document.querySelectorAll('.precipitation-value');
 precipitationValues.forEach(value => {
   value.addEventListener('mouseenter', () => {
-    value.style.transform = 'translateY(-5px)';
-    value.style.color = '#bae6fd';
+    value.style.transform = 'translateY(-3px)';
+    value.style.color = '#4285f4';
   });
 
   value.addEventListener('mouseleave', () => {
@@ -191,7 +198,7 @@ windValues.forEach(value => {
     if (arrow) {
       arrow.style.transform = 'translateY(-3px)';
     }
-    value.style.color = '#7dd3fc';
+    value.style.color = '#70757a';
   });
 
   value.addEventListener('mouseleave', () => {
