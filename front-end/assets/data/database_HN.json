@@ -1,0 +1,112 @@
+[
+  {
+    "date": "2025-04-09",
+    "highTemperature": 28.7,
+    "lowTemperature": 20.2,
+    "weather": "sunny",
+    "windSpeed": 10,
+    "windDirection": "NE",
+    "humidity": "65%",
+    "precipitation": 0.0,
+    "chance_rain": 5
+  },
+  {
+    "date": "2025-04-10",
+    "highTemperature": 27.1,
+    "lowTemperature": 19.0,
+    "weather": "partly cloudy",
+    "windSpeed": 12,
+    "windDirection": "NE",
+    "humidity": "70%",
+    "precipitation": 0.1,
+    "chance_rain": 20
+  },
+  {
+    "date": "2025-04-11",
+    "highTemperature": 29.2,
+    "lowTemperature": 21.25,
+    "weather": "sunny",
+    "windSpeed": 8,
+    "windDirection": "NE",
+    "humidity": "60%",
+    "precipitation": 0.0,
+    "chance_rain": 0
+  },
+  {
+    "date": "2025-04-12",
+    "highTemperature": 28.47,
+    "lowTemperature": 20.12,
+    "weather": "partly cloudy",
+    "windSpeed": 11,
+    "windDirection": "NE",
+    "humidity": "65%",
+    "precipitation": 0.2,
+    "chance_rain": 25
+  },
+  {
+    "date": "2025-04-13",
+    "highTemperature": 27.95,
+    "lowTemperature": 19.56,
+    "weather": "cloudy",
+    "windSpeed": 13,
+    "windDirection": "NE",
+    "humidity": "75%",
+    "precipitation": 0.3,
+    "chance_rain": 40
+  },
+  {
+    "date": "2025-04-14",
+    "highTemperature": 26.1,
+    "lowTemperature": 18.71,
+    "weather": "rain",
+    "windSpeed": 15,
+    "windDirection": "NE",
+    "humidity": "80%",
+    "precipitation": 1.2,
+    "chance_rain": 70
+  },
+  {
+    "date": "2025-04-15",
+    "highTemperature": 27.1,
+    "lowTemperature": 19.37,
+    "weather": "cloudy",
+    "windSpeed": 14,
+    "windDirection": "NE",
+    "humidity": "75%",
+    "precipitation": 0.5,
+    "chance_rain": 50
+  },
+  {
+    "date": "2025-04-16",
+    "highTemperature": 26.18,
+    "lowTemperature": 18.04,
+    "weather": "rain",
+    "windSpeed": 16,
+    "windDirection": "NE",
+    "humidity": "85%",
+    "precipitation": 1.0,
+    "chance_rain": 65
+  },
+  {
+    "date": "2025-04-17",
+    "highTemperature": 28.63,
+    "lowTemperature": 20.27,
+    "weather": "sunny",
+    "windSpeed": 10,
+    "windDirection": "NE",
+    "humidity": "60%",
+    "precipitation": 0.0,
+    "chance_rain": 10
+  },
+  {
+    "date": "2025-04-18",
+    "highTemperature": 27.14,
+    "lowTemperature": 19.06,
+    "weather": "partly cloudy",
+    "windSpeed": 12,
+    "windDirection": "NE",
+    "humidity": "65%",
+    "precipitation": 0.2,
+    "chance_rain": 30
+  }
+]
