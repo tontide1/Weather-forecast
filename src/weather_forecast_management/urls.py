@@ -22,3 +22,8 @@ urlpatterns = [
     path('api/', include('api_app.urls')),  # API routes
     path('', include('web_app.urls')),      # Regular web app routes
 ]
+
+from django.conf import settings
+from django.conf.urls.static import static
+
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

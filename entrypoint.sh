@@ -76,16 +76,17 @@ fi
 echo "=== CREATE DATABASE TABLE ==="
 python insert.py
 echo "=== CREATE DATABASE TABLE COMPLETELY ==="
-
 echo "=== NAVIGATE TO PROJECT DIRECTORY ==="
 cd /app/src
-# rm -rf /app/staticfiles
-# python manage.py collectstatic --noinput
-mkdir -p static
-mkdir -p media
+
+echo "=== CREATE STATIC & MEDIA DIRECTORIES IF NOT EXIST ==="
+mkdir -p static media
+
+echo "=== COLLECT STATIC FILES ==="
 python manage.py collectstatic --noinput
 
-ls /app/src/staticfiles
+echo "=== LIST STATICFILES ==="
+ls -R /app/src/staticfiles/web_app
 
 echo "=== CREATE MIGRATIONS ==="
 find /app/src/*/migrations/ -type f -name "*.py" ! -name "__init__.py" -exec rm -f {} +
