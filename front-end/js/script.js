@@ -14,6 +14,13 @@ tabs.forEach(tab => {
     // Add active class to clicked tab and corresponding chart
     tab.classList.add('active');
     document.getElementById(`${tabType}Chart`).classList.add('active');
+
+    // Re-draw the chart if it's the temperature tab
+    if (tabType === 'temperature') {
+      setTimeout(() => {
+        drawTemperatureLine();
+      }, 100);
+    }
   });
 });
 
@@ -26,12 +33,12 @@ function drawTemperatureLine() {
   if (!temperaturePath || !temperatureArea || tempValues.length === 0) return;
 
   const values = Array.from(tempValues).map(el => {
-    const tempNumber = parseInt(el.querySelector('.temp-number').textContent);
+    const tempNumber = parseInt(el.textContent || el.querySelector('.temp-number')?.textContent);
     return tempNumber;
   });
 
-  const max = Math.max(...values);
-  const min = Math.min(...values);
+  const max = Math.max(...values) + 2; // Add 2 to give some top margin
+  const min = Math.min(...values) - 2; // Subtract 2 to give some bottom margin
   const range = max - min;
 
   // Calculate points for the path
@@ -39,30 +46,40 @@ function drawTemperatureLine() {
   let areaData = '';
 
   tempValues.forEach((value, index) => {
-    const tempNumber = parseInt(value.querySelector('.temp-number').textContent);
+    const tempNumber = parseInt(value.textContent || value.querySelector('.temp-number')?.textContent);
     const x = (index / (tempValues.length - 1)) * 100;
-    const y = 100 - ((tempNumber - min) / (range || 1)) * 80;
+    const y = 100 - ((tempNumber - min) / range * 75); // Use 75% of height for better appearance
 
     if (index === 0) {
       pathData = `M${x},${y}`;
       areaData = `M${x},${y}`;
     } else {
-      pathData += ` L${x},${y}`;
+      // Use quadratic curves for smoother lines
+      const prevX = ((index - 1) / (tempValues.length - 1)) * 100;
+      const controlX = (prevX + x) / 2;
+
+      pathData += ` Q${controlX},${y} ${x},${y}`;
       areaData += ` L${x},${y}`;
     }
-
-    // Position the temp dots
-    value.style.left = `${x}%`;
-
-    // Calculate y position (invert and scale)
-    value.style.top = `${y}%`;
   });
 
-  // Complete the area path
-  areaData += ` L100,100 L0,100 Z`;
+  // Complete the area path - extend to bottom corners
+  const lastX = 100;
+  const lastY = 100;
+  areaData += ` L${lastX},${lastY} L0,${lastY} Z`;
 
   temperaturePath.setAttribute('d', pathData);
   temperatureArea.setAttribute('d', areaData);
+
+  // Animate the drawing of the path
+  const pathLength = temperaturePath.getTotalLength();
+  temperaturePath.style.strokeDasharray = pathLength;
+  temperaturePath.style.strokeDashoffset = pathLength;
+
+  setTimeout(() => {
+    temperaturePath.style.transition = 'stroke-dashoffset 1.5s ease-in-out';
+    temperaturePath.style.strokeDashoffset = 0;
+  }, 100);
 }
 
 // Handle temperature unit toggle when clicking on degrees
@@ -70,7 +87,7 @@ const degreeElement = document.querySelector('.degree');
 if (degreeElement) {
   degreeElement.addEventListener('click', () => {
     const currentUnit = degreeElement.textContent;
-    const tempElements = document.querySelectorAll('.temperature, .temp-number');
+    const tempElements = document.querySelectorAll('.temperature, .temp-number, .temperature-values .temp-value');
 
     if (currentUnit === '°F') {
       // Convert to Celsius
@@ -95,17 +112,69 @@ if (degreeElement) {
   });
 }
 
+// Add stars background animation
+function createStars() {
+  const body = document.body;
+  for (let i = 0; i < 50; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.width = `${Math.random() * 2 + 1}px`;
+    star.style.height = star.style.width;
+    star.style.left = `${Math.random() * 100}%`;
+    star.style.top = `${Math.random() * 100}%`;
+    star.style.animationDelay = `${Math.random() * 5}s`;
+    body.appendChild(star);
+  }
+}
+
+// Add hover effects for forecast items
+function addForecastHoverEffects() {
+  const forecastItems = document.querySelectorAll('.forecast-item');
+
+  forecastItems.forEach(item => {
+    item.addEventListener('mouseenter', () => {
+      const siblings = Array.from(item.parentElement.children).filter(el => el !== item);
+      siblings.forEach(sibling => {
+        sibling.style.opacity = '0.7';
+        sibling.style.transform = 'scale(0.98)';
+      });
+    });
+
+    item.addEventListener('mouseleave', () => {
+      const siblings = Array.from(item.parentElement.children);
+      siblings.forEach(sibling => {
+        sibling.style.opacity = '1';
+        sibling.style.transform = '';
+      });
+    });
+  });
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
   drawTemperatureLine();
+  addForecastHoverEffects();
+
+  // Animate container elements on page load
+  const containers = document.querySelectorAll('.current-weather-container, .current-weather-status, .chart-container, .forecast-days');
+  containers.forEach((container, index) => {
+    container.style.opacity = '0';
+    container.style.transform = 'translateY(20px)';
+
+    setTimeout(() => {
+      container.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      container.style.opacity = '1';
+      container.style.transform = 'translateY(0)';
+    }, 300 + (index * 150));
+  });
 });
 
 // Add a hover effect for precipitation bars
 const precipitationValues = document.querySelectorAll('.precipitation-value');
 precipitationValues.forEach(value => {
   value.addEventListener('mouseenter', () => {
-    value.style.transform = 'translateY(-3px)';
-    value.style.color = '#4285f4';
+    value.style.transform = 'translateY(-5px)';
+    value.style.color = '#bae6fd';
   });
 
   value.addEventListener('mouseleave', () => {
@@ -122,7 +191,7 @@ windValues.forEach(value => {
     if (arrow) {
       arrow.style.transform = 'translateY(-3px)';
     }
-    value.style.color = '#70757a';
+    value.style.color = '#7dd3fc';
   });
 
   value.addEventListener('mouseleave', () => {
