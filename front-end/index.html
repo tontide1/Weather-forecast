@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather Forecast</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div class="header-top">
+          <div class="current-weather">
+            <div class="current-weather-main">
+              <span class="weather-icon"></span>
+              <span id="currentTemp"></span>
+              <span id="currentWeather"></span>
+            </div>
+            <div class="current-weather-details">
+              <p>
+                Wind: <span id="currentWindSpeed"></span>
+                <span id="currentWindDirection"></span>
+              </p>
+              <p>Rain: <span id="currentChanceRain"></span>%</p>
+            </div>
+          </div>
+          <div class="location-selector">
+            <select id="locationSelect">
+              <option value="database.json">Hà Nội</option>
+              <option value="database_HCM.json">Hồ Chí Minh</option>
+              <option value="database_DN.json">Đà Nẵng</option>
+            </select>
+          </div>
+          <div class="current-date">
+            <p id="currentDate"></p>
+          </div>
+        </div>
+      </div>
+      <div class="chart-container">
+        <canvas id="temperatureChart"></canvas>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="js/script.js"></script>
+  </body>
+</html>

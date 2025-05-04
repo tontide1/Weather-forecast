@@ -1,0 +1,283 @@
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background-color: #f0f8ff;
+  margin: 0;
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 64vh;
+  font-size: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  max-width: 100%;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  min-height: calc(64vh - 20px);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Header */
+.header {
+  margin-bottom: 8px;
+  padding: 6px;
+  background: linear-gradient(135deg, #6ab7ff 0%, #4a90e2 100%);
+  border-radius: 8px;
+  color: white;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* Location Selector */
+.location-selector {
+  text-align: center;
+  flex: 1;
+  margin: 0 16px;
+}
+
+.location-selector select {
+  padding: 6px 12px;
+  font-size: 19px;
+  border-radius: 6px;
+  border: 1px solid #4a90e2;
+  background-color: white;
+  color: #333;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+  width: 80%;
+  max-width: 300px;
+}
+
+.location-selector select:hover {
+  border-color: #6ab7ff;
+  box-shadow: 0 0 4px rgba(74, 144, 226, 0.5);
+}
+
+.location-selector select:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 6px rgba(74, 144, 226, 0.7);
+}
+
+/* Thông tin thời tiết hiện tại */
+.current-weather {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 4px;
+}
+
+.current-weather-main {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.current-weather-main .weather-icon {
+  font-size: 45px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#currentTemp {
+  font-size: 38px;
+  font-weight: bold;
+}
+
+#currentWeather {
+  font-size: 22px;
+  opacity: 0.9;
+}
+
+.current-weather-details p {
+  margin: 2px 0;
+  font-size: 19px;
+  opacity: 0.9;
+}
+
+/* Ngày hiện tại */
+.current-date {
+  flex: 1;
+  text-align: right;
+  font-size: 22px;
+  font-weight: 500;
+}
+
+/* Biểu đồ */
+.chart-container {
+  width: 100%;
+  height: 42vh !important;
+  margin: 16px 0;
+  position: relative;
+  cursor: grab;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 8px;
+  box-sizing: border-box;
+  flex: 1;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.chart-container canvas {
+  width: 100% !important;
+  height: 80% !important;
+}
+
+.chart-container:active {
+  cursor: grabbing;
+}
+
+/* Chi tiết thời tiết */
+.weather-details {
+  width: 100%;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  padding: 8px;
+  margin-top: 12px;
+  box-sizing: border-box;
+  overflow-x: auto;
+}
+
+.weather-row {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  text-align: center;
+  padding: 2px 0;
+  min-width: min-content;
+}
+
+.weather-row div {
+  flex: 0 0 64px;
+  padding: 6px 4px;
+  border-radius: 6px;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+#dayLabels div {
+  font-size: 29px;
+  font-weight: bold;
+  color: #333;
+}
+
+.weather-icon {
+  font-size: 51px;
+  margin: 4px 0;
+}
+
+.weather-wind div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.wind-direction {
+  font-size: 45px;
+  color: #4a90e2;
+  transition: transform 0.3s ease;
+}
+
+.weather-row div span {
+  font-size: 26px;
+  font-weight: 500;
+  display: block;
+  white-space: nowrap;
+}
+
+.weather-rain div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.chance-rain {
+  font-weight: 500;
+  color: #4a90e2;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  .header-top {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .current-weather {
+    width: 100%;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .location-selector {
+    margin: 8px 0;
+    width: 100%;
+  }
+
+  .location-selector select {
+    width: 100%;
+  }
+
+  .current-date {
+    width: 100%;
+    text-align: center;
+    margin-top: 8px;
+  }
+
+  body {
+    padding: 4px;
+  }
+
+  .container {
+    padding: 8px;
+  }
+
+  .weather-row {
+    gap: 8px;
+  }
+
+  .weather-row div {
+    flex: 0 0 56px;
+    padding: 6px 3px;
+  }
+
+  .weather-icon {
+    font-size: 45px;
+  }
+
+  #currentTemp {
+    font-size: 51px;
+  }
+
+  #currentWeather {
+    font-size: 29px;
+  }
+
+  .chance-rain {
+    font-size: 22px;
+  }
+}
