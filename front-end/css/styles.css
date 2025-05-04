@@ -48,29 +48,154 @@ body {
   margin: 0 auto;
   position: relative;
   animation: fadeIn 1s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: fadeIn 1s ease-in-out;
+  margin-left: 20px;
+}
+
+.logo-icon-wrapper {
+  position: relative;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-icon {
+  width: 38px;
+  height: 38px;
+  animation: pulse 3s infinite alternate;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 0 8px rgba(125, 211, 252, 0.7));
+}
+
+.logo-glow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(125, 211, 252, 0.4) 0%, rgba(125, 211, 252, 0) 70%);
+  animation: glow 3s infinite alternate;
+  z-index: 1;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 8px rgba(125, 211, 252, 0.5));
+  }
+
+  100% {
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 12px rgba(125, 211, 252, 0.8));
+  }
+}
+
+@keyframes glow {
+  0% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0.7;
+    transform: scale(1.3);
+  }
 }
 
 .main-header h1 {
-  font-size: 36px;
+  font-size: 30px;
   font-weight: 500;
   color: #fff;
   letter-spacing: 1px;
-  text-shadow: 0 0 15px rgba(138, 180, 248, 0.5);
+  text-shadow: 0 0 15px rgba(125, 211, 252, 0.5);
   position: relative;
   display: inline-block;
+}
+
+.logo-accent {
+  background: linear-gradient(to right, #7dd3fc, #38bdf8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 700;
 }
 
 .main-header h1::after {
   content: "";
   position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  height: 3px;
-  width: 60%;
-  background: linear-gradient(90deg, transparent, #8ab4f8, transparent);
+  bottom: -6px;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(90deg, #0f172a, #7dd3fc, #0f172a);
   border-radius: 3px;
   animation: expand 1.5s ease-in-out;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  margin-right: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50px;
+  padding: 6px 12px;
+  border: 1px solid rgba(125, 211, 252, 0.2);
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.search-container:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(125, 211, 252, 0.4);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.search-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 14px;
+  width: 200px;
+  padding: 8px 0;
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.search-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  transition: transform 0.2s ease;
+}
+
+.search-button:hover {
+  transform: scale(1.1);
+}
+
+.search-icon {
+  width: 22px;
+  height: 22px;
 }
 
 @keyframes fadeIn {
@@ -444,17 +569,16 @@ body {
 
 /* Chart styles */
 .chart-container {
-  background-color: rgba(48, 49, 52, 0.3);
-  border-radius: 20px;
-  padding: 25px;
+  background-color: #202025;
+  border-radius: 0;
+  padding: 0;
   margin-bottom: 24px;
   position: relative;
   width: 100%;
   margin: 0 auto 24px;
-  min-height: 250px;
-  overflow: visible;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  box-shadow: none;
+  border: none;
 }
 
 .chart-container:hover {
@@ -463,9 +587,9 @@ body {
 }
 
 .chart {
+  position: relative;
   display: none;
   width: 100%;
-  position: relative;
   overflow: visible;
   opacity: 0;
   transition: opacity 0.5s ease;
@@ -480,117 +604,61 @@ body {
 
 /* Hourly time markers */
 .hourly-time-markers {
-  display: flex;
-  justify-content: space-between;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 0 15px 10px;
-  background: transparent;
+  position: relative;
+  height: 20px;
 }
 
 .time-marker {
-  font-size: 14px;
-  color: #70757a;
+  position: absolute;
+  bottom: 5px;
+  transform: translateX(-50%);
+  font-size: 12px;
+  color: #666;
   text-align: center;
-  transition: color 0.2s ease;
-  width: 12.5%;
+  white-space: nowrap;
 }
 
 /* Temperature chart */
 #temperatureChart {
   position: relative;
-  background: transparent;
-  padding-bottom: 40px;
-  height: 150px;
+  background: #202025;
+  border-radius: 0;
+  padding: 20px 10px 40px;
+  height: 100px;
+  transition: all 0.3s ease;
+  overflow: hidden;
 }
 
-.temperature-line {
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  height: 110px;
-  padding: 0 15px 0;
-  align-items: flex-start;
-}
-
-/* Create the filled area under the curve */
-.temperature-line::after {
-  content: "";
+#tempCanvas {
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to bottom, rgba(255, 195, 0, 0.15) 0%, rgba(255, 195, 0, 0.05) 100%);
-  z-index: 0;
-  clip-path: polygon(0% 0%,
-      /* First point */
-      15% 0%,
-      /* Second point */
-      28% 40%,
-      /* Third point */
-      42% 50%,
-      /* Fourth point */
-      57% 60%,
-      /* Fifth point */
-      71% 60%,
-      /* Sixth point */
-      85% 85%,
-      /* Seventh point */
-      100% 30%,
-      /* Eighth point */
-      100% 100%,
-      /* Bottom right */
-      0% 100%
-      /* Bottom left */
-    );
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
 }
 
-.temp-value {
-  position: relative;
-  text-align: center;
-  font-size: 15px;
-  color: #70757a;
-  margin-top: 5px;
-  font-weight: 400;
-  transition: transform 0.2s ease;
-  cursor: pointer;
-  z-index: 1;
-}
-
-.temp-value-dot {
-  display: none;
-}
-
-/* Connecting line */
-.temp-line-connector {
-  content: "";
+.temperature-background {
   position: absolute;
-  top: 5px;
+  top: 0;
   left: 0;
-  right: 0;
-  height: 2px;
-  background-color: #f9ab00;
-  z-index: 1;
-  clip-path: polygon(0% 0%,
-      /* First point */
-      15% 0%,
-      /* Second point */
-      28% 200%,
-      /* Third point */
-      42% 250%,
-      /* Fourth point */
-      57% 300%,
-      /* Fifth point */
-      71% 300%,
-      /* Sixth point */
-      85% 400%,
-      /* Seventh point */
-      100% 150%
-      /* Eighth point */
-    );
+  width: 100%;
+  height: 100%;
+  background-color: #202025;
+  border-radius: 0;
+  z-index: 0;
+}
+
+#timeMarkers {
+  position: absolute;
+  bottom: 5px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  z-index: 2;
+  padding: 0;
+  height: 20px;
 }
 
 /* Precipitation chart */
