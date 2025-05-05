@@ -1498,9 +1498,10 @@ function addSubscriptionMessageStyles() {
 function initializeEmailSubscription() {
   const emailForm = document.querySelector('.email-subscription .subscription-form');
   const emailInput = document.getElementById('emailInput');
+  const provinceInput = document.getElementById('provinceInput');
   const subscribeButton = document.getElementById('subscribeButton');
 
-  if (emailForm && emailInput && subscribeButton) {
+  if (emailForm && emailInput && provinceInput && subscribeButton) {
     // Add event listeners for form submission
     emailForm.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -1517,11 +1518,25 @@ function initializeEmailSubscription() {
       }
     });
 
+    provinceInput.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        emailInput.focus();
+      }
+    });
+
     // Add focus animation effect
     // Phần tiếp theo của hàm initializeEmailSubscription()
 
     // Add focus animation effect
     emailInput.addEventListener('focus', function () {
+      const container = document.querySelector('.subscription-container');
+      if (container) {
+        container.style.borderColor = 'rgba(125, 211, 252, 0.4)';
+      }
+    });
+
+    provinceInput.addEventListener('focus', function () {
       const container = document.querySelector('.subscription-container');
       if (container) {
         container.style.borderColor = 'rgba(125, 211, 252, 0.4)';
@@ -1535,9 +1550,16 @@ function initializeEmailSubscription() {
       }
     });
 
+    provinceInput.addEventListener('blur', function () {
+      const container = document.querySelector('.subscription-container');
+      if (container) {
+        container.style.borderColor = '';
+      }
+    });
+
     // Add typing animation to glow effect
     emailInput.addEventListener('input', function () {
-      const icon = document.querySelector('.email-icon');
+      const icon = document.querySelector('.input-wrapper .input-icon svg');
       if (icon) {
         icon.style.filter = 'drop-shadow(0 0 20px rgba(125, 211, 252, 0.8))';
         setTimeout(() => {
@@ -1545,11 +1567,60 @@ function initializeEmailSubscription() {
         }, 500);
       }
     });
+
+    provinceInput.addEventListener('input', function () {
+      const icon = document.querySelector('.location-input-icon svg');
+      if (icon) {
+        icon.style.filter = 'drop-shadow(0 0 20px rgba(125, 211, 252, 0.8))';
+        setTimeout(() => {
+          icon.style.filter = '';
+        }, 500);
+      }
+    });
+
+    // Initialize unique provinces for dropdown suggestions
+    initializeProvinceAutocomplete();
+  }
+
+  // Initialize province autocomplete
+  async function initializeProvinceAutocomplete() {
+    try {
+      const provinces = await getUniqueProvinces();
+      if (provinces && provinces.length > 0) {
+        // Create a datalist element for autocomplete
+        const datalist = document.createElement('datalist');
+        datalist.id = 'provinceList';
+
+        // Add options from the provinces array
+        provinces.forEach(province => {
+          const option = document.createElement('option');
+          option.value = province;
+          datalist.appendChild(option);
+        });
+
+        // Append the datalist to the document
+        document.body.appendChild(datalist);
+
+        // Connect the datalist to the province input
+        provinceInput.setAttribute('list', 'provinceList');
+      }
+    } catch (error) {
+      console.error('Error initializing province autocomplete:', error);
+    }
   }
 
   // Handle subscription logic
   async function handleEmailSubscription() {
     const email = emailInput.value.trim();
+    const province = provinceInput.value.trim();
+
+    // Validate province
+    if (!province) {
+      showEmailSubscriptionMessage('Vui lòng nhập tỉnh/thành phố của bạn', 'error');
+      provinceInput.focus();
+      shakeElement(provinceInput);
+      return;
+    }
 
     // Validate email
     if (!email) {
@@ -1574,6 +1645,7 @@ function initializeEmailSubscription() {
     subscribeButton.style.opacity = '0.8';
     subscribeButton.disabled = true;
     emailInput.disabled = true;
+    provinceInput.disabled = true;
 
     try {
       // Add visual effect during processing
@@ -1586,7 +1658,7 @@ function initializeEmailSubscription() {
       await new Promise(resolve => setTimeout(resolve, 1200));
 
       // Show success message
-      showEmailSubscriptionMessage('Đăng ký thành công! Bạn sẽ nhận được dự báo thời tiết hàng ngày vào lúc 7h sáng.', 'success');
+      showEmailSubscriptionMessage(`Đăng ký thành công! Bạn sẽ nhận được dự báo thời tiết hàng ngày cho ${province} vào lúc 7h sáng.`, 'success');
 
       // Add success animation
       const icon = document.querySelector('.email-icon');
@@ -1602,9 +1674,13 @@ function initializeEmailSubscription() {
       // Clear input with animation
       emailInput.style.transition = 'background-color 0.5s ease';
       emailInput.style.backgroundColor = 'rgba(125, 211, 252, 0.15)';
+      provinceInput.style.transition = 'background-color 0.5s ease';
+      provinceInput.style.backgroundColor = 'rgba(125, 211, 252, 0.15)';
       setTimeout(() => {
         emailInput.value = '';
+        provinceInput.value = '';
         emailInput.style.backgroundColor = '';
+        provinceInput.style.backgroundColor = '';
       }, 300);
 
       // Add a visual feedback effect - briefly highlight the form
@@ -1625,6 +1701,7 @@ function initializeEmailSubscription() {
         subscribeButton.style.opacity = '';
         subscribeButton.disabled = false;
         emailInput.disabled = false;
+        provinceInput.disabled = false;
       }, 500);
     }
   }
