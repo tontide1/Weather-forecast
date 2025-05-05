@@ -28,7 +28,7 @@ if connection is not None:
             DROP TABLE IF EXISTS {table_name};
         """)
         connection.commit()
-        print(f"Xóa table {table_name}.")
+        print(f"Xóa bảng thành công.")
         # Tạo một bảng
         cursor.execute(
             f"""
@@ -49,7 +49,7 @@ if connection is not None:
             """
         )
         connection.commit()
-        print(f"Tạo table {table_name} thành công")
+        print(f"Tạo bảng thành công")
 
         # cursor.execute(
         #     f"""
@@ -83,11 +83,11 @@ if connection is not None:
         print("Dữ liệu từ file CSV đã được chèn vào cơ sở dữ liệu thành công!")
 
         # # Lấy dữ liệu
-        cursor.execute(f"SELECT * FROM {table_name};")
-        rows = cursor.fetchall()
-        print(f"Dữ liệu trong bảng {table_name}:")
-        for row in rows:
-            print(row)
+        # cursor.execute(f"SELECT * FROM {table_name};")
+        # rows = cursor.fetchall()
+        # print(f"Dữ liệu trong bảng {table_name}:")
+        # for row in rows:
+        #     print(row)
 
     except Exception as e:
         print("Lỗi khi thêm dữ liệu:", e)

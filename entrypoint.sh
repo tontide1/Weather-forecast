@@ -18,10 +18,6 @@ else
 fi
 echo "=== LOAD ENVIRONMENT VARIABLES COMPLETELY ==="
 
-echo $DATABASE_NAME
-echo $DATABASE_HOST
-echo $DATABASE_USER
-echo $DATABASE_PASSWORD
 
 echo "=== WAIT FOR DATABASE ==="
 until pg_isready -h $DATABASE_HOST -p $DATABASE_PORT -U $DATABASE_USER; do
@@ -74,8 +70,9 @@ if [ ! -d src ]; then
 fi
 
 echo "=== CREATE DATABASE TABLE ==="
-python insert.py
+python src_data/insert.py
 echo "=== CREATE DATABASE TABLE COMPLETELY ==="
+
 echo "=== NAVIGATE TO PROJECT DIRECTORY ==="
 cd /app/src
 
@@ -85,14 +82,11 @@ mkdir -p static media
 echo "=== COLLECT STATIC FILES ==="
 python manage.py collectstatic --noinput
 
-echo "=== LIST STATICFILES ==="
-ls -R /app/src/staticfiles/web_app
+# echo "=== LIST STATICFILES ==="
+# ls -R /app/src/staticfiles/web_app
 
 echo "=== CREATE MIGRATIONS ==="
 find /app/src/*/migrations/ -type f -name "*.py" ! -name "__init__.py" -exec rm -f {} +
-# rm -rf portfolio/migrations
-# mkdir -p portfolio/migrations
-# touch portfolio/migrations/__init__.py
 python manage.py makemigrations
 if [ $? -ne 0 ]; then
     echo "ERROR: Cannot create migrations"
@@ -106,9 +100,9 @@ if [ $? -ne 0 ]; then
 fi
 echo "=== CREATE MIGRATIONS COMPLETELY ==="
 
-echo "=== CREATE ADMIN ACCOUNT ==="
-python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser($admin_username, $admin_email , $admin_password) if not User.objects.filter(username='$admin_username').exists() else print('Admin already exists!!!')"
-echo "=== CREATE ADMIN ACCOUNT COMPLETELY ==="
+# echo "=== CREATE ADMIN ACCOUNT ==="
+# python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser("$admin_username", "$admin_email", "$admin_password") if not User.objects.filter(username='$admin_username').exists() else print('Admin already exists!!!')"
+# echo "=== CREATE ADMIN ACCOUNT COMPLETELY ==="
 
 echo "=== RUN SERVER ==="
 exec "$@"
