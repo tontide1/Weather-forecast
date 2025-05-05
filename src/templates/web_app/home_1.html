@@ -221,12 +221,20 @@
             <p>Nhập email của bạn để nhận thông tin dự báo thời tiết vào lúc 7h sáng mỗi ngày. Chúng tôi sẽ gửi bạn cập nhật mới nhất về nhiệt độ, lượng mưa và thông tin thời tiết quan trọng khác.</p>
             <form class="subscription-form">
               <div class="input-wrapper">
-                <input type="email" placeholder="Địa chỉ email của bạn" class="email-input" id="emailInput" autocomplete="email">
+                <span class="input-icon location-input-icon">
+                  <svg viewBox="0 0 24 24" width="18" height="18">
+                    <path d="M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z" fill="#7dd3fc"/>
+                  </svg>
+                </span>
+                <input type="text" placeholder="Tỉnh/Thành phố của bạn" class="province-input" id="provinceInput" autocomplete="address-level1">
+              </div>
+              <div class="input-wrapper">
                 <span class="input-icon">
                   <svg viewBox="0 0 24 24" width="18" height="18">
                     <path d="M20,8L12,13L4,8V6L12,11L20,6M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4Z" fill="#7dd3fc"/>
                   </svg>
                 </span>
+                <input type="email" placeholder="Địa chỉ email của bạn" class="email-input" id="emailInput" autocomplete="email">
               </div>
               <button type="button" class="subscribe-button" id="subscribeButton">
                 <span>Đăng ký ngay</span>
