@@ -107,7 +107,7 @@ fi
 echo "=== CREATE MIGRATIONS COMPLETELY ==="
 
 echo "=== CREATE ADMIN ACCOUNT ==="
-python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('$admin_username', 'admin@example.com', '$admin_password') if not User.objects.filter(username='$admin_username').exists() else print('Admin already exists!!!')"
+python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser($admin_username, $admin_email , $admin_password) if not User.objects.filter(username='$admin_username').exists() else print('Admin already exists!!!')"
 echo "=== CREATE ADMIN ACCOUNT COMPLETELY ==="
 
 echo "=== RUN SERVER ==="
