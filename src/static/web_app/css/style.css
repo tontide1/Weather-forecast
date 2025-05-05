@@ -816,7 +816,7 @@ body {
   box-sizing: border-box;
 }
 
-.wind-value:after {
+/* .wind-value:after {
   content: "";
   display: block;
   width: 24px;
@@ -826,7 +826,7 @@ body {
   background-repeat: no-repeat;
   background-position: center;
   opacity: 0.6;
-}
+} */
 
 .wind-value:nth-child(1):after {
   transform: rotate(0deg);
