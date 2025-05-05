@@ -40,7 +40,7 @@ tabs.forEach(tab => {
     // Add active class to clicked tab and corresponding chart
     tab.classList.add('active');
     document.getElementById(`${tabType}Chart`).classList.add('active');
-    
+
     // Redraw the appropriate chart when tab is clicked
     if (hasSearched && currentWeatherData) {
       if (tabType === 'temperature') {
@@ -106,7 +106,7 @@ function drawTemperatureLine(values = [0, 0, 0, 0, 0, 0, 0, 0]) {
 
   const ctx = canvas.getContext('2d');
   const tempContainer = document.getElementById('temperatureChart');
-  
+
   // Get container dimensions
   const width = tempContainer.clientWidth;
   const height = tempContainer.clientHeight;
@@ -137,12 +137,12 @@ function drawTemperatureLine(values = [0, 0, 0, 0, 0, 0, 0, 0]) {
   // Tính toán chiều cao biểu đồ
   const chartHeight = height - padding.top - padding.bottom;
   const baseY = padding.top + (chartHeight * 0.5);
-  
+
   // Find min and max temperatures to scale the chart properly
   const minTemp = Math.min(...values);
   const maxTemp = Math.max(...values);
   const tempRange = Math.max(maxTemp - minTemp, 5); // Ensure at least 5 degrees range for visual clarity
-  
+
   const yScale = chartHeight * 0.4;
 
   // Tạo mảng điểm
@@ -372,7 +372,7 @@ function drawWindLine(values = [0, 0, 0, 0, 0, 0, 0, 0], directions = ['N', 'NE'
   // Tính toán chiều cao biểu đồ
   const chartHeight = height - padding.top - padding.bottom;
   const baseY = padding.top + (chartHeight * 0.5);
-  
+
   // Find max windspeed to scale properly
   const maxWind = Math.max(...values, 10); // At least 10 km/h for scaling
   const yScale = chartHeight * 0.4;
@@ -462,7 +462,7 @@ function drawWindLine(values = [0, 0, 0, 0, 0, 0, 0, 0], directions = ['N', 'NE'
 
 function updateWindSpeed(values) {
   const windspeedValue = document.querySelectorAll('.wind-speed-value');
-  
+
   windspeedValue.forEach((value, index) => {
     value.textContent = values[index];
   });
@@ -472,7 +472,7 @@ function updateWindSpeed(values) {
 function updateTimeMarkers(weatherData) {
   const timeMarkers = document.querySelectorAll('.time-marker');
   const times = extractTimeLabels(weatherData);
-  
+
   if (timeMarkers.length === times.length) {
     timeMarkers.forEach((marker, index) => {
       marker.textContent = times[index];
@@ -484,45 +484,45 @@ function updateMainWeatherIcon(weatherCode, temperature) {
   // Lấy container của biểu tượng thời tiết
   const weatherIconContainer = document.querySelector('.weather-cloud-icon');
   if (!weatherIconContainer) return;
-  
+
   // Lấy SVG của cloud
   const cloudSvg = weatherIconContainer.querySelector('.cloud-svg');
   if (!cloudSvg) return;
-  
+
   // Lấy hiệu ứng mưa
   const rainAnimation = weatherIconContainer.querySelector('.rain-animation');
-  
+
   // Xác định path SVG, màu sắc và hiệu ứng dựa trên mã thời tiết và nhiệt độ
   let svgPath = '';
   let iconColor = '';
-  
+
   // Xóa tất cả hiệu ứng hiện tại
   if (rainAnimation) {
     rainAnimation.style.display = 'none';
   }
-  
+
   // Xóa các hiệu ứng khác nếu tồn tại
   const snowAnimation = weatherIconContainer.querySelector('.snow-animation');
   if (snowAnimation) {
     snowAnimation.remove();
   }
-  
+
   const sunAnimation = weatherIconContainer.querySelector('.sun-animation');
   if (sunAnimation) {
     sunAnimation.remove();
   }
-  
+
   const thunderAnimation = weatherIconContainer.querySelector('.thunder-animation');
   if (thunderAnimation) {
     thunderAnimation.remove();
   }
-  
+
   // Xác định icon và màu dựa trên mã thời tiết
   // WMO Weather interpretation codes
   if (weatherCode === 0 || weatherCode === 1) {
     // Trời nắng/quang đãng
     svgPath = 'M12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,2L14.39,5.42C13.65,5.15 12.84,5 12,5C11.16,5 10.35,5.15 9.61,5.42L12,2M3.34,7L7.5,6.65C6.9,7.16 6.36,7.78 5.94,8.5C5.5,9.24 5.25,10 5.11,10.79L3.34,7M3.36,17L5.12,13.23C5.26,14 5.53,14.78 5.95,15.5C6.37,16.24 6.91,16.86 7.5,17.37L3.36,17M20.65,7L18.88,10.79C18.74,10 18.47,9.23 18.05,8.5C17.63,7.78 17.1,7.15 16.5,6.64L20.65,7M20.64,17L16.5,17.36C17.09,16.85 17.62,16.22 18.04,15.5C18.46,14.77 18.73,14 18.87,13.21L20.64,17M12,22L9.59,18.56C10.33,18.83 11.14,19 12,19C12.82,19 13.63,18.83 14.37,18.56L12,22Z';
-    
+
     // Màu dựa trên nhiệt độ
     if (temperature >= 30) {
       // Nắng nóng
@@ -534,7 +534,7 @@ function updateMainWeatherIcon(weatherCode, temperature) {
       // Nắng mát
       iconColor = '#ffd000'; // Màu vàng
     }
-    
+
     // Thêm hiệu ứng ánh nắng
     const sunRaysDiv = document.createElement('div');
     sunRaysDiv.className = 'sun-animation';
@@ -545,14 +545,14 @@ function updateMainWeatherIcon(weatherCode, temperature) {
       <span class="sunray"></span>
     `;
     weatherIconContainer.appendChild(sunRaysDiv);
-    
+
     // Thêm CSS cho hiệu ứng ánh nắng
     addSunAnimationStyles();
-  } 
+  }
   else if (weatherCode === 2 || weatherCode === 3) {
     // Mây/Trời nhiều mây
     svgPath = 'M19.35,10.03C18.67,6.59 15.64,4 12,4C9.11,4 6.6,5.64 5.35,8.03C2.34,8.36 0,10.9 0,14A6,6 0 0,0 6,20H19A5,5 0 0,0 24,15C24,12.36 21.95,10.22 19.35,10.03Z';
-    
+
     // Màu xám cho mây
     if (weatherCode === 2) {
       iconColor = '#d1d1d1'; // Mây vừa
@@ -563,14 +563,14 @@ function updateMainWeatherIcon(weatherCode, temperature) {
   else if (weatherCode >= 45 && weatherCode <= 48) {
     // Sương mù
     svgPath = 'M3,15H13A1,1 0 0,1 14,16A1,1 0 0,1 13,17H3A1,1 0 0,1 2,16A1,1 0 0,1 3,15M16,15H21A1,1 0 0,1 22,16A1,1 0 0,1 21,17H16A1,1 0 0,1 15,16A1,1 0 0,1 16,15M1,12A5,5 0 0,1 6,7C7,4.65 9.3,3 12,3C15.43,3 18.24,5.66 18.5,9.03L19,9C21.19,9 22.97,10.76 23,13H21A2,2 0 0,0 19,11H17V10A5,5 0 0,0 12,5C9.5,5 7.45,6.82 7.06,9.19C6.73,9.07 6.37,9 6,9A3,3 0 0,0 3,12C3,12.35 3.06,12.69 3.17,13H1.1L1,12M3,19H5A1,1 0 0,1 6,20A1,1 0 0,1 5,21H3A1,1 0 0,1 2,20A1,1 0 0,1 3,19M8,19H21A1,1 0 0,1 22,20A1,1 0 0,1 21,21H8A1,1 0 0,1 7,20A1,1 0 0,1 8,19Z';
-    
+
     // Màu cho sương mù
     iconColor = '#c3c3c3';
   }
   else if ((weatherCode >= 51 && weatherCode <= 57) || (weatherCode >= 61 && weatherCode <= 65)) {
     // Mưa nhẹ/Mưa phùn đến mưa to
     svgPath = 'M19.35,10.03C18.67,6.59 15.64,4 12,4C9.11,4 6.6,5.64 5.35,8.03C2.34,8.36 0,10.9 0,14A6,6 0 0,0 6,20H19A5,5 0 0,0 24,15C24,12.36 21.95,10.22 19.35,10.03Z';
-    
+
     // Màu cho mây mưa - từ xám đến tối hơn tùy mức độ mưa
     if (weatherCode <= 57) {
       // Mưa nhẹ
@@ -582,25 +582,25 @@ function updateMainWeatherIcon(weatherCode, temperature) {
       // Mưa to
       iconColor = '#697784';
     }
-    
+
     // Hiển thị hiệu ứng mưa
     if (rainAnimation) {
       rainAnimation.style.display = 'block';
-      
+
       // Điều chỉnh tốc độ mưa theo cường độ
       const raindrops = rainAnimation.querySelectorAll('.raindrop');
       let duration = '1s';
-      
+
       if (weatherCode >= 63) {
         duration = '0.7s'; // Mưa nhanh hơn
       } else if (weatherCode >= 51 && weatherCode <= 57) {
         duration = '1.5s'; // Mưa chậm hơn
       }
-      
+
       raindrops.forEach(drop => {
         drop.style.animationDuration = duration;
       });
-      
+
       // Thêm thêm hạt mưa nếu mưa to
       if (weatherCode >= 65 && raindrops.length < 5) {
         for (let i = 0; i < 2; i++) {
@@ -615,14 +615,14 @@ function updateMainWeatherIcon(weatherCode, temperature) {
   else if (weatherCode >= 71 && weatherCode <= 77) {
     // Tuyết
     svgPath = 'M19.35,10.03C18.67,6.59 15.64,4 12,4C9.11,4 6.6,5.64 5.35,8.03C2.34,8.36 0,10.9 0,14A6,6 0 0,0 6,20H19A5,5 0 0,0 24,15C24,12.36 21.95,10.22 19.35,10.03Z';
-    
+
     // Màu nhạt cho mây tuyết
     iconColor = '#b7c3cf';
-    
+
     // Thêm hiệu ứng tuyết rơi
     const snowAnimationDiv = document.createElement('div');
     snowAnimationDiv.className = 'snow-animation';
-    
+
     // Tạo các bông tuyết
     const snowflakeCount = weatherCode >= 75 ? 6 : 4;
     for (let i = 0; i < snowflakeCount; i++) {
@@ -634,47 +634,47 @@ function updateMainWeatherIcon(weatherCode, temperature) {
       snowflake.style.animationDelay = `${Math.random() * 2}s`;
       snowAnimationDiv.appendChild(snowflake);
     }
-    
+
     weatherIconContainer.appendChild(snowAnimationDiv);
-    
+
     // Thêm CSS cho hiệu ứng tuyết rơi
     addSnowAnimationStyles();
   }
   else if (weatherCode >= 95 && weatherCode <= 99) {
     // Giông bão
     svgPath = 'M19.35,10.03C18.67,6.59 15.64,4 12,4C9.11,4 6.6,5.64 5.35,8.03C2.34,8.36 0,10.9 0,14A6,6 0 0,0 6,20H19A5,5 0 0,0 24,15C24,12.36 21.95,10.22 19.35,10.03Z';
-    
+
     // Màu tối cho mây giông bão
     iconColor = '#515a61';
-    
+
     // Hiển thị hiệu ứng mưa
     if (rainAnimation) {
       rainAnimation.style.display = 'block';
-      
+
       // Mưa nhanh hơn
       const raindrops = rainAnimation.querySelectorAll('.raindrop');
       raindrops.forEach(drop => {
         drop.style.animationDuration = '0.6s';
       });
     }
-    
+
     // Thêm hiệu ứng sấm sét
     const thunderAnimationDiv = document.createElement('div');
     thunderAnimationDiv.className = 'thunder-animation';
-    
+
     const thunderBolt = document.createElement('div');
     thunderBolt.className = 'thunder-bolt';
     thunderAnimationDiv.appendChild(thunderBolt);
-    
+
     weatherIconContainer.appendChild(thunderAnimationDiv);
-    
+
     // Thêm CSS cho hiệu ứng sấm sét
     addThunderAnimationStyles();
   }
   else {
     // Mây (mặc định)
     svgPath = 'M19.35,10.03C18.67,6.59 15.64,4 12,4C9.11,4 6.6,5.64 5.35,8.03C2.34,8.36 0,10.9 0,14A6,6 0 0,0 6,20H19A5,5 0 0,0 24,15C24,12.36 21.95,10.22 19.35,10.03Z';
-    
+
     // Màu mặc định
     iconColor = '#c3c3c3';
   }
@@ -690,7 +690,7 @@ function updateMainWeatherIcon(weatherCode, temperature) {
 // Hàm thêm CSS cho hiệu ứng tuyết
 function addSnowAnimationStyles() {
   if (document.getElementById('snow-animation-styles')) return;
-  
+
   const styleEl = document.createElement('style');
   styleEl.id = 'snow-animation-styles';
   styleEl.textContent = `
@@ -729,7 +729,7 @@ function addSnowAnimationStyles() {
 // Hàm thêm CSS cho hiệu ứng nắng
 function addSunAnimationStyles() {
   if (document.getElementById('sun-animation-styles')) return;
-  
+
   const styleEl = document.createElement('style');
   styleEl.id = 'sun-animation-styles';
   styleEl.textContent = `
@@ -797,7 +797,7 @@ function addSunAnimationStyles() {
 // Hàm thêm CSS cho hiệu ứng sấm sét
 function addThunderAnimationStyles() {
   if (document.getElementById('thunder-animation-styles')) return;
-  
+
   const styleEl = document.createElement('style');
   styleEl.id = 'thunder-animation-styles';
   styleEl.textContent = `
@@ -859,7 +859,7 @@ function addThunderAnimationStyles() {
 // Thêm CSS để cải thiện hiệu ứng mưa hiện có
 function enhanceRainAnimation() {
   if (document.getElementById('enhanced-rain-styles')) return;
-  
+
   const styleEl = document.createElement('style');
   styleEl.id = 'enhanced-rain-styles';
   styleEl.textContent = `
@@ -967,7 +967,7 @@ function handleSearchInput() {
   // Set a timeout to prevent excessive filtering on every keystroke
   searchTimeout = setTimeout(() => {
     const searchTerm = searchInput.value.trim();
-    
+
     if (searchTerm.length > 0) {
       filterProvinces(searchTerm);
     } else {
@@ -978,7 +978,7 @@ function handleSearchInput() {
 
 // Filter provinces based on search term
 function filterProvinces(searchTerm) {
-  const filteredProvinces = provinces.filter(province => 
+  const filteredProvinces = provinces.filter(province =>
     province.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -1006,16 +1006,16 @@ function renderDropdown(provinceList) {
     const item = document.createElement('div');
     item.className = 'dropdown-item';
     item.textContent = province;
-    
+
     // Add click event to select a province
     item.addEventListener('click', () => {
       searchInput.value = province;
       dropdownContainer.style.display = 'none';
-      
+
       // Fetch weather data for the selected province
       fetchWeatherData(province);
     });
-    
+
     dropdownContainer.appendChild(item);
   });
 
@@ -1027,7 +1027,7 @@ function renderDropdown(provinceList) {
 function showWelcomeTemplate() {
   // Hide weather details initially
   const weatherContainer = document.querySelector('.weather-container');
-  
+
   // Add a welcome message to the weather container
   const welcomeTemplate = document.createElement('div');
   welcomeTemplate.className = 'welcome-template';
@@ -1042,7 +1042,7 @@ function showWelcomeTemplate() {
       <p>Tìm kiếm một tỉnh thành để xem dự báo thời tiết chi tiết.</p>
     </div>
   `;
-  
+
   // Check if welcome template already exists
   const existingWelcome = document.querySelector('.welcome-template');
   if (!existingWelcome) {
@@ -1051,13 +1051,13 @@ function showWelcomeTemplate() {
       weatherHeader.appendChild(welcomeTemplate);
     }
   }
-  
+
   // Hide detailed content initially
   const weatherDetails = document.querySelector('.current-weather-main');
   if (weatherDetails) {
     weatherDetails.style.display = 'none';
   }
-  
+
   // Set initial empty state
   hasSearched = false;
 }
@@ -1069,13 +1069,13 @@ function hideWelcomeTemplate() {
   if (welcomeTemplate) {
     welcomeTemplate.remove();
   }
-  
+
   // Show weather details
   const weatherDetails = document.querySelector('.current-weather-main');
   if (weatherDetails) {
     weatherDetails.style.display = 'flex';
   }
-  
+
   // Update state
   hasSearched = true;
 }
@@ -1087,7 +1087,7 @@ async function fetchWeatherData(province) {
   try {
     const url = `/api/get-weather-data/?province=${encodeURIComponent(province)}`;
     console.log(`API URL: ${url}`);
-    
+
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -1101,7 +1101,7 @@ async function fetchWeatherData(province) {
 
     const data = await response.json();
     console.log('Weather data received:', data);
-    
+
     if (data && data.weather_data && data.weather_data.length > 0) {
       hideWelcomeTemplate(); // Hide welcome template
       currentWeatherData = data.weather_data;
@@ -1175,13 +1175,13 @@ function getWeatherCondition(weatherCode) {
 // Update the UI with the weather data
 function updateWeatherUI(weatherData) {
   if (!weatherData || !weatherData.length) return;
-  
+
   // Get current weather (last item in the array)
   const currentWeather = weatherData.at(-1);
-  
+
   // Update weather icon 
   updateMainWeatherIcon(currentWeather.weather_code, currentWeather.temperature);
-  
+
   // Update location
   const locationElement = document.querySelector('.location-weather span');
   if (locationElement) {
@@ -1223,8 +1223,8 @@ function updateWeatherUI(weatherData) {
   const precipitationElement = document.querySelector('.weather-detail-item:nth-child(1) .detail-text span');
   if (precipitationElement) {
     // Convert precipitation to percentage
-    const precipPercentage = currentWeather.precipitation > 0 
-      ? Math.min(Math.round(currentWeather.precipitation * 10), 100) 
+    const precipPercentage = currentWeather.precipitation > 0
+      ? Math.min(Math.round(currentWeather.precipitation * 10), 100)
       : 0;
     precipitationElement.textContent = `${precipPercentage}%`;
   }
@@ -1249,7 +1249,7 @@ function updateWeatherUI(weatherData) {
   const activeTab = document.querySelector('.tab.active');
   if (activeTab) {
     const tabType = activeTab.getAttribute('data-tab');
-    
+
     if (tabType === 'temperature') {
       drawTemperatureLine(extractTemperatures(weatherData));
     } else if (tabType === 'precipitation') {
@@ -1267,18 +1267,18 @@ function updateWeatherUI(weatherData) {
 function updateForecastDays(weatherData) {
   // This is a placeholder - in a real app, you'd use actual forecast data
   // For now we'll just show one day repeated
-  
+
   const forecastContainer = document.querySelector('.forecast-days');
   if (!forecastContainer) return;
-  
+
   // Get the template from the first day
   const template = forecastContainer.querySelector('.forecast-item');
   if (!template) return;
-  
+
   // For demonstration, we'll just update the temperatures
   const forecastItems = document.querySelectorAll('.forecast-item');
   const currentTemp = Math.round(weatherData[0].temperature);
-  
+
   forecastItems.forEach((item, index) => {
     // Update high temperature (with a random variation for demo)
     const highTemp = item.querySelector('.high');
@@ -1286,7 +1286,7 @@ function updateForecastDays(weatherData) {
       const variation = Math.floor(Math.random() * 5) - 2; // -2 to +2 variation
       highTemp.textContent = `${currentTemp + variation}°C`;
     }
-    
+
     // Update low temperature
     const lowTemp = item.querySelector('.low');
     if (lowTemp) {
@@ -1383,18 +1383,342 @@ function addWelcomeStyles() {
   document.head.appendChild(styleEl);
 }
 
+// Handle email subscription form
+function initializeSubscriptionForm() {
+  const subscriptionForm = document.getElementById('weatherSubscription');
+
+  if (subscriptionForm) {
+    subscriptionForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const emailInput = document.getElementById('subscriptionEmail');
+      const email = emailInput.value.trim();
+      const subscriptionButton = document.querySelector('.subscription-button');
+
+      if (!email) {
+        showSubscriptionMessage('Vui lòng nhập địa chỉ email của bạn', 'error');
+        return;
+      }
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        showSubscriptionMessage('Địa chỉ email không hợp lệ', 'error');
+        return;
+      }
+
+      // Change button state to loading
+      const originalButtonText = subscriptionButton.textContent;
+      subscriptionButton.textContent = 'Đang xử lý...';
+      subscriptionButton.disabled = true;
+
+      try {
+        // In a real app, you would send this to your backend
+        // await fetch('/api/subscribe/', {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   body: JSON.stringify({ email })
+        // });
+
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Show success message
+        showSubscriptionMessage('Đăng ký thành công! Bạn sẽ nhận được dự báo thời tiết hàng ngày vào lúc 7h sáng.', 'success');
+        emailInput.value = '';
+      } catch (error) {
+        console.error('Lỗi khi đăng ký:', error);
+        showSubscriptionMessage('Có lỗi xảy ra. Vui lòng thử lại sau.', 'error');
+      } finally {
+        // Reset button state
+        subscriptionButton.textContent = originalButtonText;
+        subscriptionButton.disabled = false;
+      }
+    });
+  }
+}
+
+// Show subscription message
+function showSubscriptionMessage(message, type) {
+  // Remove any existing message
+  const existingMessage = document.querySelector('.subscription-message');
+  if (existingMessage) {
+    existingMessage.remove();
+  }
+
+  // Create message element
+  const messageElement = document.createElement('div');
+  messageElement.className = `subscription-message ${type}`;
+  messageElement.textContent = message;
+
+  // Add message after the form
+  const subscriptionForm = document.getElementById('weatherSubscription');
+  if (subscriptionForm) {
+    subscriptionForm.after(messageElement);
+
+    // Auto remove message after 5 seconds
+    setTimeout(() => {
+      messageElement.classList.add('fade-out');
+      setTimeout(() => messageElement.remove(), 500);
+    }, 5000);
+  }
+}
+
+// Add CSS for subscription messages
+function addSubscriptionMessageStyles() {
+  const styleEl = document.createElement('style');
+  styleEl.textContent = `
+    .subscription-message {
+      margin-top: 15px;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-size: 14px;
+      animation: fadeIn 0.3s ease;
+      width: 100%;
+    }
+    
+    .subscription-message.success {
+      background-color: rgba(34, 197, 94, 0.2);
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      color: #22c55e;
+    }
+    
+    .subscription-message.error {
+      background-color: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #ef4444;
+    }
+    
+    .subscription-message.fade-out {
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+  `;
+  document.head.appendChild(styleEl);
+}
+
+// Initialize the subscription form for home_1.html
+function initializeEmailSubscription() {
+  const emailForm = document.querySelector('.email-subscription .subscription-form');
+  const emailInput = document.getElementById('emailInput');
+  const subscribeButton = document.getElementById('subscribeButton');
+
+  if (emailForm && emailInput && subscribeButton) {
+    // Add event listeners for form submission
+    emailForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      handleEmailSubscription();
+    });
+
+    subscribeButton.addEventListener('click', handleEmailSubscription);
+
+    // Add keypress event to allow submission with Enter key
+    emailInput.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleEmailSubscription();
+      }
+    });
+
+    // Add focus animation effect
+    emailInput.addEventListener('focus', function () {
+      const container = document.querySelector('.subscription-container');
+      if (container) {
+        container.style.borderColor = 'rgba(125, 211, 252, 0.4)';
+      }
+    });
+
+    emailInput.addEventListener('blur', function () {
+      const container = document.querySelector('.subscription-container');
+      if (container) {
+        container.style.borderColor = '';
+      }
+    });
+
+    // Add typing animation to glow effect
+    emailInput.addEventListener('input', function () {
+      const icon = document.querySelector('.email-icon');
+      if (icon) {
+        icon.style.filter = 'drop-shadow(0 0 20px rgba(125, 211, 252, 0.8))';
+        setTimeout(() => {
+          icon.style.filter = '';
+        }, 500);
+      }
+    });
+  }
+
+  // Handle subscription logic
+  async function handleEmailSubscription() {
+    const email = emailInput.value.trim();
+
+    // Validate email
+    if (!email) {
+      showEmailSubscriptionMessage('Vui lòng nhập địa chỉ email của bạn', 'error');
+      emailInput.focus();
+      shakeElement(emailInput);
+      return;
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      showEmailSubscriptionMessage('Địa chỉ email không hợp lệ. Vui lòng nhập đúng định dạng example@gmail.com', 'error');
+      emailInput.focus();
+      shakeElement(emailInput);
+      return;
+    }
+
+    // Show loading state
+    const originalText = subscribeButton.textContent;
+    subscribeButton.innerHTML = '<span>Đang xử lý...</span>';
+    subscribeButton.style.opacity = '0.8';
+    subscribeButton.disabled = true;
+    emailInput.disabled = true;
+
+    try {
+      // Add visual effect during processing
+      const container = document.querySelector('.subscription-container');
+      if (container) {
+        container.style.borderColor = 'rgba(125, 211, 252, 0.5)';
+      }
+
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1200));
+
+      // Show success message
+      showEmailSubscriptionMessage('Đăng ký thành công! Bạn sẽ nhận được dự báo thời tiết hàng ngày vào lúc 7h sáng.', 'success');
+
+      // Add success animation
+      const icon = document.querySelector('.email-icon');
+      if (icon) {
+        icon.style.transform = 'scale(1.1)';
+        icon.style.filter = 'drop-shadow(0 0 25px rgba(125, 211, 252, 0.9))';
+        setTimeout(() => {
+          icon.style.transform = '';
+          icon.style.filter = '';
+        }, 1500);
+      }
+
+      // Clear input with animation
+      emailInput.style.transition = 'background-color 0.5s ease';
+      emailInput.style.backgroundColor = 'rgba(125, 211, 252, 0.15)';
+      setTimeout(() => {
+        emailInput.value = '';
+        emailInput.style.backgroundColor = '';
+      }, 300);
+
+      // Add a visual feedback effect - briefly highlight the form
+      if (container) {
+        container.style.boxShadow = '0 0 30px rgba(56, 189, 248, 0.6)';
+        setTimeout(() => {
+          container.style.boxShadow = '';
+          container.style.borderColor = '';
+        }, 2000);
+      }
+    } catch (error) {
+      console.error('Subscription error:', error);
+      showEmailSubscriptionMessage('Có lỗi xảy ra. Vui lòng thử lại sau.', 'error');
+    } finally {
+      // Reset button and input state
+      setTimeout(() => {
+        subscribeButton.innerHTML = originalText;
+        subscribeButton.style.opacity = '';
+        subscribeButton.disabled = false;
+        emailInput.disabled = false;
+      }, 500);
+    }
+  }
+
+  // Add shake animation for invalid input
+  function shakeElement(element) {
+    element.style.animation = 'none';
+    setTimeout(() => {
+      element.style.animation = 'shake 0.5s ease';
+    }, 10);
+  }
+
+  // Add the shake animation style if it doesn't exist
+  if (!document.getElementById('shake-animation-style')) {
+    const style = document.createElement('style');
+    style.id = 'shake-animation-style';
+    style.textContent = `
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+        20%, 40%, 60%, 80% { transform: translateX(5px); }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+}
+
+// Display subscription message for home_1.html
+function showEmailSubscriptionMessage(message, type) {
+  // Remove any existing message
+  const existingMessage = document.querySelector('.email-subscription .subscription-message');
+  if (existingMessage) {
+    existingMessage.remove();
+  }
+
+  // Create message element
+  const messageElement = document.createElement('div');
+  messageElement.className = `subscription-message ${type}`;
+
+  // Add icon to the message based on type
+  let iconSvg = '';
+  if (type === 'success') {
+    iconSvg = '<svg style="width:18px;height:18px;margin-right:8px;vertical-align:middle" viewBox="0 0 24 24"><path fill="#4ade80" d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M11,16.5L18,9.5L16.59,8.09L11,13.67L7.91,10.59L6.5,12L11,16.5Z" /></svg>';
+  } else {
+    iconSvg = '<svg style="width:18px;height:18px;margin-right:8px;vertical-align:middle" viewBox="0 0 24 24"><path fill="#f87171" d="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" /></svg>';
+  }
+
+  messageElement.innerHTML = iconSvg + message;
+
+  // Add message to the container
+  const subscriptionContainer = document.querySelector('.email-subscription');
+  if (subscriptionContainer) {
+    subscriptionContainer.appendChild(messageElement);
+
+    // Add entrance animation
+    setTimeout(() => {
+      messageElement.style.transform = 'translateY(5px)';
+      setTimeout(() => {
+        messageElement.style.transform = '';
+      }, 200);
+    }, 10);
+
+    // Scroll to message if not in view
+    messageElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    // Auto remove message after 5 seconds
+    setTimeout(() => {
+      messageElement.classList.add('fade-out');
+      setTimeout(() => messageElement.remove(), 5000);
+    }, 5000);
+  }
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
   // Cải thiện hiệu ứng mưa
   // enhanceRainAnimation();
 
-  
+
   // Add styles for welcome template
   addWelcomeStyles();
-  
+
+  // Add styles for subscription messages
+  addSubscriptionMessageStyles();
+
   // Initialize search when the DOM is fully loaded
   initializeSearch();
-  
+
+  // Initialize subscription form
+  initializeSubscriptionForm();
+
+  // Initialize email subscription form for home_1.html
+  initializeEmailSubscription();
+
   // Draw initial charts with default values
   drawTemperatureLine();
   drawPrecipitationLine();
