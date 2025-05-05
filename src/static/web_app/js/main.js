@@ -5,6 +5,7 @@ const charts = document.querySelectorAll('.chart');
 // Variables for storing weather data
 let currentWeatherData = null;
 let hasSearched = false; // Track whether user has searched for a location
+const defaultCity = "TP Hồ Chí Minh"; // Đặt TP Hồ Chí Minh làm thành phố mặc định
 
 // Get unique province
 async function getUniqueProvinces() {
@@ -48,7 +49,7 @@ tabs.forEach(tab => {
       } else if (tabType === 'precipitation') {
         drawPrecipitationLine(extractPrecipitation(currentWeatherData));
       } else if (tabType === 'wind') {
-        drawWindLine(extractWindspeeds(currentWeatherData), getWindDirections(currentWeatherData));
+        drawWindLine(extractWindspeeds(currentWeatherData));
       }
     } else {
       // Draw empty/default charts if no search has been performed
@@ -83,13 +84,6 @@ function extractWindspeeds(data) {
   return data.map(item => Math.round(item.windspeed_max));
 }
 
-// Generate wind direction based on weather data pattern
-// In a real app, this would come from the API
-function getWindDirections(data) {
-  // This is a placeholder - in a real application, you'd get actual wind directions
-  const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-  return data.map((_, index) => directions[index % directions.length]);
-}
 
 // Extract time labels from data
 function extractTimeLabels(data) {
@@ -334,7 +328,7 @@ function drawPrecipitationLine(values = [0, 0, 0, 0, 0, 0, 0, 0]) {
 }
 
 // Function to draw wind chart line
-function drawWindLine(values = [0, 0, 0, 0, 0, 0, 0, 0], directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']) {
+function drawWindLine(values = [0, 0, 0, 0, 0, 0, 0, 0]) {
   updateWindSpeed(values);
   const canvas = document.getElementById('windCanvas');
   if (!canvas) return;
@@ -386,7 +380,7 @@ function drawWindLine(values = [0, 0, 0, 0, 0, 0, 0, 0], directions = ['N', 'NE'
     const normalizedValue = value / maxWind;
     const y = baseY - (normalizedValue * yScale);
 
-    points.push({ x, y, value, direction: directions[i] });
+    points.push({ x, y, value});
   });
 
   // Tô màu bên dưới đường
@@ -444,7 +438,6 @@ function drawWindLine(values = [0, 0, 0, 0, 0, 0, 0, 0], directions = ['N', 'NE'
 
   points.forEach(point => {
     ctx.fillText(point.value + ' km/h', point.x, point.y - 10);
-    ctx.fillText(point.direction, point.x, point.y - 24);
   });
 
   // Update wind values in HTML
@@ -455,7 +448,6 @@ function drawWindLine(values = [0, 0, 0, 0, 0, 0, 0, 0], directions = ['N', 'NE'
       if (speedElement) {
         speedElement.textContent = values[index];
       }
-      element.setAttribute('data-direction', directions[index]);
     });
   }
 }
@@ -952,9 +944,14 @@ async function initializeSearch() {
       showAllProvinces();
     }
   });
+  
+  // Set the default city name in the search input
+  if (searchInput) {
+    searchInput.value = defaultCity;
+  }
 
-  // Display welcome template
-  showWelcomeTemplate();
+  // Automatically fetch data for default city
+  fetchWeatherData(defaultCity);
 }
 
 // Handle input in the search box
@@ -1255,7 +1252,7 @@ function updateWeatherUI(weatherData) {
     } else if (tabType === 'precipitation') {
       drawPrecipitationLine(extractPrecipitation(weatherData));
     } else if (tabType === 'wind') {
-      drawWindLine(extractWindspeeds(weatherData), getWindDirections(weatherData));
+      drawWindLine(extractWindspeeds(weatherData));
     }
   }
 
@@ -1521,6 +1518,9 @@ function initializeEmailSubscription() {
     });
 
     // Add focus animation effect
+    // Phần tiếp theo của hàm initializeEmailSubscription()
+
+    // Add focus animation effect
     emailInput.addEventListener('focus', function () {
       const container = document.querySelector('.subscription-container');
       if (container) {
@@ -1693,16 +1693,79 @@ function showEmailSubscriptionMessage(message, type) {
     // Auto remove message after 5 seconds
     setTimeout(() => {
       messageElement.classList.add('fade-out');
-      setTimeout(() => messageElement.remove(), 5000);
+      setTimeout(() => messageElement.remove(), 500);
     }, 5000);
   }
+}
+
+// Hàm tạo dữ liệu giả cho thành phố TP Hồ Chí Minh nếu API bị lỗi
+function generateHoChiMinhMockData() {
+  // Dữ liệu mẫu cho TP Hồ Chí Minh - hơi cao và nóng
+  const currentDate = new Date();
+  const data = [];
+  
+  // Tạo dữ liệu cho 8 khoảng thời gian (mỗi 3 giờ)
+  for (let i = 0; i < 8; i++) {
+    const time = new Date(currentDate);
+    time.setHours(i * 3);
+    
+    // Nhiệt độ dao động từ 29-35 độ, cao nhất vào buổi trưa
+    let temperature = 30;
+    const hourOfDay = time.getHours();
+    
+    if (hourOfDay >= 9 && hourOfDay <= 15) {
+      // Buổi trưa nóng hơn
+      temperature = 32 + Math.floor(Math.random() * 3);
+    } else if (hourOfDay >= 18 || hourOfDay <= 3) {
+      // Buổi tối/đêm mát hơn
+      temperature = 28 + Math.floor(Math.random() * 2);
+    } else {
+      // Các giờ khác
+      temperature = 29 + Math.floor(Math.random() * 3);
+    }
+    
+    // Xác suất mưa cao hơn vào buổi chiều
+    let precipitation = 0;
+    if (hourOfDay >= 13 && hourOfDay <= 18) {
+      precipitation = Math.random() * 0.8; // Mưa nhẹ đến trung bình
+    } else {
+      precipitation = Math.random() * 0.2; // Ít mưa
+    }
+    
+    // Gió trung bình
+    const windspeed = 5 + Math.floor(Math.random() * 5);
+    
+    // Mã thời tiết: 0-1 là nắng, 2-3 là mây, 61-65 là mưa
+    let weatherCode = 1; // Mặc định là nắng
+    if (precipitation > 0.4) {
+      weatherCode = 61 + Math.floor(Math.random() * 4); // Mã mưa
+    } else if (Math.random() > 0.7) {
+      weatherCode = 2; // Đôi khi có mây
+    }
+    
+    data.push({
+      id: 1000 + i,
+      province: "TP Hồ Chí Minh",
+      time: time.toISOString(),
+      temperature: temperature,
+      temp_max: temperature + 1.5,
+      temp_min: temperature - 1,
+      precipitation: precipitation,
+      windspeed_max: windspeed,
+      uv_index_max: 8 + Math.random() * 3,
+      sunshine_hours: 8 + Math.random() * 4,
+      sundown_hours: 12,
+      weather_code: weatherCode
+    });
+  }
+  
+  return data;
 }
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
   // Cải thiện hiệu ứng mưa
-  // enhanceRainAnimation();
-
+  enhanceRainAnimation();
 
   // Add styles for welcome template
   addWelcomeStyles();
@@ -1719,18 +1782,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize email subscription form for home_1.html
   initializeEmailSubscription();
 
-  // Draw initial charts with default values
-  drawTemperatureLine();
-  drawPrecipitationLine();
-  drawWindLine();
-
   // Handle window resize
   window.addEventListener('resize', () => {
     if (hasSearched && currentWeatherData) {
       // Redraw with actual weather data if available
       drawTemperatureLine(extractTemperatures(currentWeatherData));
       drawPrecipitationLine(extractPrecipitation(currentWeatherData));
-      drawWindLine(extractWindspeeds(currentWeatherData), getWindDirections(currentWeatherData));
+      drawWindLine(extractWindspeeds(currentWeatherData));
     } else {
       // Otherwise use default values
       drawTemperatureLine();
@@ -1738,6 +1796,18 @@ document.addEventListener('DOMContentLoaded', () => {
       drawWindLine();
     }
   });
+  
+  // Xử lý trường hợp API bị lỗi sau thời gian chờ
+  setTimeout(() => {
+    if (!currentWeatherData) {
+      console.log('Sử dụng dữ liệu mặc định cho TP Hồ Chí Minh do API không phản hồi');
+      const mockData = generateHoChiMinhMockData();
+      currentWeatherData = mockData;
+      hideWelcomeTemplate();
+      updateWeatherUI(mockData);
+      hasSearched = true;
+    }
+  }, 5000); // Đợi 5 giây nếu API không phản hồi
 });
 
 // Add a hover effect for precipitation bars
@@ -1754,22 +1824,76 @@ precipitationValues.forEach(value => {
   });
 });
 
-// Add animation for wind arrows
-const windValues = document.querySelectorAll('.wind-value');
-windValues.forEach(value => {
-  value.addEventListener('mouseenter', () => {
-    const arrow = value.querySelector('.wind-arrow');
-    if (arrow) {
-      arrow.style.transform = 'translateY(-3px)';
-    }
-    value.style.color = '#70757a';
-  });
 
-  value.addEventListener('mouseleave', () => {
-    const arrow = value.querySelector('.wind-arrow');
-    if (arrow) {
-      arrow.style.transform = '';
+// Thêm hàm để lưu tỉnh thành đã xem gần đây vào localStorage
+function saveRecentLocation(province) {
+  try {
+    let recentLocations = JSON.parse(localStorage.getItem('recentWeatherLocations')) || [];
+    
+    // Xóa vị trí này nếu đã tồn tại trong danh sách (để di chuyển lên đầu)
+    recentLocations = recentLocations.filter(location => location !== province);
+    
+    // Thêm vào đầu danh sách
+    recentLocations.unshift(province);
+    
+    // Giới hạn chỉ lưu tối đa 5 địa điểm gần đây
+    if (recentLocations.length > 5) {
+      recentLocations = recentLocations.slice(0, 5);
     }
-    value.style.color = '';
-  });
-});
+    
+    localStorage.setItem('recentWeatherLocations', JSON.stringify(recentLocations));
+  } catch (error) {
+    console.error('Error saving to localStorage:', error);
+  }
+}
+
+// Cập nhật hàm fetchWeatherData để lưu địa điểm đã xem
+async function fetchWeatherData(province) {
+  console.log(`Fetching weather data for ${province}...`);
+
+  try {
+    const url = `/api/get-weather-data/?province=${encodeURIComponent(province)}`;
+    console.log(`API URL: ${url}`);
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('Weather data received:', data);
+
+    if (data && data.weather_data && data.weather_data.length > 0) {
+      hideWelcomeTemplate(); // Hide welcome template
+      currentWeatherData = data.weather_data;
+      updateWeatherUI(data.weather_data);
+      
+      // Lưu địa điểm đã xem vào localStorage
+      saveRecentLocation(province);
+    } else {
+      console.error('Invalid weather data format:', data);
+      showErrorMessage('Không tìm thấy dữ liệu thời tiết cho tỉnh này');
+    }
+  } catch (error) {
+    console.error('Error fetching weather data:', error);
+    
+    if (province === defaultCity) {
+      // Nếu lỗi với thành phố mặc định, sử dụng dữ liệu giả
+      console.log('Sử dụng dữ liệu mặc định cho TP Hồ Chí Minh do API lỗi');
+      const mockData = generateHoChiMinhMockData();
+      currentWeatherData = mockData;
+      hideWelcomeTemplate();
+      updateWeatherUI(mockData);
+      hasSearched = true;
+      saveRecentLocation(province);
+    } else {
+      showErrorMessage('Đã xảy ra lỗi khi tải dữ liệu thời tiết');
+    }
+  }
+}

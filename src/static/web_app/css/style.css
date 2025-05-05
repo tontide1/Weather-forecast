@@ -816,49 +816,6 @@ body {
   box-sizing: border-box;
 }
 
-/* .wind-value:after {
-  content: "";
-  display: block;
-  width: 24px;
-  height: 24px;
-  margin: 20px auto 0;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2370757a"><path d="M12 3l-8 8h5v10h6V11h5z"/></svg>');
-  background-repeat: no-repeat;
-  background-position: center;
-  opacity: 0.6;
-} */
-
-.wind-value:nth-child(1):after {
-  transform: rotate(0deg);
-}
-
-.wind-value:nth-child(2):after {
-  transform: rotate(-45deg);
-}
-
-.wind-value:nth-child(3):after {
-  transform: rotate(-90deg);
-}
-
-.wind-value:nth-child(4):after {
-  transform: rotate(-45deg);
-}
-
-.wind-value:nth-child(5):after {
-  transform: rotate(0deg);
-}
-
-.wind-value:nth-child(6):after {
-  transform: rotate(0deg);
-}
-
-.wind-value:nth-child(7):after {
-  transform: rotate(0deg);
-}
-
-.wind-value:nth-child(8):after {
-  transform: rotate(-45deg);
-}
 
 /* Forecast days */
 .forecast-days {
