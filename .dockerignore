@@ -1,0 +1,5 @@
+.gitignore
+venv/
+.git/
+.dockerignore
+erd.img
