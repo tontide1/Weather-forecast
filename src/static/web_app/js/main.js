@@ -924,7 +924,7 @@ const dropdownContainer = document.getElementById('dropdownContainer');
 async function initializeSearch() {
   // Fetch provinces when the page loads
   provinces = await getUniqueProvinces();
-  console.log('Loaded provinces:', provinces);
+  // console.log('Loaded provinces:', provinces);
 
   // Add event listener to search input
   searchInput.addEventListener('input', handleSearchInput);
@@ -952,6 +952,7 @@ async function initializeSearch() {
 
   // Automatically fetch data for default city
   fetchWeatherData(defaultCity);
+  searchInput.value = "";
 }
 
 // Handle input in the search box
@@ -1011,6 +1012,7 @@ function renderDropdown(provinceList) {
 
       // Fetch weather data for the selected province
       fetchWeatherData(province);
+      searchInput.value = "";
     });
 
     dropdownContainer.appendChild(item);
@@ -1080,10 +1082,11 @@ function hideWelcomeTemplate() {
 // Function to fetch weather data for selected province
 async function fetchWeatherData(province) {
   console.log(`Fetching weather data for ${province}...`);
+  searchInput.value = "";
 
   try {
     const url = `/api/get-weather-data/?province=${encodeURIComponent(province)}`;
-    console.log(`API URL: ${url}`);
+    // console.log(`API URL: ${url}`);
 
     const response = await fetch(url, {
       method: 'GET',
@@ -1930,7 +1933,7 @@ async function fetchWeatherData(province) {
 
   try {
     const url = `/api/get-weather-data/?province=${encodeURIComponent(province)}`;
-    console.log(`API URL: ${url}`);
+    // console.log(`API URL: ${url}`);
 
     const response = await fetch(url, {
       method: 'GET',
@@ -1944,7 +1947,7 @@ async function fetchWeatherData(province) {
     }
 
     const data = await response.json();
-    console.log('Weather data received:', data);
+    // console.log('Weather data received:', data);
 
     if (data && data.weather_data && data.weather_data.length > 0) {
       hideWelcomeTemplate(); // Hide welcome template
