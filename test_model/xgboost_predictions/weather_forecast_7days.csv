@@ -1,0 +1,442 @@
+Province,Date,Temp_Max,Temp_Min,Weather_Code,Weather_Description
+An Giang,2025-05-06,26.707531,23.938993,55,Drizzle: Dense intensity
+An Giang,2025-05-07,26.637325,23.999748,51,Drizzle: Light intensity
+An Giang,2025-05-08,26.658834,24.147654,53,Drizzle: Moderate intensity
+An Giang,2025-05-09,26.645136,23.989065,55,Drizzle: Dense intensity
+An Giang,2025-05-10,26.727535,23.898249,53,Drizzle: Moderate intensity
+An Giang,2025-05-11,26.706657,24.037428,55,Drizzle: Dense intensity
+An Giang,2025-05-12,26.66755,23.836487,55,Drizzle: Dense intensity
+Bà Rịa - Vũng Tàu,2025-05-06,29.81734,27.276447,51,Drizzle: Light intensity
+Bà Rịa - Vũng Tàu,2025-05-07,31.408443,27.19577,3,Overcast
+Bà Rịa - Vũng Tàu,2025-05-08,30.829773,27.026825,51,Drizzle: Light intensity
+Bà Rịa - Vũng Tàu,2025-05-09,31.16833,27.026705,55,Drizzle: Dense intensity
+Bà Rịa - Vũng Tàu,2025-05-10,31.01751,27.05811,51,Drizzle: Light intensity
+Bà Rịa - Vũng Tàu,2025-05-11,30.711527,26.862186,51,Drizzle: Light intensity
+Bà Rịa - Vũng Tàu,2025-05-12,30.638302,26.923819,3,Overcast
+Bạc Liêu,2025-05-06,29.797232,25.18628,51,Drizzle: Light intensity
+Bạc Liêu,2025-05-07,30.445969,25.23115,51,Drizzle: Light intensity
+Bạc Liêu,2025-05-08,31.088284,25.580292,55,Drizzle: Dense intensity
+Bạc Liêu,2025-05-09,30.987444,25.430614,55,Drizzle: Dense intensity
+Bạc Liêu,2025-05-10,30.797768,25.39561,55,Drizzle: Dense intensity
+Bạc Liêu,2025-05-11,30.731874,25.467243,51,Drizzle: Light intensity
+Bạc Liêu,2025-05-12,30.297083,24.94159,51,Drizzle: Light intensity
+Bắc Giang,2025-05-06,29.881231,24.173046,61,Rain: Slight
+Bắc Giang,2025-05-07,31.911465,23.706327,3,Overcast
+Bắc Giang,2025-05-08,30.125238,24.113491,53,Drizzle: Moderate intensity
+Bắc Giang,2025-05-09,30.661974,24.26284,53,Drizzle: Moderate intensity
+Bắc Giang,2025-05-10,30.940405,23.447512,61,Rain: Slight
+Bắc Giang,2025-05-11,31.319546,24.098469,3,Overcast
+Bắc Giang,2025-05-12,33.05648,24.462698,61,Rain: Slight
+Bắc Kạn,2025-05-06,28.510162,23.438766,53,Drizzle: Moderate intensity
+Bắc Kạn,2025-05-07,32.105404,21.64056,51,Drizzle: Light intensity
+Bắc Kạn,2025-05-08,30.898981,22.832842,51,Drizzle: Light intensity
+Bắc Kạn,2025-05-09,31.479568,23.924408,53,Drizzle: Moderate intensity
+Bắc Kạn,2025-05-10,30.143274,24.201527,53,Drizzle: Moderate intensity
+Bắc Kạn,2025-05-11,31.192661,23.264427,51,Drizzle: Light intensity
+Bắc Kạn,2025-05-12,30.277029,23.409973,51,Drizzle: Light intensity
+Bắc Ninh,2025-05-06,30.230038,23.845253,3,Overcast
+Bắc Ninh,2025-05-07,32.21242,24.060806,51,Drizzle: Light intensity
+Bắc Ninh,2025-05-08,30.023407,24.47361,51,Drizzle: Light intensity
+Bắc Ninh,2025-05-09,30.423487,24.62185,55,Drizzle: Dense intensity
+Bắc Ninh,2025-05-10,31.222242,24.254366,51,Drizzle: Light intensity
+Bắc Ninh,2025-05-11,31.23893,24.873636,51,Drizzle: Light intensity
+Bắc Ninh,2025-05-12,31.683638,24.78013,51,Drizzle: Light intensity
+Bến Tre,2025-05-06,31.714603,25.717636,51,Drizzle: Light intensity
+Bến Tre,2025-05-07,32.130295,25.61965,53,Drizzle: Moderate intensity
+Bến Tre,2025-05-08,30.343292,25.729717,51,Drizzle: Light intensity
+Bến Tre,2025-05-09,31.55434,25.298988,51,Drizzle: Light intensity
+Bến Tre,2025-05-10,30.387453,25.167068,53,Drizzle: Moderate intensity
+Bến Tre,2025-05-11,30.543736,25.139797,51,Drizzle: Light intensity
+Bến Tre,2025-05-12,30.459509,25.218016,51,Drizzle: Light intensity
+Bình Định,2025-05-06,29.833797,22.715717,3,Overcast
+Bình Định,2025-05-07,32.612644,22.554903,3,Overcast
+Bình Định,2025-05-08,33.121677,23.95124,51,Drizzle: Light intensity
+Bình Định,2025-05-09,33.059612,24.472538,51,Drizzle: Light intensity
+Bình Định,2025-05-10,32.588593,23.867508,3,Overcast
+Bình Định,2025-05-11,32.819904,23.850243,3,Overcast
+Bình Định,2025-05-12,31.521666,24.059336,3,Overcast
+Bình Dương,2025-05-06,30.489368,24.615484,51,Drizzle: Light intensity
+Bình Dương,2025-05-07,29.922735,24.47833,53,Drizzle: Moderate intensity
+Bình Dương,2025-05-08,29.15863,24.372408,51,Drizzle: Light intensity
+Bình Dương,2025-05-09,29.22671,24.642353,51,Drizzle: Light intensity
+Bình Dương,2025-05-10,28.12583,24.600925,51,Drizzle: Light intensity
+Bình Dương,2025-05-11,29.086336,24.497812,51,Drizzle: Light intensity
+Bình Dương,2025-05-12,27.09262,24.589928,51,Drizzle: Light intensity
+Bình Phước,2025-05-06,31.48975,23.975122,55,Drizzle: Dense intensity
+Bình Phước,2025-05-07,29.025017,24.096382,55,Drizzle: Dense intensity
+Bình Phước,2025-05-08,27.79132,24.141064,51,Drizzle: Light intensity
+Bình Phước,2025-05-09,27.7481,24.209734,51,Drizzle: Light intensity
+Bình Phước,2025-05-10,26.910275,24.215338,51,Drizzle: Light intensity
+Bình Phước,2025-05-11,26.138205,24.339216,55,Drizzle: Dense intensity
+Bình Phước,2025-05-12,26.919708,24.204855,55,Drizzle: Dense intensity
+Bình Thuận,2025-05-06,28.894794,25.245165,3,Overcast
+Bình Thuận,2025-05-07,29.670279,25.02804,51,Drizzle: Light intensity
+Bình Thuận,2025-05-08,28.981346,25.450495,51,Drizzle: Light intensity
+Bình Thuận,2025-05-09,29.036194,25.127762,3,Overcast
+Bình Thuận,2025-05-10,28.992756,26.04131,51,Drizzle: Light intensity
+Bình Thuận,2025-05-11,29.008125,25.7206,51,Drizzle: Light intensity
+Bình Thuận,2025-05-12,28.996315,25.608128,51,Drizzle: Light intensity
+Cà Mau,2025-05-06,28.228735,24.975092,53,Drizzle: Moderate intensity
+Cà Mau,2025-05-07,32.21443,25.398691,53,Drizzle: Moderate intensity
+Cà Mau,2025-05-08,31.081186,25.152107,53,Drizzle: Moderate intensity
+Cà Mau,2025-05-09,29.091742,25.19335,51,Drizzle: Light intensity
+Cà Mau,2025-05-10,28.710415,25.152668,51,Drizzle: Light intensity
+Cà Mau,2025-05-11,28.90714,25.120296,51,Drizzle: Light intensity
+Cà Mau,2025-05-12,28.649864,25.159912,51,Drizzle: Light intensity
+Cần Thơ,2025-05-06,33.61393,25.096588,51,Drizzle: Light intensity
+Cần Thơ,2025-05-07,33.999912,24.922968,51,Drizzle: Light intensity
+Cần Thơ,2025-05-08,29.002552,25.456488,51,Drizzle: Light intensity
+Cần Thơ,2025-05-09,33.84728,25.288092,53,Drizzle: Moderate intensity
+Cần Thơ,2025-05-10,33.90915,24.882923,55,Drizzle: Dense intensity
+Cần Thơ,2025-05-11,29.026703,25.106771,55,Drizzle: Dense intensity
+Cần Thơ,2025-05-12,33.893047,25.113062,51,Drizzle: Light intensity
+Cao Bằng,2025-05-06,31.66258,23.693953,3,Overcast
+Cao Bằng,2025-05-07,33.053574,22.30886,51,Drizzle: Light intensity
+Cao Bằng,2025-05-08,31.38881,23.469284,3,Overcast
+Cao Bằng,2025-05-09,32.62178,24.086515,51,Drizzle: Light intensity
+Cao Bằng,2025-05-10,30.873909,23.170853,51,Drizzle: Light intensity
+Cao Bằng,2025-05-11,32.864838,23.68587,51,Drizzle: Light intensity
+Cao Bằng,2025-05-12,31.984022,23.690739,51,Drizzle: Light intensity
+Đà Nẵng,2025-05-06,28.976427,24.859674,3,Overcast
+Đà Nẵng,2025-05-07,30.083328,25.170307,3,Overcast
+Đà Nẵng,2025-05-08,30.081139,24.924694,3,Overcast
+Đà Nẵng,2025-05-09,30.048443,24.735659,3,Overcast
+Đà Nẵng,2025-05-10,30.794302,24.754736,3,Overcast
+Đà Nẵng,2025-05-11,30.637465,24.709902,3,Overcast
+Đà Nẵng,2025-05-12,30.456083,24.482302,3,Overcast
+Đắk Lắk,2025-05-06,26.74446,21.090763,3,Overcast
+Đắk Lắk,2025-05-07,31.673206,21.302904,51,Drizzle: Light intensity
+Đắk Lắk,2025-05-08,31.507555,20.946997,51,Drizzle: Light intensity
+Đắk Lắk,2025-05-09,31.178507,21.482912,51,Drizzle: Light intensity
+Đắk Lắk,2025-05-10,31.820255,21.514988,55,Drizzle: Dense intensity
+Đắk Lắk,2025-05-11,31.782333,21.800835,51,Drizzle: Light intensity
+Đắk Lắk,2025-05-12,27.31321,21.33115,3,Overcast
+Đắk Nông,2025-05-06,31.217033,20.071241,3,Overcast
+Đắk Nông,2025-05-07,24.628757,20.34461,3,Overcast
+Đắk Nông,2025-05-08,32.072544,20.257854,3,Overcast
+Đắk Nông,2025-05-09,24.946215,20.665964,3,Overcast
+Đắk Nông,2025-05-10,31.283287,20.250454,51,Drizzle: Light intensity
+Đắk Nông,2025-05-11,24.78801,20.477365,3,Overcast
+Đắk Nông,2025-05-12,31.41914,20.021948,51,Drizzle: Light intensity
+Điện Biên,2025-05-06,26.859138,20.23714,3,Overcast
+Điện Biên,2025-05-07,29.826384,20.127968,3,Overcast
+Điện Biên,2025-05-08,27.900719,21.244478,51,Drizzle: Light intensity
+Điện Biên,2025-05-09,27.353127,21.08722,3,Overcast
+Điện Biên,2025-05-10,25.776772,21.033989,3,Overcast
+Điện Biên,2025-05-11,26.194761,20.167265,3,Overcast
+Điện Biên,2025-05-12,26.782343,20.1129,3,Overcast
+Đồng Nai,2025-05-06,28.747232,25.229559,3,Overcast
+Đồng Nai,2025-05-07,29.876108,25.36056,3,Overcast
+Đồng Nai,2025-05-08,29.485907,25.320364,3,Overcast
+Đồng Nai,2025-05-09,29.448904,25.748812,51,Drizzle: Light intensity
+Đồng Nai,2025-05-10,29.099913,25.714031,51,Drizzle: Light intensity
+Đồng Nai,2025-05-11,29.121187,25.662102,55,Drizzle: Dense intensity
+Đồng Nai,2025-05-12,29.147556,25.673716,61,Rain: Slight
+Đồng Tháp,2025-05-06,30.985819,24.765402,3,Overcast
+Đồng Tháp,2025-05-07,31.352945,24.640045,51,Drizzle: Light intensity
+Đồng Tháp,2025-05-08,31.359957,24.500607,51,Drizzle: Light intensity
+Đồng Tháp,2025-05-09,31.33108,24.603935,51,Drizzle: Light intensity
+Đồng Tháp,2025-05-10,31.434706,24.94634,53,Drizzle: Moderate intensity
+Đồng Tháp,2025-05-11,31.33967,24.761892,55,Drizzle: Dense intensity
+Đồng Tháp,2025-05-12,30.686594,24.404284,53,Drizzle: Moderate intensity
+Gia Lai,2025-05-06,28.47189,20.098312,53,Drizzle: Moderate intensity
+Gia Lai,2025-05-07,30.932728,20.115774,53,Drizzle: Moderate intensity
+Gia Lai,2025-05-08,28.96583,20.249163,51,Drizzle: Light intensity
+Gia Lai,2025-05-09,29.155941,19.632885,51,Drizzle: Light intensity
+Gia Lai,2025-05-10,28.776218,20.487614,51,Drizzle: Light intensity
+Gia Lai,2025-05-11,28.72491,20.505966,53,Drizzle: Moderate intensity
+Gia Lai,2025-05-12,28.825075,20.373184,53,Drizzle: Moderate intensity
+Hà Giang,2025-05-06,28.982742,22.688805,3,Overcast
+Hà Giang,2025-05-07,31.292826,20.697762,51,Drizzle: Light intensity
+Hà Giang,2025-05-08,28.038269,21.843689,51,Drizzle: Light intensity
+Hà Giang,2025-05-09,28.608257,22.628698,51,Drizzle: Light intensity
+Hà Giang,2025-05-10,28.203316,21.787184,51,Drizzle: Light intensity
+Hà Giang,2025-05-11,29.858896,21.651255,51,Drizzle: Light intensity
+Hà Giang,2025-05-12,29.124918,22.13758,51,Drizzle: Light intensity
+Hà Nam,2025-05-06,29.492947,24.01485,51,Drizzle: Light intensity
+Hà Nam,2025-05-07,30.184988,23.988668,51,Drizzle: Light intensity
+Hà Nam,2025-05-08,29.94162,24.07574,51,Drizzle: Light intensity
+Hà Nam,2025-05-09,29.718475,24.477713,51,Drizzle: Light intensity
+Hà Nam,2025-05-10,30.880568,23.859169,51,Drizzle: Light intensity
+Hà Nam,2025-05-11,29.620457,24.414381,51,Drizzle: Light intensity
+Hà Nam,2025-05-12,29.433723,24.50805,51,Drizzle: Light intensity
+Hà Nội,2025-05-06,30.109743,24.78392,3,Overcast
+Hà Nội,2025-05-07,31.544832,24.497734,51,Drizzle: Light intensity
+Hà Nội,2025-05-08,30.955265,24.413336,3,Overcast
+Hà Nội,2025-05-09,31.480656,24.909472,51,Drizzle: Light intensity
+Hà Nội,2025-05-10,31.191305,24.953917,51,Drizzle: Light intensity
+Hà Nội,2025-05-11,30.451542,25.310034,51,Drizzle: Light intensity
+Hà Nội,2025-05-12,31.892084,25.13541,51,Drizzle: Light intensity
+Hà Tĩnh,2025-05-06,31.376644,24.973276,3,Overcast
+Hà Tĩnh,2025-05-07,31.31705,24.899654,3,Overcast
+Hà Tĩnh,2025-05-08,32.115746,25.950867,3,Overcast
+Hà Tĩnh,2025-05-09,31.980701,25.897964,3,Overcast
+Hà Tĩnh,2025-05-10,33.899174,26.265848,3,Overcast
+Hà Tĩnh,2025-05-11,34.037354,26.603104,3,Overcast
+Hà Tĩnh,2025-05-12,32.714836,26.455563,3,Overcast
+Hải Dương,2025-05-06,29.427135,23.375017,3,Overcast
+Hải Dương,2025-05-07,30.214645,23.66816,3,Overcast
+Hải Dương,2025-05-08,29.226753,23.746195,51,Drizzle: Light intensity
+Hải Dương,2025-05-09,28.886993,23.85445,51,Drizzle: Light intensity
+Hải Dương,2025-05-10,29.304317,23.258976,51,Drizzle: Light intensity
+Hải Dương,2025-05-11,29.308737,23.665457,51,Drizzle: Light intensity
+Hải Dương,2025-05-12,29.525848,24.090117,53,Drizzle: Moderate intensity
+Hải Phòng,2025-05-06,28.527143,25.194996,3,Overcast
+Hải Phòng,2025-05-07,28.243513,24.38248,51,Drizzle: Light intensity
+Hải Phòng,2025-05-08,28.351917,24.330765,51,Drizzle: Light intensity
+Hải Phòng,2025-05-09,28.22397,24.010014,51,Drizzle: Light intensity
+Hải Phòng,2025-05-10,28.544292,23.95878,51,Drizzle: Light intensity
+Hải Phòng,2025-05-11,27.945198,24.051817,51,Drizzle: Light intensity
+Hải Phòng,2025-05-12,28.096628,22.114,51,Drizzle: Light intensity
+Hậu Giang,2025-05-06,31.711672,24.168446,3,Overcast
+Hậu Giang,2025-05-07,32.55828,24.420462,51,Drizzle: Light intensity
+Hậu Giang,2025-05-08,31.402573,24.343689,3,Overcast
+Hậu Giang,2025-05-09,31.696945,24.455729,3,Overcast
+Hậu Giang,2025-05-10,32.335423,24.272379,3,Overcast
+Hậu Giang,2025-05-11,31.50029,24.314138,3,Overcast
+Hậu Giang,2025-05-12,31.683315,24.189045,3,Overcast
+Hòa Bình,2025-05-06,30.797903,24.49105,51,Drizzle: Light intensity
+Hòa Bình,2025-05-07,31.51288,24.619684,51,Drizzle: Light intensity
+Hòa Bình,2025-05-08,29.003618,24.922295,3,Overcast
+Hòa Bình,2025-05-09,31.6283,24.246853,51,Drizzle: Light intensity
+Hòa Bình,2025-05-10,32.3388,24.168186,51,Drizzle: Light intensity
+Hòa Bình,2025-05-11,30.107922,24.450825,51,Drizzle: Light intensity
+Hòa Bình,2025-05-12,29.294582,23.52653,51,Drizzle: Light intensity
+Hưng Yên,2025-05-06,29.953974,25.034988,3,Overcast
+Hưng Yên,2025-05-07,29.68963,24.757114,3,Overcast
+Hưng Yên,2025-05-08,30.764734,24.872492,3,Overcast
+Hưng Yên,2025-05-09,30.959686,24.441357,3,Overcast
+Hưng Yên,2025-05-10,30.653646,24.330204,3,Overcast
+Hưng Yên,2025-05-11,29.29749,24.923794,3,Overcast
+Hưng Yên,2025-05-12,31.565935,24.557875,3,Overcast
+Khánh Hòa,2025-05-06,28.55113,24.615871,3,Overcast
+Khánh Hòa,2025-05-07,31.53775,24.240322,51,Drizzle: Light intensity
+Khánh Hòa,2025-05-08,29.848003,24.601107,3,Overcast
+Khánh Hòa,2025-05-09,29.921024,24.90897,3,Overcast
+Khánh Hòa,2025-05-10,30.994095,24.731161,51,Drizzle: Light intensity
+Khánh Hòa,2025-05-11,29.007404,24.661644,3,Overcast
+Khánh Hòa,2025-05-12,28.90164,24.616379,3,Overcast
+Kiên Giang,2025-05-06,31.98921,24.267124,51,Drizzle: Light intensity
+Kiên Giang,2025-05-07,33.278374,24.776176,53,Drizzle: Moderate intensity
+Kiên Giang,2025-05-08,33.22557,24.818035,53,Drizzle: Moderate intensity
+Kiên Giang,2025-05-09,33.29912,24.837776,55,Drizzle: Dense intensity
+Kiên Giang,2025-05-10,32.95219,24.845955,55,Drizzle: Dense intensity
+Kiên Giang,2025-05-11,32.52209,24.799534,63,Rain: Moderate
+Kiên Giang,2025-05-12,32.461834,24.712519,61,Rain: Slight
+Kon Tum,2025-05-06,26.594095,21.486603,51,Drizzle: Light intensity
+Kon Tum,2025-05-07,34.459087,20.821074,51,Drizzle: Light intensity
+Kon Tum,2025-05-08,32.990314,21.072924,51,Drizzle: Light intensity
+Kon Tum,2025-05-09,33.091606,20.637371,3,Overcast
+Kon Tum,2025-05-10,34.415257,20.916824,3,Overcast
+Kon Tum,2025-05-11,34.31284,21.108595,51,Drizzle: Light intensity
+Kon Tum,2025-05-12,34.492523,21.110533,51,Drizzle: Light intensity
+Lai Châu,2025-05-06,23.874786,18.631603,3,Overcast
+Lai Châu,2025-05-07,25.94734,18.013947,3,Overcast
+Lai Châu,2025-05-08,25.144068,17.901201,61,Rain: Slight
+Lai Châu,2025-05-09,23.406603,18.21749,61,Rain: Slight
+Lai Châu,2025-05-10,25.724115,18.629332,3,Overcast
+Lai Châu,2025-05-11,26.025131,18.393179,55,Drizzle: Dense intensity
+Lai Châu,2025-05-12,26.277454,18.460749,61,Rain: Slight
+Lâm Đồng,2025-05-06,24.062065,14.64704,51,Drizzle: Light intensity
+Lâm Đồng,2025-05-07,19.478691,14.658734,3,Overcast
+Lâm Đồng,2025-05-08,24.02115,14.565657,51,Drizzle: Light intensity
+Lâm Đồng,2025-05-09,19.407663,14.764269,51,Drizzle: Light intensity
+Lâm Đồng,2025-05-10,23.980944,14.609947,51,Drizzle: Light intensity
+Lâm Đồng,2025-05-11,19.430405,14.8381815,51,Drizzle: Light intensity
+Lâm Đồng,2025-05-12,23.941053,14.6174345,51,Drizzle: Light intensity
+Lạng Sơn,2025-05-06,30.65849,23.453854,51,Drizzle: Light intensity
+Lạng Sơn,2025-05-07,30.883686,21.910263,55,Drizzle: Dense intensity
+Lạng Sơn,2025-05-08,28.754541,22.969896,51,Drizzle: Light intensity
+Lạng Sơn,2025-05-09,30.668228,22.665087,55,Drizzle: Dense intensity
+Lạng Sơn,2025-05-10,29.299364,22.968176,61,Rain: Slight
+Lạng Sơn,2025-05-11,29.258072,22.55016,53,Drizzle: Moderate intensity
+Lạng Sơn,2025-05-12,30.004118,22.59052,51,Drizzle: Light intensity
+Lào Cai,2025-05-06,29.198563,23.62004,3,Overcast
+Lào Cai,2025-05-07,33.186584,23.60594,3,Overcast
+Lào Cai,2025-05-08,29.022078,22.738743,3,Overcast
+Lào Cai,2025-05-09,29.777529,23.141531,3,Overcast
+Lào Cai,2025-05-10,30.785557,22.947132,3,Overcast
+Lào Cai,2025-05-11,28.684368,22.435347,3,Overcast
+Lào Cai,2025-05-12,29.72823,22.196716,3,Overcast
+Long An,2025-05-06,29.516567,25.449028,51,Drizzle: Light intensity
+Long An,2025-05-07,30.77086,25.574108,53,Drizzle: Moderate intensity
+Long An,2025-05-08,29.640245,25.479624,51,Drizzle: Light intensity
+Long An,2025-05-09,30.334045,25.480095,51,Drizzle: Light intensity
+Long An,2025-05-10,30.248936,25.462273,51,Drizzle: Light intensity
+Long An,2025-05-11,30.20948,25.498562,51,Drizzle: Light intensity
+Long An,2025-05-12,30.415558,25.630358,51,Drizzle: Light intensity
+Nam Định,2025-05-06,29.970325,25.105839,3,Overcast
+Nam Định,2025-05-07,31.69665,24.882671,51,Drizzle: Light intensity
+Nam Định,2025-05-08,30.110834,24.625406,3,Overcast
+Nam Định,2025-05-09,30.8177,24.974615,51,Drizzle: Light intensity
+Nam Định,2025-05-10,29.451748,25.115166,51,Drizzle: Light intensity
+Nam Định,2025-05-11,28.959621,24.956741,53,Drizzle: Moderate intensity
+Nam Định,2025-05-12,29.080889,24.390488,51,Drizzle: Light intensity
+Nghệ An,2025-05-06,28.940536,23.464388,3,Overcast
+Nghệ An,2025-05-07,30.814768,23.587692,51,Drizzle: Light intensity
+Nghệ An,2025-05-08,30.299698,23.026443,51,Drizzle: Light intensity
+Nghệ An,2025-05-09,31.15431,23.20963,51,Drizzle: Light intensity
+Nghệ An,2025-05-10,32.323338,23.647404,51,Drizzle: Light intensity
+Nghệ An,2025-05-11,31.002703,24.143631,61,Rain: Slight
+Nghệ An,2025-05-12,28.928087,22.989458,53,Drizzle: Moderate intensity
+Ninh Bình,2025-05-06,29.721876,24.492033,51,Drizzle: Light intensity
+Ninh Bình,2025-05-07,30.25153,23.665735,3,Overcast
+Ninh Bình,2025-05-08,29.277794,24.614746,3,Overcast
+Ninh Bình,2025-05-09,29.248701,24.683825,3,Overcast
+Ninh Bình,2025-05-10,29.99106,24.19555,3,Overcast
+Ninh Bình,2025-05-11,28.885643,24.565254,3,Overcast
+Ninh Bình,2025-05-12,29.900555,24.644812,3,Overcast
+Ninh Thuận,2025-05-06,34.53402,24.32612,3,Overcast
+Ninh Thuận,2025-05-07,30.19135,24.520567,3,Overcast
+Ninh Thuận,2025-05-08,34.09556,23.969183,3,Overcast
+Ninh Thuận,2025-05-09,30.187195,23.851797,3,Overcast
+Ninh Thuận,2025-05-10,33.584686,24.104603,3,Overcast
+Ninh Thuận,2025-05-11,29.390842,24.55148,3,Overcast
+Ninh Thuận,2025-05-12,29.636559,24.156382,3,Overcast
+Phú Thọ,2025-05-06,30.795273,24.042019,3,Overcast
+Phú Thọ,2025-05-07,31.379606,24.494259,51,Drizzle: Light intensity
+Phú Thọ,2025-05-08,28.319841,24.183176,51,Drizzle: Light intensity
+Phú Thọ,2025-05-09,31.257927,23.514008,51,Drizzle: Light intensity
+Phú Thọ,2025-05-10,30.772837,23.542753,51,Drizzle: Light intensity
+Phú Thọ,2025-05-11,30.509897,24.019728,63,Rain: Moderate
+Phú Thọ,2025-05-12,27.111046,24.283789,63,Rain: Moderate
+Phú Yên,2025-05-06,28.554468,22.825525,3,Overcast
+Phú Yên,2025-05-07,31.73886,22.571505,3,Overcast
+Phú Yên,2025-05-08,31.99708,23.647757,3,Overcast
+Phú Yên,2025-05-09,31.921682,24.086609,3,Overcast
+Phú Yên,2025-05-10,32.44859,23.701237,3,Overcast
+Phú Yên,2025-05-11,31.531487,23.812542,3,Overcast
+Phú Yên,2025-05-12,29.38387,24.017677,3,Overcast
+Quảng Bình,2025-05-06,29.169031,23.137964,51,Drizzle: Light intensity
+Quảng Bình,2025-05-07,29.899414,23.684517,51,Drizzle: Light intensity
+Quảng Bình,2025-05-08,30.282158,24.240688,51,Drizzle: Light intensity
+Quảng Bình,2025-05-09,28.643372,23.77317,51,Drizzle: Light intensity
+Quảng Bình,2025-05-10,31.379204,22.998447,51,Drizzle: Light intensity
+Quảng Bình,2025-05-11,29.14235,23.596497,51,Drizzle: Light intensity
+Quảng Bình,2025-05-12,27.696049,23.445562,51,Drizzle: Light intensity
+Quảng Nam,2025-05-06,29.267303,22.178207,3,Overcast
+Quảng Nam,2025-05-07,32.94394,21.062311,3,Overcast
+Quảng Nam,2025-05-08,31.616089,22.198015,51,Drizzle: Light intensity
+Quảng Nam,2025-05-09,30.26849,21.558756,61,Rain: Slight
+Quảng Nam,2025-05-10,30.845615,21.631567,55,Drizzle: Dense intensity
+Quảng Nam,2025-05-11,28.524021,21.803349,51,Drizzle: Light intensity
+Quảng Nam,2025-05-12,28.892803,21.247843,3,Overcast
+Quảng Ngãi,2025-05-06,28.23056,22.827583,3,Overcast
+Quảng Ngãi,2025-05-07,29.918367,22.566532,3,Overcast
+Quảng Ngãi,2025-05-08,29.515102,23.44723,3,Overcast
+Quảng Ngãi,2025-05-09,29.32765,22.988157,51,Drizzle: Light intensity
+Quảng Ngãi,2025-05-10,29.02046,23.199715,51,Drizzle: Light intensity
+Quảng Ngãi,2025-05-11,28.85519,22.681665,51,Drizzle: Light intensity
+Quảng Ngãi,2025-05-12,28.93227,22.083675,3,Overcast
+Quảng Ninh,2025-05-06,28.14618,24.55387,3,Overcast
+Quảng Ninh,2025-05-07,27.903622,23.640116,3,Overcast
+Quảng Ninh,2025-05-08,28.315804,23.79348,3,Overcast
+Quảng Ninh,2025-05-09,28.890892,23.782347,3,Overcast
+Quảng Ninh,2025-05-10,28.92411,24.899837,3,Overcast
+Quảng Ninh,2025-05-11,28.803787,24.706789,51,Drizzle: Light intensity
+Quảng Ninh,2025-05-12,28.427687,24.639305,51,Drizzle: Light intensity
+Quảng Trị,2025-05-06,29.909208,24.629377,3,Overcast
+Quảng Trị,2025-05-07,31.056923,23.808008,3,Overcast
+Quảng Trị,2025-05-08,32.98754,24.45131,3,Overcast
+Quảng Trị,2025-05-09,33.418137,23.945871,51,Drizzle: Light intensity
+Quảng Trị,2025-05-10,33.405933,24.041283,51,Drizzle: Light intensity
+Quảng Trị,2025-05-11,34.445957,24.018995,51,Drizzle: Light intensity
+Quảng Trị,2025-05-12,33.52907,23.936398,3,Overcast
+Sóc Trăng,2025-05-06,32.50664,25.380379,51,Drizzle: Light intensity
+Sóc Trăng,2025-05-07,33.033894,25.35154,51,Drizzle: Light intensity
+Sóc Trăng,2025-05-08,33.193756,25.47818,51,Drizzle: Light intensity
+Sóc Trăng,2025-05-09,34.09242,25.315287,61,Rain: Slight
+Sóc Trăng,2025-05-10,34.0817,25.00987,51,Drizzle: Light intensity
+Sóc Trăng,2025-05-11,34.335865,25.185736,53,Drizzle: Moderate intensity
+Sóc Trăng,2025-05-12,30.018831,25.668772,53,Drizzle: Moderate intensity
+Sơn La,2025-05-06,26.649979,20.210052,51,Drizzle: Light intensity
+Sơn La,2025-05-07,28.82229,19.772224,51,Drizzle: Light intensity
+Sơn La,2025-05-08,28.538507,20.639442,51,Drizzle: Light intensity
+Sơn La,2025-05-09,29.659382,20.859188,51,Drizzle: Light intensity
+Sơn La,2025-05-10,30.487722,20.755108,55,Drizzle: Dense intensity
+Sơn La,2025-05-11,28.558924,20.339724,55,Drizzle: Dense intensity
+Sơn La,2025-05-12,27.370552,20.56022,51,Drizzle: Light intensity
+Tây Ninh,2025-05-06,34.26605,24.81668,55,Drizzle: Dense intensity
+Tây Ninh,2025-05-07,28.404057,24.721134,51,Drizzle: Light intensity
+Tây Ninh,2025-05-08,34.447716,24.475786,51,Drizzle: Light intensity
+Tây Ninh,2025-05-09,28.19381,24.31453,63,Rain: Moderate
+Tây Ninh,2025-05-10,34.700382,24.04101,51,Drizzle: Light intensity
+Tây Ninh,2025-05-11,28.444635,24.426851,51,Drizzle: Light intensity
+Tây Ninh,2025-05-12,34.80907,24.3846,51,Drizzle: Light intensity
+Thái Bình,2025-05-06,28.571129,24.83157,3,Overcast
+Thái Bình,2025-05-07,29.248896,25.08478,3,Overcast
+Thái Bình,2025-05-08,29.691051,24.77199,3,Overcast
+Thái Bình,2025-05-09,29.01794,25.11385,3,Overcast
+Thái Bình,2025-05-10,29.302551,25.053263,3,Overcast
+Thái Bình,2025-05-11,28.712765,25.26561,3,Overcast
+Thái Bình,2025-05-12,29.665035,25.365198,3,Overcast
+Thái Nguyên,2025-05-06,28.510622,24.212717,51,Drizzle: Light intensity
+Thái Nguyên,2025-05-07,32.446762,23.325975,51,Drizzle: Light intensity
+Thái Nguyên,2025-05-08,30.577337,24.495705,51,Drizzle: Light intensity
+Thái Nguyên,2025-05-09,31.011122,23.99052,55,Drizzle: Dense intensity
+Thái Nguyên,2025-05-10,29.770123,23.430864,55,Drizzle: Dense intensity
+Thái Nguyên,2025-05-11,29.43363,23.78732,51,Drizzle: Light intensity
+Thái Nguyên,2025-05-12,28.283758,23.843794,51,Drizzle: Light intensity
+Thanh Hóa,2025-05-06,28.236855,22.963537,3,Overcast
+Thanh Hóa,2025-05-07,29.044844,22.208694,3,Overcast
+Thanh Hóa,2025-05-08,30.221897,23.077942,3,Overcast
+Thanh Hóa,2025-05-09,30.410238,24.017426,3,Overcast
+Thanh Hóa,2025-05-10,31.572412,23.846334,3,Overcast
+Thanh Hóa,2025-05-11,30.832346,24.431114,3,Overcast
+Thanh Hóa,2025-05-12,33.745716,24.438513,3,Overcast
+Thừa Thiên Huế,2025-05-06,31.633045,24.319714,3,Overcast
+Thừa Thiên Huế,2025-05-07,33.87726,24.242056,3,Overcast
+Thừa Thiên Huế,2025-05-08,31.431454,22.031946,3,Overcast
+Thừa Thiên Huế,2025-05-09,34.153404,24.291601,3,Overcast
+Thừa Thiên Huế,2025-05-10,33.093826,24.576868,3,Overcast
+Thừa Thiên Huế,2025-05-11,33.029156,24.60489,3,Overcast
+Thừa Thiên Huế,2025-05-12,34.211353,24.713463,3,Overcast
+Tiền Giang,2025-05-06,33.943634,25.616903,3,Overcast
+Tiền Giang,2025-05-07,29.516714,25.546385,53,Drizzle: Moderate intensity
+Tiền Giang,2025-05-08,33.84499,25.18194,51,Drizzle: Light intensity
+Tiền Giang,2025-05-09,28.745161,25.476952,51,Drizzle: Light intensity
+Tiền Giang,2025-05-10,34.36152,25.209963,55,Drizzle: Dense intensity
+Tiền Giang,2025-05-11,28.867558,25.148516,51,Drizzle: Light intensity
+Tiền Giang,2025-05-12,34.24324,25.290258,51,Drizzle: Light intensity
+TP. Hồ Chí Minh,2025-05-06,33.359703,25.525496,51,Drizzle: Light intensity
+TP. Hồ Chí Minh,2025-05-07,30.41113,25.489979,51,Drizzle: Light intensity
+TP. Hồ Chí Minh,2025-05-08,35.05148,25.410324,51,Drizzle: Light intensity
+TP. Hồ Chí Minh,2025-05-09,30.673353,25.429665,53,Drizzle: Moderate intensity
+TP. Hồ Chí Minh,2025-05-10,35.554256,25.4123,51,Drizzle: Light intensity
+TP. Hồ Chí Minh,2025-05-11,30.63097,25.26673,51,Drizzle: Light intensity
+TP. Hồ Chí Minh,2025-05-12,35.51149,25.214937,51,Drizzle: Light intensity
+Trà Vinh,2025-05-06,30.30048,25.04552,51,Drizzle: Light intensity
+Trà Vinh,2025-05-07,32.886322,25.22512,51,Drizzle: Light intensity
+Trà Vinh,2025-05-08,29.211512,25.099323,61,Rain: Slight
+Trà Vinh,2025-05-09,30.886053,24.826038,55,Drizzle: Dense intensity
+Trà Vinh,2025-05-10,31.80168,24.699387,53,Drizzle: Moderate intensity
+Trà Vinh,2025-05-11,28.595137,24.769476,55,Drizzle: Dense intensity
+Trà Vinh,2025-05-12,30.30459,24.8466,51,Drizzle: Light intensity
+Tuyên Quang,2025-05-06,28.088583,22.765942,0,Clear sky
+Tuyên Quang,2025-05-07,32.9433,23.359686,3,Overcast
+Tuyên Quang,2025-05-08,32.400005,22.841972,3,Overcast
+Tuyên Quang,2025-05-09,32.733562,23.960587,3,Overcast
+Tuyên Quang,2025-05-10,33.209114,24.355686,3,Overcast
+Tuyên Quang,2025-05-11,32.698986,24.547394,51,Drizzle: Light intensity
+Tuyên Quang,2025-05-12,31.40401,24.331766,51,Drizzle: Light intensity
+Vĩnh Long,2025-05-06,32.72029,24.996897,51,Drizzle: Light intensity
+Vĩnh Long,2025-05-07,33.329914,25.584944,55,Drizzle: Dense intensity
+Vĩnh Long,2025-05-08,28.240574,25.474182,3,Overcast
+Vĩnh Long,2025-05-09,32.80693,25.202652,55,Drizzle: Dense intensity
+Vĩnh Long,2025-05-10,33.022327,25.238094,53,Drizzle: Moderate intensity
+Vĩnh Long,2025-05-11,28.586676,25.238617,3,Overcast
+Vĩnh Long,2025-05-12,33.074516,25.116661,55,Drizzle: Dense intensity
+Vĩnh Phúc,2025-05-06,31.31326,23.85329,3,Overcast
+Vĩnh Phúc,2025-05-07,31.737448,25.026491,51,Drizzle: Light intensity
+Vĩnh Phúc,2025-05-08,30.257654,24.980251,51,Drizzle: Light intensity
+Vĩnh Phúc,2025-05-09,31.776188,25.098534,51,Drizzle: Light intensity
+Vĩnh Phúc,2025-05-10,31.158258,25.108068,51,Drizzle: Light intensity
+Vĩnh Phúc,2025-05-11,29.938545,24.993753,61,Rain: Slight
+Vĩnh Phúc,2025-05-12,29.039513,25.028313,53,Drizzle: Moderate intensity
+Yên Bái,2025-05-06,27.244251,23.570282,3,Overcast
+Yên Bái,2025-05-07,32.865192,24.368183,3,Overcast
+Yên Bái,2025-05-08,30.849056,23.285387,3,Overcast
+Yên Bái,2025-05-09,29.503223,23.435762,3,Overcast
+Yên Bái,2025-05-10,30.248322,21.432253,3,Overcast
+Yên Bái,2025-05-11,29.870852,20.503521,51,Drizzle: Light intensity
+Yên Bái,2025-05-12,30.44283,21.417158,3,Overcast
