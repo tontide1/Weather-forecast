@@ -25,3 +25,20 @@ class Weather(models.Model):
 
     def __str__(self):
         return f'{self.province} - {self.time}: {self.temperature}'
+    
+
+class PredictWeather(models.Model):
+    province = models.CharField(max_length=100, verbose_name="Province")
+    date = models.DateTimeField(verbose_name="Date")
+    temp_max = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Max Temperature")
+    temp_min = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Min Temperature")
+    weather_code = models.IntegerField(verbose_name="Weather Code")
+    weather_description = models.CharField(max_length=100, verbose_name="Weather_Description")
+
+    class Meta:
+        managed = False
+        db_table = config("PREDICT_WEATHER_DATA_TABLE_NAME", default="predict_weather")
+        ordering = ["province", "date"]
+
+    def __str__(self):
+        return f'{self.province} - {self.date}: {self.weather_description}'

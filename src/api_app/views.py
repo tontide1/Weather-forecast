@@ -1,15 +1,13 @@
-# from django.shortcuts import render
-
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
 
-from .models import Weather
-from .serializers import WeatherSerializer
+from .models import Weather, PredictWeather
+from .serializers import WeatherSerializer, PredictWeatherSerializer
 
 
 
-
+# API lấy dữ liệu thời tiết từ DB
 @api_view(['GET'])
 def GetWeatherApiView(request):
     if request.method == 'GET':
@@ -19,6 +17,8 @@ def GetWeatherApiView(request):
         # print(serialize.data)
         return Response(serialize.data, status=status.HTTP_200_OK)
 
+
+# API lấy tên các tỉnh
 @api_view(['GET'])
 def GetUniqueProvinceApiView(request):
     if request.method == 'GET':
@@ -29,6 +29,7 @@ def GetUniqueProvinceApiView(request):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+# API lấy tỉnh theo tên tỉnh/thành phố
 @api_view(['GET'])
 def GetWeatherProvinceApiView(request):
     """
@@ -49,3 +50,19 @@ def GetWeatherProvinceApiView(request):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
+
+# API lấy dữ liệu dự đoán từ DB
+@api_view(['GET'])
+def GetPredictWeatherApiView(request):
+    if request.method == 'GET':
+        province = request.GET.get('province', None)
+        if not province:
+            return Response({"error": "Missing 'province' parameter"}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            predict_weather = PredictWeather.objects.filter(province=province)
+            print(predict_weather)
+            serialize = PredictWeatherSerializer(predict_weather, many=True)
+            # print(serialize)
+            return Response(serialize.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
