@@ -75,7 +75,7 @@ os.makedirs("weather_data", exist_ok=True)
 start_date = date.today()
 end_date = start_date + timedelta(days=15)
 csv_file = f"weather_data/{start_date.isoformat()}_{end_date.isoformat()}.csv"
-header = ["Province", "Time", "Temperature", "Temp_Max", "Temp_Min", "Precipitation", "Windspeed_Max", "UV_Index_Max", "Sunshine_Hours", "Sundown_Hours", "Weather_Code"]
+header = ["Province", "Time", "Temperature", "Temp_Max", "Temp_Min", "Precipitation", "Windspeed_Max", "UV_Index_Max", "Sunshine_Hours", "Sundown_Hours", "Weather_Code", "Humidity", "Feel_Like"]
 
 with open(csv_file, mode="w", newline='', encoding="utf-8-sig") as f:
     writer = csv.writer(f)
@@ -86,7 +86,7 @@ with open(csv_file, mode="w", newline='', encoding="utf-8-sig") as f:
         params = {
             "latitude": province["lat"],
             "longitude": province["lon"],
-            "hourly": "temperature_2m,precipitation,windspeed_10m,uv_index,weathercode,sunshine_duration",
+            "hourly": "temperature_2m,precipitation,windspeed_10m,uv_index,weathercode,sunshine_duration,relativehumidity_2m,apparent_temperature",
             "timezone": "Asia/Bangkok",
             "start_date": today,
             "end_date": (date.today() + timedelta(days=15)).isoformat()
@@ -101,7 +101,9 @@ with open(csv_file, mode="w", newline='', encoding="utf-8-sig") as f:
             winds = data["windspeed_10m"]
             uvs = data["uv_index"]
             weathercodes = data["weathercode"]
-            sunshines = data.get("sunshine_duration", [0]*len(times))  # Có thể không có trường này
+            sunshines = data.get("sunshine_duration", [0]*len(times))
+            humidity = data["relativehumidity_2m"]
+            feel_like = data["apparent_temperature"]
 
             # Gom nhóm các chỉ số theo ngày
             day_indices = {}
@@ -114,7 +116,7 @@ with open(csv_file, mode="w", newline='', encoding="utf-8-sig") as f:
             for i, t in enumerate(times):
                 hour = int(t.split("T")[1][:2])
                 if hour % 3 != 0:
-                    continue  # Bỏ qua các giờ không chia hết cho 3
+                    continue
                 day = t.split("T")[0]
                 indices = day_indices[day]
                 temp_max = max([temps[j] for j in indices])
@@ -134,7 +136,9 @@ with open(csv_file, mode="w", newline='', encoding="utf-8-sig") as f:
                     uv_max,
                     round(sunshine_hours, 2),
                     sundown_hours,
-                    weathercodes[i]
+                    weathercodes[i],
+                    humidity[i],
+                    feel_like[i]
                 ]
                 writer.writerow(row)
             print(f"✅ {province['name']}: xong")
