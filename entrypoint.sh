@@ -70,7 +70,11 @@ if [ ! -d src ]; then
 fi
 
 echo "=== CREATE DATABASE TABLE ==="
+<<<<<<< HEAD
 python src_data/insert_crawl_data_to_db.py
+=======
+python src_data/insert.py
+>>>>>>> 2013ee418b6a7b3aa3c2cd4bddfd5409a5053ceb
 echo "=== CREATE DATABASE TABLE COMPLETELY ==="
 
 echo "=== NAVIGATE TO PROJECT DIRECTORY ==="
