@@ -1079,46 +1079,6 @@ function hideWelcomeTemplate() {
   hasSearched = true;
 }
 
-<<<<<<< HEAD
-=======
-// Function to fetch weather data for selected province
-async function fetchWeatherData(province) {
-  console.log(`Fetching weather data for ${province}...`);
-  searchInput.value = "";
-
-  try {
-    const url = `/api/get-weather-data/?province=${encodeURIComponent(province)}`;
-    // console.log(`API URL: ${url}`);
-
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    console.log('Weather data received:', data);
-
-    if (data && data.weather_data && data.weather_data.length > 0) {
-      hideWelcomeTemplate(); // Hide welcome template
-      currentWeatherData = data.weather_data;
-      updateWeatherUI(data.weather_data);
-    } else {
-      console.error('Invalid weather data format:', data);
-      showErrorMessage('Không tìm thấy dữ liệu thời tiết cho tỉnh này');
-    }
-  } catch (error) {
-    console.error('Error fetching weather data:', error);
-    showErrorMessage('Đã xảy ra lỗi khi tải dữ liệu thời tiết');
-  }
-}
-
->>>>>>> 2013ee418b6a7b3aa3c2cd4bddfd5409a5053ceb
 // Show error message
 function showErrorMessage(message) {
   // You could display an error message in the UI here
@@ -1142,7 +1102,6 @@ function showErrorMessage(message) {
 // Get weather condition text based on weather code
 function getWeatherCondition(weatherCode) {
   const weatherConditions = {
-<<<<<<< HEAD
     0: "Clear sky",
     1: "Mainly clear",
     2: "Partly cloudy",
@@ -1171,48 +1130,14 @@ function getWeatherCondition(weatherCode) {
     95: "Thunderstorm: Slight or moderate",
     96: "Thunderstorm with slight hail",
     99: "Thunderstorm with heavy hail"
-=======
-    0: 'Clear sky',
-    1: 'Mainly clear',
-    2: 'Partly cloudy',
-    3: 'Overcast',
-    45: 'Fog',
-    48: 'Depositing rime fog',
-    51: 'Light drizzle',
-    53: 'Moderate drizzle',
-    55: 'Dense drizzle',
-    56: 'Light freezing drizzle',
-    57: 'Dense freezing drizzle',
-    61: 'Slight rain',
-    63: 'Moderate rain',
-    65: 'Heavy rain',
-    66: 'Light freezing rain',
-    67: 'Heavy freezing rain',
-    71: 'Light snow',
-    73: 'Moderate snow',
-    75: 'Heavy snow',
-    77: 'Snow grains',
-    80: 'Slight rain showers',
-    81: 'Moderate rain showers',
-    82: 'Violent rain showers',
-    85: 'Light snow showers',
-    86: 'Heavy snow showers',
-    95: 'Thunderstorm',
-    96: 'Thunderstorm with slight hail',
-    99: 'Thunderstorm with heavy hail',
->>>>>>> 2013ee418b6a7b3aa3c2cd4bddfd5409a5053ceb
   };
 
   return weatherConditions[weatherCode] || 'Unknown';
 }
 
 // Update the UI with the weather data
-<<<<<<< HEAD
 function updateWeatherUI(weatherData, forecastWeatherData) {
   // console.log('Updating weather UI with data:', forecastWeatherData);
-=======
-function updateWeatherUI(weatherData) {
->>>>>>> 2013ee418b6a7b3aa3c2cd4bddfd5409a5053ceb
   if (!weatherData || !weatherData.length) return;
 
   // Get current weather (last item in the array)
@@ -1298,7 +1223,6 @@ function updateWeatherUI(weatherData) {
     }
   }
 
-<<<<<<< HEAD
   // Update weather today
   // forecast-item today
   const todayWeather = document.querySelector('.forecast-item.today');
@@ -1314,16 +1238,6 @@ function updateWeatherUI(weatherData) {
 
 // Update forecast days based on weather data
 function updateForecastDays(forecastWeatherData) {
-=======
-  // Update forecast days if available (this would need proper forecast data)
-  updateForecastDays(weatherData);
-}
-
-// Update forecast days based on weather data
-function updateForecastDays(weatherData) {
-  // This is a placeholder - in a real app, you'd use actual forecast data
-  // For now we'll just show one day repeated
->>>>>>> 2013ee418b6a7b3aa3c2cd4bddfd5409a5053ceb
 
   const forecastContainer = document.querySelector('.forecast-days');
   if (!forecastContainer) return;
@@ -1334,7 +1248,6 @@ function updateForecastDays(weatherData) {
 
   // For demonstration, we'll just update the temperatures
   const forecastItems = document.querySelectorAll('.forecast-item');
-<<<<<<< HEAD
   // const currentTemp = Math.round(forecastWeatherData[0].temperature);
   forecastItems.forEach((item, index) => {
     // Update high temperature (with a random variation for demo)
@@ -1352,23 +1265,6 @@ function updateForecastDays(weatherData) {
         const variation = Math.floor(Math.random() * 5) - 7; // -7 to -2 variation from high
         lowTemp.textContent = `${(parseFloat(forecastWeatherData[index-1]['temp_min'])).toFixed(1)}°C`;
       }
-=======
-  const currentTemp = Math.round(weatherData[0].temperature);
-
-  forecastItems.forEach((item, index) => {
-    // Update high temperature (with a random variation for demo)
-    const highTemp = item.querySelector('.high');
-    if (highTemp) {
-      const variation = Math.floor(Math.random() * 5) - 2; // -2 to +2 variation
-      highTemp.textContent = `${currentTemp + variation}°C`;
-    }
-
-    // Update low temperature
-    const lowTemp = item.querySelector('.low');
-    if (lowTemp) {
-      const variation = Math.floor(Math.random() * 5) - 7; // -7 to -2 variation from high
-      lowTemp.textContent = `${currentTemp + variation}°C`;
->>>>>>> 2013ee418b6a7b3aa3c2cd4bddfd5409a5053ceb
     }
   });
 }
@@ -1490,16 +1386,6 @@ function initializeSubscriptionForm() {
       subscriptionButton.disabled = true;
 
       try {
-<<<<<<< HEAD
-=======
-        // In a real app, you would send this to your backend
-        // await fetch('/api/subscribe/', {
-        //   method: 'POST',
-        //   headers: { 'Content-Type': 'application/json' },
-        //   body: JSON.stringify({ email })
-        // });
-
->>>>>>> 2013ee418b6a7b3aa3c2cd4bddfd5409a5053ceb
         // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 1000));
 
@@ -2027,7 +1913,6 @@ async function fetchWeatherData(province) {
     }
 
     const data = await response.json();
-<<<<<<< HEAD
     console.log('Weather data received:', data);
 
     
@@ -2049,18 +1934,11 @@ async function fetchWeatherData(province) {
     const forecast_data = await response_forecast_data.json();
     console.log('Weather forecast data received:', forecast_data);
 
-=======
-    // console.log('Weather data received:', data);
->>>>>>> 2013ee418b6a7b3aa3c2cd4bddfd5409a5053ceb
 
     if (data && data.weather_data && data.weather_data.length > 0) {
       hideWelcomeTemplate(); // Hide welcome template
       currentWeatherData = data.weather_data;
-<<<<<<< HEAD
       updateWeatherUI(data.weather_data, forecast_data);
-=======
-      updateWeatherUI(data.weather_data);
->>>>>>> 2013ee418b6a7b3aa3c2cd4bddfd5409a5053ceb
       
       // Lưu địa điểm đã xem vào localStorage
       saveRecentLocation(province);

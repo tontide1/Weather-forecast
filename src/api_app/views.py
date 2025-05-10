@@ -59,7 +59,6 @@ def GetPredictWeatherApiView(request):
         if not province:
             return Response({"error": "Missing 'province' parameter"}, status=status.HTTP_400_BAD_REQUEST)
         try:
-<<<<<<< HEAD
             # if province=="TP Hồ Chí Minh":
             #     province = "TP. Hồ Chí Minh"
             if "Hồ Chí Minh" in province:
@@ -69,10 +68,6 @@ def GetPredictWeatherApiView(request):
             # print(province)
             predict_weather = PredictWeather.objects.filter(province=province)
             # print(predict_weather)
-=======
-            predict_weather = PredictWeather.objects.filter(province=province)
-            print(predict_weather)
->>>>>>> 2013ee418b6a7b3aa3c2cd4bddfd5409a5053ceb
             serialize = PredictWeatherSerializer(predict_weather, many=True)
             # print(serialize)
             return Response(serialize.data, status=status.HTTP_200_OK)
