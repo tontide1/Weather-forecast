@@ -7,6 +7,23 @@ let currentWeatherData = null;
 let hasSearched = false; // Track whether user has searched for a location
 const defaultCity = "TP Hồ Chí Minh"; // Đặt TP Hồ Chí Minh làm thành phố mặc định
 
+// Thêm hàm getCookie để lấy CSRF token từ cookie
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      // Does this cookie string begin with the name we want?
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
 // Get unique province
 async function getUniqueProvinces() {
   try {
@@ -211,7 +228,7 @@ function drawTemperatureLine(values = [0, 0, 0, 0, 0, 0, 0, 0]) {
 // Function to update Precipitation values in HTML
 function updatePrecipitation(values) {
   const precipitationValue = document.querySelectorAll('.precipitation-value');
-  
+
   precipitationValue.forEach((value, index) => {
     const precipValue = values[index]
     let targetElement = precipitationValue[index]
@@ -223,7 +240,7 @@ function updatePrecipitation(values) {
     `, sheet.cssRules.length);
 
     targetElement.classList.add(`adjust-before-${index}`);
-    
+
 
     value.textContent = `${parseFloat(precipValue).toFixed(1)} mm`;
   });
@@ -401,7 +418,7 @@ function drawWindLine(values = [0, 0, 0, 0, 0, 0, 0, 0]) {
     const normalizedValue = value / maxWind;
     const y = baseY - (normalizedValue * yScale);
 
-    points.push({ x, y, value});
+    points.push({ x, y, value });
   });
 
   // Tô màu bên dưới đường
@@ -965,7 +982,7 @@ async function initializeSearch() {
       showAllProvinces();
     }
   });
-  
+
   // Set the default city name in the search input
   if (searchInput) {
     searchInput.value = defaultCity;
@@ -1157,14 +1174,14 @@ function getWeatherCondition(weatherCode) {
 }
 
 function updateClock(element) {
-    if (!element) return;
+  if (!element) return;
 
-    const now = new Date();
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
+  const now = new Date();
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
 
-    element.textContent = `${hours}:${minutes}:${seconds}`;
+  element.textContent = `${hours}:${minutes}:${seconds}`;
 }
 
 // Update the UI with the weather data
@@ -1274,15 +1291,15 @@ function updateForecastDays(forecastWeatherData) {
   forecastItems.forEach((item, index) => {
     // Update high temperature (with a random variation for demo)
     const highTemp = item.querySelector('.high');
-    if (index!=0) {  
+    if (index != 0) {
       if (highTemp) {
-        highTemp.textContent = `${(parseFloat(forecastWeatherData[index-1]['temp_max'])).toFixed(1)}°C`;
+        highTemp.textContent = `${(parseFloat(forecastWeatherData[index - 1]['temp_max'])).toFixed(1)}°C`;
       }
 
       // Update low temperature
       const lowTemp = item.querySelector('.low');
       if (lowTemp) {
-        lowTemp.textContent = `${(parseFloat(forecastWeatherData[index-1]['temp_min'])).toFixed(1)}°C`;
+        lowTemp.textContent = `${(parseFloat(forecastWeatherData[index - 1]['temp_min'])).toFixed(1)}°C`;
       }
     }
   });
@@ -1490,13 +1507,8 @@ function initializeEmailSubscription() {
   const subscribeButton = document.getElementById('subscribeButton');
 
   if (emailForm && emailInput && provinceInput && subscribeButton) {
-    // Add event listeners for form submission
-    emailForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      handleEmailSubscription();
-    });
-
-    subscribeButton.addEventListener('click', handleEmailSubscription);
+    // Chỉ giữ 1 event listener submit cho form
+    emailForm.addEventListener('submit', handleEmailSubscription);
 
     // Add keypress event to allow submission with Enter key
     emailInput.addEventListener('keypress', function (e) {
@@ -1598,7 +1610,13 @@ function initializeEmailSubscription() {
   }
 
   // Handle subscription logic
-  async function handleEmailSubscription() {
+  async function handleEmailSubscription(e) {
+    e.preventDefault();
+
+    const emailInput = document.getElementById('emailInput');
+    const provinceInput = document.getElementById('provinceInput');
+    const subscribeButton = document.getElementById('subscribeButton');
+
     const email = emailInput.value.trim();
     const province = provinceInput.value.trim();
 
@@ -1642,42 +1660,54 @@ function initializeEmailSubscription() {
         container.style.borderColor = 'rgba(125, 211, 252, 0.5)';
       }
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1200));
+      const response = await fetch('/api/subscribe/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ email, province })
+      });
 
-      // Show success message
-      showEmailSubscriptionMessage(`Đăng ký thành công! Bạn sẽ nhận được dự báo thời tiết hàng ngày cho ${province} vào lúc 7h sáng.`, 'success');
+      const data = await response.json();
 
-      // Add success animation
-      const icon = document.querySelector('.email-icon');
-      if (icon) {
-        icon.style.transform = 'scale(1.1)';
-        icon.style.filter = 'drop-shadow(0 0 25px rgba(125, 211, 252, 0.9))';
+      if (response.ok) {
+        // Show success message
+        showEmailSubscriptionMessage(data.message, 'success');
+
+        // Add success animation
+        const icon = document.querySelector('.email-icon');
+        if (icon) {
+          icon.style.transform = 'scale(1.1)';
+          icon.style.filter = 'drop-shadow(0 0 25px rgba(125, 211, 252, 0.9))';
+          setTimeout(() => {
+            icon.style.transform = '';
+            icon.style.filter = '';
+          }, 1500);
+        }
+
+        // Clear input with animation
+        emailInput.style.transition = 'background-color 0.5s ease';
+        emailInput.style.backgroundColor = 'rgba(125, 211, 252, 0.15)';
+        provinceInput.style.transition = 'background-color 0.5s ease';
+        provinceInput.style.backgroundColor = 'rgba(125, 211, 252, 0.15)';
         setTimeout(() => {
-          icon.style.transform = '';
-          icon.style.filter = '';
-        }, 1500);
-      }
+          emailInput.value = '';
+          provinceInput.value = '';
+          emailInput.style.backgroundColor = '';
+          provinceInput.style.backgroundColor = '';
+        }, 300);
 
-      // Clear input with animation
-      emailInput.style.transition = 'background-color 0.5s ease';
-      emailInput.style.backgroundColor = 'rgba(125, 211, 252, 0.15)';
-      provinceInput.style.transition = 'background-color 0.5s ease';
-      provinceInput.style.backgroundColor = 'rgba(125, 211, 252, 0.15)';
-      setTimeout(() => {
-        emailInput.value = '';
-        provinceInput.value = '';
-        emailInput.style.backgroundColor = '';
-        provinceInput.style.backgroundColor = '';
-      }, 300);
-
-      // Add a visual feedback effect - briefly highlight the form
-      if (container) {
-        container.style.boxShadow = '0 0 30px rgba(56, 189, 248, 0.6)';
-        setTimeout(() => {
-          container.style.boxShadow = '';
-          container.style.borderColor = '';
-        }, 2000);
+        // Add a visual feedback effect - briefly highlight the form
+        if (container) {
+          container.style.boxShadow = '0 0 30px rgba(56, 189, 248, 0.6)';
+          setTimeout(() => {
+            container.style.boxShadow = '';
+            container.style.borderColor = '';
+          }, 2000);
+        }
+      } else {
+        showEmailSubscriptionMessage(data.message || 'Có lỗi xảy ra.', 'error');
       }
     } catch (error) {
       console.error('Subscription error:', error);
@@ -1768,16 +1798,16 @@ function generateHoChiMinhMockData() {
   // Dữ liệu mẫu cho TP Hồ Chí Minh - hơi cao và nóng
   const currentDate = new Date();
   const data = [];
-  
+
   // Tạo dữ liệu cho 8 khoảng thời gian (mỗi 3 giờ)
   for (let i = 0; i < 8; i++) {
     const time = new Date(currentDate);
     time.setHours(i * 3);
-    
+
     // Nhiệt độ dao động từ 29-35 độ, cao nhất vào buổi trưa
     let temperature = 30;
     const hourOfDay = time.getHours();
-    
+
     if (hourOfDay >= 9 && hourOfDay <= 15) {
       // Buổi trưa nóng hơn
       temperature = 32 + Math.floor(Math.random() * 3);
@@ -1788,7 +1818,7 @@ function generateHoChiMinhMockData() {
       // Các giờ khác
       temperature = 29 + Math.floor(Math.random() * 3);
     }
-    
+
     // Xác suất mưa cao hơn vào buổi chiều
     let precipitation = 0;
     if (hourOfDay >= 13 && hourOfDay <= 18) {
@@ -1796,10 +1826,10 @@ function generateHoChiMinhMockData() {
     } else {
       precipitation = Math.random() * 0.2; // Ít mưa
     }
-    
+
     // Gió trung bình
     const windspeed = 5 + Math.floor(Math.random() * 5);
-    
+
     // Mã thời tiết: 0-1 là nắng, 2-3 là mây, 61-65 là mưa
     let weatherCode = 1; // Mặc định là nắng
     if (precipitation > 0.4) {
@@ -1807,7 +1837,7 @@ function generateHoChiMinhMockData() {
     } else if (Math.random() > 0.7) {
       weatherCode = 2; // Đôi khi có mây
     }
-    
+
     data.push({
       id: 1000 + i,
       province: "TP Hồ Chí Minh",
@@ -1823,7 +1853,7 @@ function generateHoChiMinhMockData() {
       weather_code: weatherCode
     });
   }
-  
+
   return data;
 }
 
@@ -1861,7 +1891,7 @@ document.addEventListener('DOMContentLoaded', () => {
       drawWindLine();
     }
   });
-  
+
   // Xử lý trường hợp API bị lỗi sau thời gian chờ
   setTimeout(() => {
     if (!currentWeatherData) {
@@ -1894,18 +1924,18 @@ precipitationValues.forEach(value => {
 function saveRecentLocation(province) {
   try {
     let recentLocations = JSON.parse(localStorage.getItem('recentWeatherLocations')) || [];
-    
+
     // Xóa vị trí này nếu đã tồn tại trong danh sách (để di chuyển lên đầu)
     recentLocations = recentLocations.filter(location => location !== province);
-    
+
     // Thêm vào đầu danh sách
     recentLocations.unshift(province);
-    
+
     // Giới hạn chỉ lưu tối đa 5 địa điểm gần đây
     if (recentLocations.length > 5) {
       recentLocations = recentLocations.slice(0, 5);
     }
-    
+
     localStorage.setItem('recentWeatherLocations', JSON.stringify(recentLocations));
   } catch (error) {
     console.error('Error saving to localStorage:', error);
@@ -1951,12 +1981,12 @@ async function fetchWeatherData(province) {
     const forecast_data = await response_forecast_data.json();
     // console.log('Weather forecast data received:', forecast_data);
 
-    
+
     if (data && data.length > 0) {
       hideWelcomeTemplate(); // Hide welcome template
       currentWeatherData = data;
       updateWeatherUI(data, forecast_data);
-      
+
       // Lưu địa điểm đã xem vào localStorage
       saveRecentLocation(province);
     } else {
@@ -1965,7 +1995,7 @@ async function fetchWeatherData(province) {
     }
   } catch (error) {
     console.error('Error fetching weather data:', error);
-    
+
     if (province === defaultCity) {
       // Nếu lỗi với thành phố mặc định, sử dụng dữ liệu giả
       console.log('Sử dụng dữ liệu mặc định cho TP Hồ Chí Minh do API lỗi');
@@ -2029,45 +2059,45 @@ function showEmailSubscriptionMessage(message, type) {
   }
 }
 
-//Gửi request lưu email và tỉnh của user
-async function handleEmailSubscription() {
-  const emailInput = document.getElementById('emailInput');
-  const provinceInput = document.getElementById('provinceInput');
-  const subscribeButton = document.getElementById('subscribeButton');
+// //Gửi request lưu email và tỉnh của user
+// async function handleEmailSubscription() {
+//   const emailInput = document.getElementById('emailInput');
+//   const provinceInput = document.getElementById('provinceInput');
+//   const subscribeButton = document.getElementById('subscribeButton');
 
-  const email = emailInput.value.trim();
-  const province = provinceInput.value.trim();
+//   const email = emailInput.value.trim();
+//   const province = provinceInput.value.trim();
 
-  if (!email || !province) {
-    showEmailSubscriptionMessage('Vui lòng nhập đầy đủ email và tỉnh/thành phố', 'error');
-    return;
-  }
+//   if (!email || !province) {
+//     showEmailSubscriptionMessage('Vui lòng nhập đầy đủ email và tỉnh/thành phố', 'error');
+//     return;
+//   }
 
-  // Validate email format
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    showEmailSubscriptionMessage('Địa chỉ email không hợp lệ', 'error');
-    return;
-  }
+//   // Validate email format
+//   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//   if (!emailRegex.test(email)) {
+//     showEmailSubscriptionMessage('Địa chỉ email không hợp lệ', 'error');
+//     return;
+//   }
 
-  try {
-    const response = await fetch('/api/subscribe/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': getCookie('csrftoken')
-      },
-      body: JSON.stringify({ email, province })
-    });
-    const data = await response.json();
-    if (response.ok) {
-      showEmailSubscriptionMessage(data.message, 'success');
-      emailInput.value = '';
-      provinceInput.value = '';
-    } else {
-      showEmailSubscriptionMessage(data.message || 'Có lỗi xảy ra.', 'error');
-    }
-  } catch (error) {
-    showEmailSubscriptionMessage('Có lỗi xảy ra.', 'error');
-  }
-}
+//   try {
+//     const response = await fetch('/api/subscribe/', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'X-CSRFToken': getCookie('csrftoken')
+//       },
+//       body: JSON.stringify({ email, province })
+//     });
+//     const data = await response.json();
+//     if (response.ok) {
+//       showEmailSubscriptionMessage(data.message, 'success');
+//       emailInput.value = '';
+//       provinceInput.value = '';
+//     } else {
+//       showEmailSubscriptionMessage(data.message || 'Có lỗi xảy ra.', 'error');
+//     }
+//   } catch (error) {
+//     showEmailSubscriptionMessage('Có lỗi xảy ra.', 'error');
+//   }
+// }

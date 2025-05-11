@@ -50,7 +50,7 @@ class PredictWeather(models.Model):
 from django.db import models
 
 class Subscriber(models.Model):
-    email = models.EmailField(unique=True, verbose_name="Email")
+    email = models.EmailField(verbose_name="Email")
     province = models.CharField(max_length=100, verbose_name="Province")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
     is_active = models.BooleanField(default=True, verbose_name="Is Active")
