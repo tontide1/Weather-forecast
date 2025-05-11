@@ -8,8 +8,8 @@ from django.db import connection
 import requests
 from datetime import datetime
 
-MAIL_USERNAME = 'lieutien124@gmail.com'
-MAIL_PASSWORD = 'tibkmaofxfcuuwbw'
+MAIL_USERNAME = 'weatherforecast.ad@gmail.com'
+MAIL_PASSWORD = 'vtdxbfhajlvdmspe'
 
 # Hàm gửi email
 def send_weather_email(to_email, province, weather_info):
