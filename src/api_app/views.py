@@ -2,8 +2,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
 
-from .models import Weather, PredictWeather
-from .serializers import WeatherSerializer, PredictWeatherSerializer
+from .models import Weather, PredictWeather, Subscriber
+from .serializers import WeatherSerializer, PredictWeatherSerializer, SubscriberSerializer
 
 
 
@@ -73,3 +73,22 @@ def GetPredictWeatherApiView(request):
             return Response(serialize.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+# API lưu email và tỉnh của user
+@api_view(['POST'])
+def subscribe_weather(request):
+    if request.method == 'POST':
+        serializer = SubscriberSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                subscriber = serializer.save()
+                return Response({
+                    'message': 'Đăng ký thành công! Bạn sẽ nhận được dự báo thời tiết hàng ngày vào lúc 7h sáng.',
+                    'subscriber': serializer.data
+                }, status=status.HTTP_201_CREATED)
+            except Exception as e:
+                return Response({
+                    'message': 'Email này đã được đăng ký.',
+                    'error': str(e)
+                }, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
