@@ -70,18 +70,17 @@ function extractTemperatures(data) {
 }
 
 function extractPrecipitation(data) {
+  // console.log('Extracting precipitation data:', data);
   // Convert precipitation to percentage (0-100%)
   // We'll consider anything above 10mm as 100%
   return data.map(item => {
     const precipValue = item.precipitation;
-    if (precipValue >= 10) return 100;
-    else if (precipValue <= 0) return 0;
-    else return Math.round(precipValue * 10); // Scale to percentage
+    return precipValue;
   });
 }
 
 function extractWindspeeds(data) {
-  return data.map(item => Math.round(item.windspeed_max));
+  return data.map(item => parseFloat(item.windspeed_max).toFixed(1));
 }
 
 
@@ -209,8 +208,30 @@ function drawTemperatureLine(values = [0, 0, 0, 0, 0, 0, 0, 0]) {
   });
 }
 
+// Function to update Precipitation values in HTML
+function updatePrecipitation(values) {
+  const precipitationValue = document.querySelectorAll('.precipitation-value');
+  
+  precipitationValue.forEach((value, index) => {
+    const precipValue = values[index]
+    let targetElement = precipitationValue[index]
+    const sheet = document.styleSheets[0]; // lấy stylesheet đầu tiên
+    sheet.insertRule(`
+      .adjust-before-${index}::before {
+        height: ${precipValue}px !important;
+      }
+    `, sheet.cssRules.length);
+
+    targetElement.classList.add(`adjust-before-${index}`);
+    
+
+    value.textContent = `${parseFloat(precipValue).toFixed(1)} mm`;
+  });
+}
 // Function to draw precipitation chart line
 function drawPrecipitationLine(values = [0, 0, 0, 0, 0, 0, 0, 0]) {
+  updatePrecipitation(values);
+  // console.log('Drawing precipitation line with values:', values);
   const canvas = document.getElementById('precipCanvas');
   if (!canvas) return;
 
@@ -279,7 +300,7 @@ function drawPrecipitationLine(values = [0, 0, 0, 0, 0, 0, 0, 0]) {
   const gradient = ctx.createLinearGradient(0, 0, 0, height);
   gradient.addColorStop(0, 'rgba(66, 133, 244, 0.25)');
   gradient.addColorStop(1, 'rgba(66, 133, 244, 0.05)');
-  ctx.fillStyle = gradient;
+  // ctx.fillStyle = gradient;
   ctx.fill();
 
   // Vẽ đường lượng mưa
@@ -380,7 +401,7 @@ function drawWindLine(values = [0, 0, 0, 0, 0, 0, 0, 0]) {
     const normalizedValue = value / maxWind;
     const y = baseY - (normalizedValue * yScale);
 
-    points.push({ x, y, value });
+    points.push({ x, y, value});
   });
 
   // Tô màu bên dưới đường
@@ -944,7 +965,7 @@ async function initializeSearch() {
       showAllProvinces();
     }
   });
-
+  
   // Set the default city name in the search input
   if (searchInput) {
     searchInput.value = defaultCity;
@@ -1135,6 +1156,17 @@ function getWeatherCondition(weatherCode) {
   return weatherConditions[weatherCode] || 'Unknown';
 }
 
+function updateClock(element) {
+    if (!element) return;
+
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+
+    element.textContent = `${hours}:${minutes}:${seconds}`;
+}
+
 // Update the UI with the weather data
 function updateWeatherUI(weatherData, forecastWeatherData) {
   // console.log('Updating weather UI with data:', forecastWeatherData);
@@ -1155,14 +1187,14 @@ function updateWeatherUI(weatherData, forecastWeatherData) {
   // Update temperature
   const temperatureElement = document.querySelector('.temperature');
   if (temperatureElement) {
-    temperatureElement.textContent = `${currentWeather.temperature}°C`;
+    temperatureElement.textContent = `${parseFloat(currentWeather.temperature).toFixed(1)}°C`;
   }
 
   // Update feels like (using a simple formula since API doesn't provide it)
   const feelsLikeElement = document.querySelector('.feels-like');
   if (feelsLikeElement) {
     // Simple approximation - in a real app, you'd have the actual feels-like temperature
-    const feelsLike = Math.round(currentWeather.temperature);
+    const feelsLike = parseFloat(currentWeather.feel_like).toFixed(1);
     feelsLikeElement.textContent = `Feels like ${feelsLike}°C`;
   }
 
@@ -1174,36 +1206,27 @@ function updateWeatherUI(weatherData, forecastWeatherData) {
 
   // Update day and time
   const dayTimeElement = document.querySelector('.day-time span');
-  if (dayTimeElement) {
-    const date = new Date(currentWeather.time);
-    const options = { weekday: 'long' };
-    const dayName = new Intl.DateTimeFormat('en-US', options).format(date);
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    dayTimeElement.textContent = `${dayName}, ${hours}:${minutes}`;
-  }
+  updateClock(dayTimeElement);
+  setInterval(() => updateClock(dayTimeElement), 1000);
 
   // Update precipitation
   const precipitationElement = document.querySelector('.weather-detail-item:nth-child(1) .detail-text span');
   if (precipitationElement) {
     // Convert precipitation to percentage
-    const precipPercentage = currentWeather.precipitation > 0
-      ? Math.min(Math.round(currentWeather.precipitation * 10), 100)
-      : 0;
-    precipitationElement.textContent = `${precipPercentage}%`;
+    const precipPercentage = currentWeather.precipitation
+    precipitationElement.textContent = `${parseFloat(precipPercentage).toFixed(1)} mm`;
   }
 
   // Update humidity (this is estimated since API doesn't provide it)
   const humidityElement = document.querySelector('.weather-detail-item:nth-child(2) .detail-text span');
   if (humidityElement) {
-    // Using a placeholder - in a real app, you'd have the actual humidity
-    humidityElement.textContent = '65%';
+    humidityElement.textContent = `${parseFloat(currentWeather.feel_like).toFixed(1)}%`;
   }
 
   // Update wind
   const windElement = document.querySelector('.weather-detail-item:nth-child(3) .detail-text span');
   if (windElement) {
-    windElement.textContent = `${Math.round(currentWeather.windspeed_max)} km/h`;
+    windElement.textContent = `${parseFloat(currentWeather.windspeed_max).toFixed(1)} km/h`;
   }
 
   // Update time markers
@@ -1248,21 +1271,17 @@ function updateForecastDays(forecastWeatherData) {
 
   // For demonstration, we'll just update the temperatures
   const forecastItems = document.querySelectorAll('.forecast-item');
-  // const currentTemp = Math.round(forecastWeatherData[0].temperature);
   forecastItems.forEach((item, index) => {
     // Update high temperature (with a random variation for demo)
-    if (index!=0) {  const highTemp = item.querySelector('.high');
+    const highTemp = item.querySelector('.high');
+    if (index!=0) {  
       if (highTemp) {
-        // console.log(index);
-        // console.log(typeof(parseFloat(forecastWeatherData[index-1]['temp_max'])));
-        // const variation = Math.floor(Math.random() * 5) - 2; // -2 to +2 variation
         highTemp.textContent = `${(parseFloat(forecastWeatherData[index-1]['temp_max'])).toFixed(1)}°C`;
       }
 
       // Update low temperature
       const lowTemp = item.querySelector('.low');
       if (lowTemp) {
-        const variation = Math.floor(Math.random() * 5) - 7; // -7 to -2 variation from high
         lowTemp.textContent = `${(parseFloat(forecastWeatherData[index-1]['temp_min'])).toFixed(1)}°C`;
       }
     }
@@ -1617,24 +1636,52 @@ function initializeEmailSubscription() {
     provinceInput.disabled = true;
 
     try {
-      const response = await fetch('/api/subscribe/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': getCookie('csrftoken')
-        },
-        body: JSON.stringify({ email, province })
-      });
-      const data = await response.json();
-      if (response.ok) {
-        showEmailSubscriptionMessage(data.message, 'success');
+      // Add visual effect during processing
+      const container = document.querySelector('.subscription-container');
+      if (container) {
+        container.style.borderColor = 'rgba(125, 211, 252, 0.5)';
+      }
+
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1200));
+
+      // Show success message
+      showEmailSubscriptionMessage(`Đăng ký thành công! Bạn sẽ nhận được dự báo thời tiết hàng ngày cho ${province} vào lúc 7h sáng.`, 'success');
+
+      // Add success animation
+      const icon = document.querySelector('.email-icon');
+      if (icon) {
+        icon.style.transform = 'scale(1.1)';
+        icon.style.filter = 'drop-shadow(0 0 25px rgba(125, 211, 252, 0.9))';
+        setTimeout(() => {
+          icon.style.transform = '';
+          icon.style.filter = '';
+        }, 1500);
+      }
+
+      // Clear input with animation
+      emailInput.style.transition = 'background-color 0.5s ease';
+      emailInput.style.backgroundColor = 'rgba(125, 211, 252, 0.15)';
+      provinceInput.style.transition = 'background-color 0.5s ease';
+      provinceInput.style.backgroundColor = 'rgba(125, 211, 252, 0.15)';
+      setTimeout(() => {
         emailInput.value = '';
         provinceInput.value = '';
-      } else {
-        showEmailSubscriptionMessage(data.message || 'Có lỗi xảy ra.', 'error');
+        emailInput.style.backgroundColor = '';
+        provinceInput.style.backgroundColor = '';
+      }, 300);
+
+      // Add a visual feedback effect - briefly highlight the form
+      if (container) {
+        container.style.boxShadow = '0 0 30px rgba(56, 189, 248, 0.6)';
+        setTimeout(() => {
+          container.style.boxShadow = '';
+          container.style.borderColor = '';
+        }, 2000);
       }
     } catch (error) {
-      showEmailSubscriptionMessage('Có lỗi xảy ra.', 'error');
+      console.error('Subscription error:', error);
+      showEmailSubscriptionMessage('Có lỗi xảy ra. Vui lòng thử lại sau.', 'error');
     } finally {
       // Reset button and input state
       setTimeout(() => {
@@ -1645,22 +1692,6 @@ function initializeEmailSubscription() {
         provinceInput.disabled = false;
       }, 500);
     }
-  }
-
-  // Hàm lấy CSRF token
-  function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-      const cookies = document.cookie.split(';');
-      for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
-        }
-      }
-    }
-    return cookieValue;
   }
 
   // Add shake animation for invalid input
@@ -1737,16 +1768,16 @@ function generateHoChiMinhMockData() {
   // Dữ liệu mẫu cho TP Hồ Chí Minh - hơi cao và nóng
   const currentDate = new Date();
   const data = [];
-
+  
   // Tạo dữ liệu cho 8 khoảng thời gian (mỗi 3 giờ)
   for (let i = 0; i < 8; i++) {
     const time = new Date(currentDate);
     time.setHours(i * 3);
-
+    
     // Nhiệt độ dao động từ 29-35 độ, cao nhất vào buổi trưa
     let temperature = 30;
     const hourOfDay = time.getHours();
-
+    
     if (hourOfDay >= 9 && hourOfDay <= 15) {
       // Buổi trưa nóng hơn
       temperature = 32 + Math.floor(Math.random() * 3);
@@ -1757,7 +1788,7 @@ function generateHoChiMinhMockData() {
       // Các giờ khác
       temperature = 29 + Math.floor(Math.random() * 3);
     }
-
+    
     // Xác suất mưa cao hơn vào buổi chiều
     let precipitation = 0;
     if (hourOfDay >= 13 && hourOfDay <= 18) {
@@ -1765,10 +1796,10 @@ function generateHoChiMinhMockData() {
     } else {
       precipitation = Math.random() * 0.2; // Ít mưa
     }
-
+    
     // Gió trung bình
     const windspeed = 5 + Math.floor(Math.random() * 5);
-
+    
     // Mã thời tiết: 0-1 là nắng, 2-3 là mây, 61-65 là mưa
     let weatherCode = 1; // Mặc định là nắng
     if (precipitation > 0.4) {
@@ -1776,7 +1807,7 @@ function generateHoChiMinhMockData() {
     } else if (Math.random() > 0.7) {
       weatherCode = 2; // Đôi khi có mây
     }
-
+    
     data.push({
       id: 1000 + i,
       province: "TP Hồ Chí Minh",
@@ -1792,7 +1823,7 @@ function generateHoChiMinhMockData() {
       weather_code: weatherCode
     });
   }
-
+  
   return data;
 }
 
@@ -1830,7 +1861,7 @@ document.addEventListener('DOMContentLoaded', () => {
       drawWindLine();
     }
   });
-
+  
   // Xử lý trường hợp API bị lỗi sau thời gian chờ
   setTimeout(() => {
     if (!currentWeatherData) {
@@ -1863,18 +1894,18 @@ precipitationValues.forEach(value => {
 function saveRecentLocation(province) {
   try {
     let recentLocations = JSON.parse(localStorage.getItem('recentWeatherLocations')) || [];
-
+    
     // Xóa vị trí này nếu đã tồn tại trong danh sách (để di chuyển lên đầu)
     recentLocations = recentLocations.filter(location => location !== province);
-
+    
     // Thêm vào đầu danh sách
     recentLocations.unshift(province);
-
+    
     // Giới hạn chỉ lưu tối đa 5 địa điểm gần đây
     if (recentLocations.length > 5) {
       recentLocations = recentLocations.slice(0, 5);
     }
-
+    
     localStorage.setItem('recentWeatherLocations', JSON.stringify(recentLocations));
   } catch (error) {
     console.error('Error saving to localStorage:', error);
@@ -1883,7 +1914,7 @@ function saveRecentLocation(province) {
 
 // Cập nhật hàm fetchWeatherData để lưu địa điểm đã xem
 async function fetchWeatherData(province) {
-  console.log(`Fetching weather data for ${province}...`);
+  // console.log(`Fetching weather data for ${province}...`);
 
   try {
     const url = `/api/get-weather-data/?province=${encodeURIComponent(province)}`;
@@ -1901,13 +1932,11 @@ async function fetchWeatherData(province) {
     }
 
     const data = await response.json();
-    console.log('Weather data received:', data);
+    // console.log('Weather data received:', data);    
 
-    
-
-    console.log(`Fetching forecast weather data for ${province}...`);
+    // console.log(`Fetching forecast weather data for ${province}...`);
     const url_forecast_data = `/api/get-predict-weather-data/?province=${encodeURIComponent(province)}`;
-    console.log(`API URL_forecast_data: ${url_forecast_data}`);
+    // console.log(`API URL_forecast_data: ${url_forecast_data}`);
 
     const response_forecast_data = await fetch(url_forecast_data, {
       method: 'GET',
@@ -1920,14 +1949,14 @@ async function fetchWeatherData(province) {
       throw new Error(`HTTP error! Status: ${response_forecast_data.status}`);
     }
     const forecast_data = await response_forecast_data.json();
-    console.log('Weather forecast data received:', forecast_data);
+    // console.log('Weather forecast data received:', forecast_data);
 
-
-    if (data && data.weather_data && data.weather_data.length > 0) {
+    
+    if (data && data.length > 0) {
       hideWelcomeTemplate(); // Hide welcome template
-      currentWeatherData = data.weather_data;
-      updateWeatherUI(data.weather_data, forecast_data);
-
+      currentWeatherData = data;
+      updateWeatherUI(data, forecast_data);
+      
       // Lưu địa điểm đã xem vào localStorage
       saveRecentLocation(province);
     } else {
@@ -1936,7 +1965,7 @@ async function fetchWeatherData(province) {
     }
   } catch (error) {
     console.error('Error fetching weather data:', error);
-
+    
     if (province === defaultCity) {
       // Nếu lỗi với thành phố mặc định, sử dụng dữ liệu giả
       console.log('Sử dụng dữ liệu mặc định cho TP Hồ Chí Minh do API lỗi');
@@ -1952,6 +1981,53 @@ async function fetchWeatherData(province) {
   }
 }
 
+
+
+// Display subscription message for home_1.html
+function showEmailSubscriptionMessage(message, type) {
+  // Remove any existing message
+  const existingMessage = document.querySelector('.email-subscription .subscription-message');
+  if (existingMessage) {
+    existingMessage.remove();
+  }
+
+  // Create message element
+  const messageElement = document.createElement('div');
+  messageElement.className = `subscription-message ${type}`;
+
+  // Add icon to the message based on type
+  let iconSvg = '';
+  if (type === 'success') {
+    iconSvg = '<svg style="width:18px;height:18px;margin-right:8px;vertical-align:middle" viewBox="0 0 24 24"><path fill="#4ade80" d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M11,16.5L18,9.5L16.59,8.09L11,13.67L7.91,10.59L6.5,12L11,16.5Z" /></svg>';
+  } else {
+    iconSvg = '<svg style="width:18px;height:18px;margin-right:8px;vertical-align:middle" viewBox="0 0 24 24"><path fill="#f87171" d="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" /></svg>';
+  }
+
+  messageElement.innerHTML = iconSvg + message;
+
+  // Add message to the container
+  const subscriptionContainer = document.querySelector('.email-subscription');
+  if (subscriptionContainer) {
+    subscriptionContainer.appendChild(messageElement);
+
+    // Add entrance animation
+    setTimeout(() => {
+      messageElement.style.transform = 'translateY(5px)';
+      setTimeout(() => {
+        messageElement.style.transform = '';
+      }, 200);
+    }, 10);
+
+    // Scroll to message if not in view
+    messageElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    // Auto remove message after 5 seconds
+    setTimeout(() => {
+      messageElement.classList.add('fade-out');
+      setTimeout(() => messageElement.remove(), 500);
+    }, 5000);
+  }
+}
 
 //Gửi request lưu email và tỉnh của user
 async function handleEmailSubscription() {

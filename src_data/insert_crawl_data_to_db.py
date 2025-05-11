@@ -30,6 +30,7 @@ if connection is not None:
         connection.commit()
         print(f"Xóa bảng thành công.")
         # Tạo một bảng
+        # Province,Time,Temperature,Temp_Max,Temp_Min,Precipitation,Windspeed_Max,UV_Index_Max,Sunshine_Hours,Sundown_Hours,Weather_Code,Humidity,Feel_Like
         cursor.execute(
             f"""
                 CREATE TABLE IF NOT EXISTS {table_name} (
@@ -44,7 +45,11 @@ if connection is not None:
                     UV_Index_Max DECIMAL(5,2),
                     Sunshine_Hours DECIMAL(5,2),
                     Sundown_Hours DECIMAL(5,2),
-                    Weather_Code INTEGER
+                    Weather_Code INTEGER,
+                    Humidity DECIMAL(5,2),
+                    Feel_Like DECIMAL(5,2),
+
+                    UNIQUE (Province, Time)
                 );
             """
         )
@@ -67,12 +72,12 @@ if connection is not None:
         #     print(column[0])
         
         # Đọc file CSV và chèn dữ liệu vào bảng
-        data_file = "src_data/2025-05-04_2025-05-19.csv"
+        data_file = "src_data/2025-04-01_2025-05-10.csv"
         with open(data_file, mode="r", encoding="utf-8") as csv_file:
             cursor.copy_expert(
                 f"""
                 COPY {table_name} (
-                    Province,Time,Temperature,Temp_Max,Temp_Min,Precipitation,Windspeed_Max,UV_Index_Max,Sunshine_Hours,Sundown_Hours,Weather_Code
+                    Province,Time,Temperature,Temp_Max,Temp_Min,Precipitation,Windspeed_Max,UV_Index_Max,Sunshine_Hours,Sundown_Hours,Weather_Code,Humidity,Feel_Like
                 )
                 FROM STDIN
                 WITH (FORMAT CSV, HEADER TRUE);
