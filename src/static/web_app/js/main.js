@@ -70,18 +70,17 @@ function extractTemperatures(data) {
 }
 
 function extractPrecipitation(data) {
+  // console.log('Extracting precipitation data:', data);
   // Convert precipitation to percentage (0-100%)
   // We'll consider anything above 10mm as 100%
   return data.map(item => {
     const precipValue = item.precipitation;
-    if (precipValue >= 10) return 100;
-    else if (precipValue <= 0) return 0;
-    else return Math.round(precipValue * 10); // Scale to percentage
+    return precipValue;
   });
 }
 
 function extractWindspeeds(data) {
-  return data.map(item => Math.round(item.windspeed_max));
+  return data.map(item => parseFloat(item.windspeed_max).toFixed(1));
 }
 
 
@@ -209,8 +208,30 @@ function drawTemperatureLine(values = [0, 0, 0, 0, 0, 0, 0, 0]) {
   });
 }
 
+// Function to update Precipitation values in HTML
+function updatePrecipitation(values) {
+  const precipitationValue = document.querySelectorAll('.precipitation-value');
+  
+  precipitationValue.forEach((value, index) => {
+    const precipValue = values[index]
+    let targetElement = precipitationValue[index]
+    const sheet = document.styleSheets[0]; // lấy stylesheet đầu tiên
+    sheet.insertRule(`
+      .adjust-before-${index}::before {
+        height: ${precipValue}px !important;
+      }
+    `, sheet.cssRules.length);
+
+    targetElement.classList.add(`adjust-before-${index}`);
+    
+
+    value.textContent = `${parseFloat(precipValue).toFixed(1)} mm`;
+  });
+}
 // Function to draw precipitation chart line
 function drawPrecipitationLine(values = [0, 0, 0, 0, 0, 0, 0, 0]) {
+  updatePrecipitation(values);
+  // console.log('Drawing precipitation line with values:', values);
   const canvas = document.getElementById('precipCanvas');
   if (!canvas) return;
 
@@ -279,7 +300,7 @@ function drawPrecipitationLine(values = [0, 0, 0, 0, 0, 0, 0, 0]) {
   const gradient = ctx.createLinearGradient(0, 0, 0, height);
   gradient.addColorStop(0, 'rgba(66, 133, 244, 0.25)');
   gradient.addColorStop(1, 'rgba(66, 133, 244, 0.05)');
-  ctx.fillStyle = gradient;
+  // ctx.fillStyle = gradient;
   ctx.fill();
 
   // Vẽ đường lượng mưa
@@ -1135,6 +1156,17 @@ function getWeatherCondition(weatherCode) {
   return weatherConditions[weatherCode] || 'Unknown';
 }
 
+function updateClock(element) {
+    if (!element) return;
+
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+
+    element.textContent = `${hours}:${minutes}:${seconds}`;
+}
+
 // Update the UI with the weather data
 function updateWeatherUI(weatherData, forecastWeatherData) {
   // console.log('Updating weather UI with data:', forecastWeatherData);
@@ -1155,14 +1187,14 @@ function updateWeatherUI(weatherData, forecastWeatherData) {
   // Update temperature
   const temperatureElement = document.querySelector('.temperature');
   if (temperatureElement) {
-    temperatureElement.textContent = `${currentWeather.temperature}°C`;
+    temperatureElement.textContent = `${parseFloat(currentWeather.temperature).toFixed(1)}°C`;
   }
 
   // Update feels like (using a simple formula since API doesn't provide it)
   const feelsLikeElement = document.querySelector('.feels-like');
   if (feelsLikeElement) {
     // Simple approximation - in a real app, you'd have the actual feels-like temperature
-    const feelsLike = Math.round(currentWeather.temperature);
+    const feelsLike = parseFloat(currentWeather.feel_like).toFixed(1);
     feelsLikeElement.textContent = `Feels like ${feelsLike}°C`;
   }
 
@@ -1174,36 +1206,35 @@ function updateWeatherUI(weatherData, forecastWeatherData) {
 
   // Update day and time
   const dayTimeElement = document.querySelector('.day-time span');
-  if (dayTimeElement) {
-    const date = new Date(currentWeather.time);
-    const options = { weekday: 'long' };
-    const dayName = new Intl.DateTimeFormat('en-US', options).format(date);
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    dayTimeElement.textContent = `${dayName}, ${hours}:${minutes}`;
-  }
+  updateClock(dayTimeElement);
+  setInterval(() => updateClock(dayTimeElement), 1000);
+  // if (dayTimeElement) {
+  //   const date = new Date(currentWeather.time);
+  //   const options = { weekday: 'long' };
+  //   const dayName = new Intl.DateTimeFormat('en-US', options).format(date);
+  //   const hours = date.getHours().toString().padStart(2, '0');
+  //   const minutes = date.getMinutes().toString().padStart(2, '0');
+  //   dayTimeElement.textContent = `${dayName}, ${hours}:${minutes}`;
+  // }
 
   // Update precipitation
   const precipitationElement = document.querySelector('.weather-detail-item:nth-child(1) .detail-text span');
   if (precipitationElement) {
     // Convert precipitation to percentage
-    const precipPercentage = currentWeather.precipitation > 0
-      ? Math.min(Math.round(currentWeather.precipitation * 10), 100)
-      : 0;
-    precipitationElement.textContent = `${precipPercentage}%`;
+    const precipPercentage = currentWeather.precipitation
+    precipitationElement.textContent = `${parseFloat(precipPercentage).toFixed(1)} mm`;
   }
 
   // Update humidity (this is estimated since API doesn't provide it)
   const humidityElement = document.querySelector('.weather-detail-item:nth-child(2) .detail-text span');
   if (humidityElement) {
-    // Using a placeholder - in a real app, you'd have the actual humidity
-    humidityElement.textContent = '65%';
+    humidityElement.textContent = `${parseFloat(currentWeather.feel_like).toFixed(1)}%`;
   }
 
   // Update wind
   const windElement = document.querySelector('.weather-detail-item:nth-child(3) .detail-text span');
   if (windElement) {
-    windElement.textContent = `${Math.round(currentWeather.windspeed_max)} km/h`;
+    windElement.textContent = `${parseFloat(currentWeather.windspeed_max).toFixed(1)} km/h`;
   }
 
   // Update time markers
@@ -1248,21 +1279,17 @@ function updateForecastDays(forecastWeatherData) {
 
   // For demonstration, we'll just update the temperatures
   const forecastItems = document.querySelectorAll('.forecast-item');
-  // const currentTemp = Math.round(forecastWeatherData[0].temperature);
   forecastItems.forEach((item, index) => {
     // Update high temperature (with a random variation for demo)
-    if (index!=0) {  const highTemp = item.querySelector('.high');
+    const highTemp = item.querySelector('.high');
+    if (index!=0) {  
       if (highTemp) {
-        // console.log(index);
-        // console.log(typeof(parseFloat(forecastWeatherData[index-1]['temp_max'])));
-        // const variation = Math.floor(Math.random() * 5) - 2; // -2 to +2 variation
         highTemp.textContent = `${(parseFloat(forecastWeatherData[index-1]['temp_max'])).toFixed(1)}°C`;
       }
 
       // Update low temperature
       const lowTemp = item.querySelector('.low');
       if (lowTemp) {
-        const variation = Math.floor(Math.random() * 5) - 7; // -7 to -2 variation from high
         lowTemp.textContent = `${(parseFloat(forecastWeatherData[index-1]['temp_min'])).toFixed(1)}°C`;
       }
     }
@@ -1895,7 +1922,7 @@ function saveRecentLocation(province) {
 
 // Cập nhật hàm fetchWeatherData để lưu địa điểm đã xem
 async function fetchWeatherData(province) {
-  console.log(`Fetching weather data for ${province}...`);
+  // console.log(`Fetching weather data for ${province}...`);
 
   try {
     const url = `/api/get-weather-data/?province=${encodeURIComponent(province)}`;
@@ -1913,13 +1940,11 @@ async function fetchWeatherData(province) {
     }
 
     const data = await response.json();
-    console.log('Weather data received:', data);
+    // console.log('Weather data received:', data);    
 
-    
-
-    console.log(`Fetching forecast weather data for ${province}...`);
+    // console.log(`Fetching forecast weather data for ${province}...`);
     const url_forecast_data = `/api/get-predict-weather-data/?province=${encodeURIComponent(province)}`;
-    console.log(`API URL_forecast_data: ${url_forecast_data}`);
+    // console.log(`API URL_forecast_data: ${url_forecast_data}`);
 
     const response_forecast_data = await fetch(url_forecast_data, {
       method: 'GET',
@@ -1932,13 +1957,13 @@ async function fetchWeatherData(province) {
       throw new Error(`HTTP error! Status: ${response_forecast_data.status}`);
     }
     const forecast_data = await response_forecast_data.json();
-    console.log('Weather forecast data received:', forecast_data);
+    // console.log('Weather forecast data received:', forecast_data);
 
-
-    if (data && data.weather_data && data.weather_data.length > 0) {
+    
+    if (data && data.length > 0) {
       hideWelcomeTemplate(); // Hide welcome template
-      currentWeatherData = data.weather_data;
-      updateWeatherUI(data.weather_data, forecast_data);
+      currentWeatherData = data;
+      updateWeatherUI(data, forecast_data);
       
       // Lưu địa điểm đã xem vào localStorage
       saveRecentLocation(province);

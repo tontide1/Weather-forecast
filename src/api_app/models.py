@@ -17,6 +17,8 @@ class Weather(models.Model):
     sunshine_hours = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Sunshine Hours")
     sundown_hours = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Sundown Hours")
     weather_code = models.IntegerField(verbose_name="Weather Code")
+    humidity = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Humidity")
+    feel_like = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Feels Like")
 
     class Meta:
         managed = False
