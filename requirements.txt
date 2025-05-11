@@ -6,3 +6,5 @@ python-dotenv==1.0.0
 pandas==2.2.3
 gunicorn==23.0.0
 whitenoise==6.9.0
+requests==2.31.0
+apscheduler==3.10.4
