@@ -1208,14 +1208,6 @@ function updateWeatherUI(weatherData, forecastWeatherData) {
   const dayTimeElement = document.querySelector('.day-time span');
   updateClock(dayTimeElement);
   setInterval(() => updateClock(dayTimeElement), 1000);
-  // if (dayTimeElement) {
-  //   const date = new Date(currentWeather.time);
-  //   const options = { weekday: 'long' };
-  //   const dayName = new Intl.DateTimeFormat('en-US', options).format(date);
-  //   const hours = date.getHours().toString().padStart(2, '0');
-  //   const minutes = date.getMinutes().toString().padStart(2, '0');
-  //   dayTimeElement.textContent = `${dayName}, ${hours}:${minutes}`;
-  // }
 
   // Update precipitation
   const precipitationElement = document.querySelector('.weather-detail-item:nth-child(1) .detail-text span');
