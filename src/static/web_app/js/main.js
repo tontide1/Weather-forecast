@@ -1079,43 +1079,6 @@ function hideWelcomeTemplate() {
   hasSearched = true;
 }
 
-// Function to fetch weather data for selected province
-async function fetchWeatherData(province) {
-  console.log(`Fetching weather data for ${province}...`);
-  searchInput.value = "";
-
-  try {
-    const url = `/api/get-weather-data/?province=${encodeURIComponent(province)}`;
-    // console.log(`API URL: ${url}`);
-
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    console.log('Weather data received:', data);
-
-    if (data && data.weather_data && data.weather_data.length > 0) {
-      hideWelcomeTemplate(); // Hide welcome template
-      currentWeatherData = data.weather_data;
-      updateWeatherUI(data.weather_data);
-    } else {
-      console.error('Invalid weather data format:', data);
-      showErrorMessage('Không tìm thấy dữ liệu thời tiết cho tỉnh này');
-    }
-  } catch (error) {
-    console.error('Error fetching weather data:', error);
-    showErrorMessage('Đã xảy ra lỗi khi tải dữ liệu thời tiết');
-  }
-}
-
 // Show error message
 function showErrorMessage(message) {
   // You could display an error message in the UI here
@@ -1139,41 +1102,42 @@ function showErrorMessage(message) {
 // Get weather condition text based on weather code
 function getWeatherCondition(weatherCode) {
   const weatherConditions = {
-    0: 'Clear sky',
-    1: 'Mainly clear',
-    2: 'Partly cloudy',
-    3: 'Overcast',
-    45: 'Fog',
-    48: 'Depositing rime fog',
-    51: 'Light drizzle',
-    53: 'Moderate drizzle',
-    55: 'Dense drizzle',
-    56: 'Light freezing drizzle',
-    57: 'Dense freezing drizzle',
-    61: 'Slight rain',
-    63: 'Moderate rain',
-    65: 'Heavy rain',
-    66: 'Light freezing rain',
-    67: 'Heavy freezing rain',
-    71: 'Light snow',
-    73: 'Moderate snow',
-    75: 'Heavy snow',
-    77: 'Snow grains',
-    80: 'Slight rain showers',
-    81: 'Moderate rain showers',
-    82: 'Violent rain showers',
-    85: 'Light snow showers',
-    86: 'Heavy snow showers',
-    95: 'Thunderstorm',
-    96: 'Thunderstorm with slight hail',
-    99: 'Thunderstorm with heavy hail',
+    0: "Clear sky",
+    1: "Mainly clear",
+    2: "Partly cloudy",
+    3: "Overcast",
+    45: "Fog",
+    48: "Depositing rime fog",
+    51: "Drizzle: Light intensity",
+    53: "Drizzle: Moderate intensity",
+    55: "Drizzle: Dense intensity",
+    56: "Freezing drizzle: Light",
+    57: "Freezing drizzle: Dense",
+    61: "Rain: Slight",
+    63: "Rain: Moderate",
+    65: "Rain: Heavy",
+    66: "Freezing rain: Light",
+    67: "Freezing rain: Heavy",
+    71: "Snow fall: Slight",
+    73: "Snow fall: Moderate",
+    75: "Snow fall: Heavy",
+    77: "Snow grains",
+    80: "Rain showers: Slight",
+    81: "Rain showers: Moderate",
+    82: "Rain showers: Violent",
+    85: "Snow showers: Slight",
+    86: "Snow showers: Heavy",
+    95: "Thunderstorm: Slight or moderate",
+    96: "Thunderstorm with slight hail",
+    99: "Thunderstorm with heavy hail"
   };
 
   return weatherConditions[weatherCode] || 'Unknown';
 }
 
 // Update the UI with the weather data
-function updateWeatherUI(weatherData) {
+function updateWeatherUI(weatherData, forecastWeatherData) {
+  // console.log('Updating weather UI with data:', forecastWeatherData);
   if (!weatherData || !weatherData.length) return;
 
   // Get current weather (last item in the array)
@@ -1259,14 +1223,21 @@ function updateWeatherUI(weatherData) {
     }
   }
 
+  // Update weather today
+  // forecast-item today
+  const todayWeather = document.querySelector('.forecast-item.today');
+  if (todayWeather) {
+    const todayHigh = todayWeather.querySelector('.high');
+    todayHigh.textContent = `${(parseFloat(currentWeather.temp_max)).toFixed(1)}°C`;
+    const todayLow = todayWeather.querySelector('.low');
+    todayLow.textContent = `${(parseFloat(currentWeather.temp_min)).toFixed(1)}°C`;
+  }
   // Update forecast days if available (this would need proper forecast data)
-  updateForecastDays(weatherData);
+  updateForecastDays(forecastWeatherData);
 }
 
 // Update forecast days based on weather data
-function updateForecastDays(weatherData) {
-  // This is a placeholder - in a real app, you'd use actual forecast data
-  // For now we'll just show one day repeated
+function updateForecastDays(forecastWeatherData) {
 
   const forecastContainer = document.querySelector('.forecast-days');
   if (!forecastContainer) return;
@@ -1277,21 +1248,23 @@ function updateForecastDays(weatherData) {
 
   // For demonstration, we'll just update the temperatures
   const forecastItems = document.querySelectorAll('.forecast-item');
-  const currentTemp = Math.round(weatherData[0].temperature);
-
+  // const currentTemp = Math.round(forecastWeatherData[0].temperature);
   forecastItems.forEach((item, index) => {
     // Update high temperature (with a random variation for demo)
-    const highTemp = item.querySelector('.high');
-    if (highTemp) {
-      const variation = Math.floor(Math.random() * 5) - 2; // -2 to +2 variation
-      highTemp.textContent = `${currentTemp + variation}°C`;
-    }
+    if (index!=0) {  const highTemp = item.querySelector('.high');
+      if (highTemp) {
+        // console.log(index);
+        // console.log(typeof(parseFloat(forecastWeatherData[index-1]['temp_max'])));
+        // const variation = Math.floor(Math.random() * 5) - 2; // -2 to +2 variation
+        highTemp.textContent = `${(parseFloat(forecastWeatherData[index-1]['temp_max'])).toFixed(1)}°C`;
+      }
 
-    // Update low temperature
-    const lowTemp = item.querySelector('.low');
-    if (lowTemp) {
-      const variation = Math.floor(Math.random() * 5) - 7; // -7 to -2 variation from high
-      lowTemp.textContent = `${currentTemp + variation}°C`;
+      // Update low temperature
+      const lowTemp = item.querySelector('.low');
+      if (lowTemp) {
+        const variation = Math.floor(Math.random() * 5) - 7; // -7 to -2 variation from high
+        lowTemp.textContent = `${(parseFloat(forecastWeatherData[index-1]['temp_min'])).toFixed(1)}°C`;
+      }
     }
   });
 }
@@ -1413,13 +1386,6 @@ function initializeSubscriptionForm() {
       subscriptionButton.disabled = true;
 
       try {
-        // In a real app, you would send this to your backend
-        // await fetch('/api/subscribe/', {
-        //   method: 'POST',
-        //   headers: { 'Content-Type': 'application/json' },
-        //   body: JSON.stringify({ email })
-        // });
-
         // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 1000));
 
@@ -1935,12 +1901,32 @@ async function fetchWeatherData(province) {
     }
 
     const data = await response.json();
-    // console.log('Weather data received:', data);
+    console.log('Weather data received:', data);
+
+    
+
+    console.log(`Fetching forecast weather data for ${province}...`);
+    const url_forecast_data = `/api/get-predict-weather-data/?province=${encodeURIComponent(province)}`;
+    console.log(`API URL_forecast_data: ${url_forecast_data}`);
+
+    const response_forecast_data = await fetch(url_forecast_data, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response_forecast_data.ok) {
+      throw new Error(`HTTP error! Status: ${response_forecast_data.status}`);
+    }
+    const forecast_data = await response_forecast_data.json();
+    console.log('Weather forecast data received:', forecast_data);
+
 
     if (data && data.weather_data && data.weather_data.length > 0) {
       hideWelcomeTemplate(); // Hide welcome template
       currentWeatherData = data.weather_data;
-      updateWeatherUI(data.weather_data);
+      updateWeatherUI(data.weather_data, forecast_data);
 
       // Lưu địa điểm đã xem vào localStorage
       saveRecentLocation(province);
