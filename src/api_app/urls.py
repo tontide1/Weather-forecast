@@ -10,6 +10,5 @@ urlpatterns = [
     path('get-unique-provinces/', views.GetUniqueProvinceApiView, name='get-unique-provinces'),
     path('get-weather-data/', views.GetWeatherProvinceApiView, name='get-weather-data'),
     path('get-predict-weather-data/', views.GetPredictWeatherApiView, name='get-predict-weather-data'),
-
-
+    path('subscribe/', views.SubscribeApiView, name='subscribe'),
 ]
