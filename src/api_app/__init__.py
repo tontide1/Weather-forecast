@@ -16,12 +16,21 @@ def send_weather_email(to_email, province, weather_info):
     # Lấy ngày đầu tiên từ dữ liệu thời tiết (nếu có)
     if weather_info:
         try:
-            dt = datetime.fromisoformat(weather_info[0]['time'].replace('Z', '+00:00'))
+            # Kiểm tra nếu weather_info là string thì parse thành JSON
+            if isinstance(weather_info, str):
+                import json
+                weather_info = json.loads(weather_info)
+            
+            # Lấy thời gian từ item đầu tiên
+            first_item = weather_info[0] if isinstance(weather_info, list) else weather_info
+            dt = datetime.fromisoformat(first_item['time'].replace('Z', '+00:00'))
             date_str = dt.strftime('%d/%m/%Y')
-        except Exception:
+        except Exception as e:
+            print(f"Lỗi xử lý thời gian: {e}")
             date_str = 'hôm nay'
     else:
         date_str = 'hôm nay'
+        
     subject = f"Dự báo thời tiết ngày {date_str} cho {province}"
     body = f"""
     <h3 style='color:#2563eb;'>Dự báo thời tiết cho <b>{province}</b> ngày <b>{date_str}</b>:</h3>
@@ -36,19 +45,26 @@ def send_weather_email(to_email, province, weather_info):
         </thead>
         <tbody>
     """
+    
+    # Đảm bảo weather_info là list
+    if not isinstance(weather_info, list):
+        weather_info = [weather_info]
+        
     for item in weather_info:
         # Định dạng lại thời gian cho đẹp
         try:
             dt = datetime.fromisoformat(item['time'].replace('Z', '+00:00'))
             time_str = dt.strftime('%H:%M %d/%m/%Y')
-        except Exception:
-            time_str = item['time']
+        except Exception as e:
+            print(f"Lỗi xử lý thời gian item: {e}")
+            time_str = item.get('time', 'N/A')
+            
         body += f"""
             <tr>
                 <td>{time_str}</td>
-                <td>{item['temperature']}°C</td>
-                <td>{item['precipitation']} mm</td>
-                <td>{item['windspeed_max']} km/h</td>
+                <td>{item.get('temperature', 'N/A')}°C</td>
+                <td>{item.get('precipitation', 'N/A')} mm</td>
+                <td>{item.get('windspeed_max', 'N/A')} km/h</td>
             </tr>
         """
     body += """
@@ -80,7 +96,11 @@ def get_weather_data(province):
     try:
         resp = requests.get(url)
         if resp.status_code == 200:
-            return resp.json()
+            data = resp.json()
+            # Kiểm tra và lấy weather_data từ response
+            if isinstance(data, dict) and 'weather_data' in data:
+                return data['weather_data']
+            return data
         else:
             print(f"Không lấy được dữ liệu thời tiết cho {province}")
             return []

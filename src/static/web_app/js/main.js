@@ -1470,32 +1470,39 @@ function showSubscriptionMessage(message, type) {
 function addSubscriptionMessageStyles() {
   const styleEl = document.createElement('style');
   styleEl.textContent = `
-    .subscription-message {
-      margin-top: 15px;
-      padding: 10px 15px;
-      border-radius: 8px;
-      font-size: 14px;
-      animation: fadeIn 0.3s ease;
-      width: 100%;
-    }
-    
-    .subscription-message.success {
-      background-color: rgba(34, 197, 94, 0.2);
-      border: 1px solid rgba(34, 197, 94, 0.4);
-      color: #22c55e;
-    }
-    
-    .subscription-message.error {
-      background-color: rgba(239, 68, 68, 0.2);
-      border: 1px solid rgba(239, 68, 68, 0.4);
-      color: #ef4444;
-    }
-    
-    .subscription-message.fade-out {
-      opacity: 0;
-      transition: opacity 0.5s ease;
-    }
-  `;
+        .subscription-message {
+            margin-top: 15px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            animation: fadeIn 0.3s ease;
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+        
+        .subscription-message.success {
+            background-color: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            color: #22c55e;
+        }
+        
+        .subscription-message.error {
+            background-color: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #ef4444;
+        }
+        
+        .subscription-message.fade-out {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    `;
   document.head.appendChild(styleEl);
 }
 
@@ -1672,42 +1679,45 @@ function initializeEmailSubscription() {
       const data = await response.json();
 
       if (response.ok) {
-        // Show success message
-        showEmailSubscriptionMessage(data.message, 'success');
+        // Show message with appropriate type
+        showEmailSubscriptionMessage(data.message, data.type);
 
-        // Add success animation
-        const icon = document.querySelector('.email-icon');
-        if (icon) {
-          icon.style.transform = 'scale(1.1)';
-          icon.style.filter = 'drop-shadow(0 0 25px rgba(125, 211, 252, 0.9))';
+        // Only clear form and show success animation if it's a success message
+        if (data.type === 'success') {
+          // Add success animation
+          const icon = document.querySelector('.email-icon');
+          if (icon) {
+            icon.style.transform = 'scale(1.1)';
+            icon.style.filter = 'drop-shadow(0 0 25px rgba(125, 211, 252, 0.9))';
+            setTimeout(() => {
+              icon.style.transform = '';
+              icon.style.filter = '';
+            }, 1500);
+          }
+
+          // Clear input with animation
+          emailInput.style.transition = 'background-color 0.5s ease';
+          emailInput.style.backgroundColor = 'rgba(125, 211, 252, 0.15)';
+          provinceInput.style.transition = 'background-color 0.5s ease';
+          provinceInput.style.backgroundColor = 'rgba(125, 211, 252, 0.15)';
           setTimeout(() => {
-            icon.style.transform = '';
-            icon.style.filter = '';
-          }, 1500);
-        }
+            emailInput.value = '';
+            provinceInput.value = '';
+            emailInput.style.backgroundColor = '';
+            provinceInput.style.backgroundColor = '';
+          }, 300);
 
-        // Clear input with animation
-        emailInput.style.transition = 'background-color 0.5s ease';
-        emailInput.style.backgroundColor = 'rgba(125, 211, 252, 0.15)';
-        provinceInput.style.transition = 'background-color 0.5s ease';
-        provinceInput.style.backgroundColor = 'rgba(125, 211, 252, 0.15)';
-        setTimeout(() => {
-          emailInput.value = '';
-          provinceInput.value = '';
-          emailInput.style.backgroundColor = '';
-          provinceInput.style.backgroundColor = '';
-        }, 300);
-
-        // Add a visual feedback effect - briefly highlight the form
-        if (container) {
-          container.style.boxShadow = '0 0 30px rgba(56, 189, 248, 0.6)';
-          setTimeout(() => {
-            container.style.boxShadow = '';
-            container.style.borderColor = '';
-          }, 2000);
+          // Add a visual feedback effect - briefly highlight the form
+          if (container) {
+            container.style.boxShadow = '0 0 30px rgba(56, 189, 248, 0.6)';
+            setTimeout(() => {
+              container.style.boxShadow = '';
+              container.style.borderColor = '';
+            }, 2000);
+          }
         }
       } else {
-        showEmailSubscriptionMessage(data.message || 'Có lỗi xảy ra.', 'error');
+        showEmailSubscriptionMessage(data.error || 'Có lỗi xảy ra.', 'error');
       }
     } catch (error) {
       console.error('Subscription error:', error);
@@ -2058,7 +2068,6 @@ function showEmailSubscriptionMessage(message, type) {
     }, 5000);
   }
 }
-
 // //Gửi request lưu email và tỉnh của user
 // async function handleEmailSubscription() {
 //   const emailInput = document.getElementById('emailInput');
