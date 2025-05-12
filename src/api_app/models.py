@@ -47,8 +47,6 @@ class PredictWeather(models.Model):
 
 #save gmail and province of user to send information weather's information to user
 
-from django.db import models
-
 class Subscriber(models.Model):
     email = models.EmailField(verbose_name="Email")
     province = models.CharField(max_length=100, verbose_name="Province")

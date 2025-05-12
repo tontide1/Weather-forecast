@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
 
-from .models import Weather, PredictWeather
+from .models import Weather, PredictWeather, Subscriber
 from .serializers import WeatherSerializer, PredictWeatherSerializer
 
 
@@ -66,3 +66,39 @@ def GetPredictWeatherApiView(request):
             return Response(serialize.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['POST'])
+def SubscribeApiView(request):
+    if request.method == 'POST':
+        try:
+            email = request.data.get('email')
+            province = request.data.get('province')
+            
+            if not email or not province:
+                return Response(
+                    {"error": "Email and province are required"}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            # Check if subscriber already exists
+            subscriber, created = Subscriber.objects.get_or_create(
+                email=email,
+                defaults={'province': province}
+            )
+            
+            if not created:
+                # Update province if subscriber exists
+                subscriber.province = province
+                subscriber.is_active = True
+                subscriber.save()
+                message = "Cập nhật thông tin đăng ký thành công!"
+            else:
+                message = "Đăng ký thành công!"
+            
+            return Response({"message": message}, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            return Response(
+                {"error": str(e)}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
