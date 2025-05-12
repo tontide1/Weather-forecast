@@ -1707,7 +1707,7 @@ function initializeEmailSubscription() {
           }, 2000);
         }
       } else {
-        showEmailSubscriptionMessage(data.message || 'Có lỗi xảy ra.', 'error');
+        showEmailSubscriptionMessage(data.message || 'Email của bạn đã được đăng ký nhận thông tin thời tiết cho tỉnh này.', 'error');
       }
     } catch (error) {
       console.error('Subscription error:', error);
@@ -1980,7 +1980,6 @@ async function fetchWeatherData(province) {
     }
     const forecast_data = await response_forecast_data.json();
     // console.log('Weather forecast data received:', forecast_data);
-
 
     if (data && data.length > 0) {
       hideWelcomeTemplate(); // Hide welcome template

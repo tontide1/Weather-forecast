@@ -46,9 +46,6 @@ class PredictWeather(models.Model):
         return f'{self.province} - {self.date}: {self.weather_description}'
 
 #save gmail and province of user to send information weather's information to user
-
-from django.db import models
-
 class Subscriber(models.Model):
     email = models.EmailField(verbose_name="Email")
     province = models.CharField(max_length=100, verbose_name="Province")
@@ -58,6 +55,7 @@ class Subscriber(models.Model):
     class Meta:
         db_table = 'subscribers'
         ordering = ['-created_at']
+        unique_together = ('email', 'province')
 
     def __str__(self):
         return f'{self.email} - {self.province}'
