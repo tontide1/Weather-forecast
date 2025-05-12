@@ -1,33 +1,37 @@
-# 1. Sử dụng image base
+# Base image
 FROM python:3.11-slim-bullseye
 
-# 2. Thiết lập biến môi trường để tối ưu hóa Python
+# Set environment variables for Python optimization
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    PIP_NO_CACHE_DIR=1
+    PIP_NO_CACHE_DIR=1 \
+    PYTHONPATH=/app
 
-# 3. Thư mục làm việc tại /app
+# Working directory
 WORKDIR /app
 
-# 4. Copy file requirements và cài dependencies
+# Copy requirements and install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
+# Install system dependencies including PostgreSQL client
 RUN apt-get update && \
-apt-get install -y postgresql-client && \
-apt-get clean && \
-rm -rf /var/lib/apt/lists/*
+    apt-get install -y postgresql-client && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# 5. Copy mã nguồn vào /app
+# Create directories for weather data storage
+RUN mkdir -p /app/weather_data
+
+# Copy source code
 COPY . .
 
-# 6. Làm cho entrypoint.sh có quyền thực thi
+# Make entrypoint script executable
 RUN chmod +x ./entrypoint.sh
 
-
-# 7. Sử dụng entrypoint.sh
+# Use entrypoint script
 ENTRYPOINT ["./entrypoint.sh"]
 
-# 8. Chạy server
+# Run server
 CMD ["gunicorn", "--chdir", "/app/src", "weather_forecast_management.wsgi:application", "--bind", "0.0.0.0:8000"]
