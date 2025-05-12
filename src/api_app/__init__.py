@@ -126,5 +126,3 @@ if is_runserver() and os.environ.get('RUN_MAIN', None) != 'true':
     scheduler.add_job(send_daily_weather_emails, 'cron', hour=7, minute=0)
     scheduler.start()
     print('APScheduler for daily weather email started!')
-
-
