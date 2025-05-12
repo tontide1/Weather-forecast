@@ -7,7 +7,7 @@
 
 param(
     [Parameter()]
-    [ValidateSet("start", "stop", "restart", "logs", "status", "build", "clean", "help")]
+    [ValidateSet("start", "start-web", "start-airflow", "stop", "restart", "logs", "logs-web", "logs-airflow", "status", "build", "clean", "help")]
     [string]$Action = "help",
     
     [Parameter()]
@@ -114,7 +114,46 @@ function Build-Images {
     }
 }
 
-function Clean-Environment {
+function Start-WebServices {
+    $detach = if ($DetachedMode) { "-d" } else { "" }
+    $buildFlag = if ($BuildNoCache) { "--build --no-cache" } else { "" }
+    
+    Write-Host "Starting web and database services..." @ColorInfo
+    docker compose -f "$COMPOSE_FILE" up $detach $buildFlag web db
+    
+    if ($LASTEXITCODE -eq 0 -and $DetachedMode) {
+        Write-Host "Web services started successfully in detached mode!" @ColorSuccess
+        Write-Host "Application should be available at:" @ColorInfo
+        Write-Host "http://localhost:8000" @ColorHighlight
+    }
+}
+
+function Start-AirflowServices {
+    $detach = if ($DetachedMode) { "-d" } else { "" }
+    $buildFlag = if ($BuildNoCache) { "--build --no-cache" } else { "" }
+    
+    Write-Host "Starting Airflow and database services..." @ColorInfo
+    docker compose -f "$COMPOSE_FILE" up $detach $buildFlag db airflow-webserver airflow-scheduler airflow-init
+    
+    if ($LASTEXITCODE -eq 0 -and $DetachedMode) {
+        Write-Host "Airflow services started successfully in detached mode!" @ColorSuccess
+        Write-Host "Airflow webserver should be available at:" @ColorInfo
+        Write-Host "http://localhost:8080" @ColorHighlight
+        Write-Host "Login with admin credentials from .env file" @ColorInfo
+    }
+}
+
+function Get-WebLogs {
+    Write-Host "Showing logs for web services..." @ColorInfo
+    docker compose -f "$COMPOSE_FILE" logs -f web db
+}
+
+function Get-AirflowLogs {
+    Write-Host "Showing logs for Airflow services..." @ColorInfo
+    docker compose -f "$COMPOSE_FILE" logs -f airflow-webserver airflow-scheduler airflow-init
+}
+
+function Remove-Environment {
     Write-Host "Cleaning up Weather Forecast Docker environment..." @ColorInfo
     
     # Stop containers
@@ -139,14 +178,18 @@ function Show-Help {
     Write-Host "Usage: $($MyInvocation.MyCommand.Name) [action] [options]" @ColorInfo
     Write-Host ""
     Write-Host "Actions:" @ColorHighlight
-    Write-Host "  start    : Start the containers (default: detached mode)" @ColorInfo
-    Write-Host "  stop     : Stop and remove the containers" @ColorInfo
-    Write-Host "  restart  : Restart the containers" @ColorInfo
-    Write-Host "  logs     : Show container logs" @ColorInfo
-    Write-Host "  status   : Show container status" @ColorInfo
-    Write-Host "  build    : Build container images" @ColorInfo
-    Write-Host "  clean    : Stop containers and clean up resources" @ColorInfo
-    Write-Host "  help     : Show this help information" @ColorInfo
+    Write-Host "  start          : Start all containers (web, db, and airflow)" @ColorInfo
+    Write-Host "  start-web      : Start only web and database containers" @ColorInfo
+    Write-Host "  start-airflow  : Start only airflow and database containers" @ColorInfo
+    Write-Host "  stop           : Stop and remove the containers" @ColorInfo
+    Write-Host "  restart        : Restart the containers" @ColorInfo
+    Write-Host "  logs           : Show all container logs" @ColorInfo
+    Write-Host "  logs-web       : Show only web container logs" @ColorInfo
+    Write-Host "  logs-airflow   : Show only airflow container logs" @ColorInfo
+    Write-Host "  status         : Show container status" @ColorInfo
+    Write-Host "  build          : Build container images" @ColorInfo
+    Write-Host "  clean          : Stop containers and clean up resources" @ColorInfo
+    Write-Host "  help           : Show this help information" @ColorInfo
     Write-Host ""
     Write-Host "Options:" @ColorHighlight
     Write-Host "  -DetachedMode   : Run in detached mode (default: true)" @ColorInfo
@@ -171,12 +214,16 @@ Set-Location $PROJECT_DIR
 # Execute requested action
 switch ($Action) {
     "start" { Start-WeatherForecast }
+    "start-web" { Start-WebServices }
+    "start-airflow" { Start-AirflowServices }
     "stop" { Stop-WeatherForecast }
     "restart" { Restart-WeatherForecast }
     "logs" { Show-Logs }
+    "logs-web" { Get-WebLogs }
+    "logs-airflow" { Get-AirflowLogs }
     "status" { Show-Status }
     "build" { Build-Images }
-    "clean" { Clean-Environment }
+    "clean" { Remove-Environment }
     "help" { Show-Help }
     default { Show-Help }
 }

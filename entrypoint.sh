@@ -18,6 +18,9 @@ else
 fi
 echo "=== LOAD ENVIRONMENT VARIABLES COMPLETELY ==="
 
+# Create necessary directories for Airflow data
+mkdir -p /app/weather_data
+
 
 echo "=== WAIT FOR DATABASE ==="
 until pg_isready -h $DATABASE_HOST -p $DATABASE_PORT -U $DATABASE_USER; do
