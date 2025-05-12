@@ -70,9 +70,8 @@ if connection is not None:
         # print(f"Các cột trong bảng '{table_name}':")
         # for column in columns:
         #     print(column[0])
-        
-        # Đọc file CSV và chèn dữ liệu vào bảng
-        data_file = "src_data/2025-04-01_2025-05-10.csv"
+          # Đọc file CSV và chèn dữ liệu vào bảng
+        data_file = "weather_data/2025-04-01_2025-05-10.csv"
         with open(data_file, mode="r", encoding="utf-8") as csv_file:
             cursor.copy_expert(
                 f"""

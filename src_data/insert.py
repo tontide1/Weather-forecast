@@ -7,7 +7,6 @@ from decouple import config
 load_dotenv()
 
 
-
 connection = None
 try:
     connection = psycopg2.connect(
@@ -23,29 +22,34 @@ except Exception as e:
 
 if connection is not None:
     cursor = connection.cursor()
-    table_name = config("PREDICT_WEATHER_DATA_TABLE_NAME", default="predict_weather")
+    table_name = config("WEATHER_DATA_TABLE_NAME", default="weather_data")
     try:
-        # cursor.execute(f"""
-        #     DROP TABLE IF EXISTS {table_name};
-        # """)
-        # connection.commit()
-        # print(f"Xóa bảng bảng dữ liệu dự đoán thành công.")
+        cursor.execute(f"""
+            DROP TABLE IF EXISTS {table_name};
+        """)
+        connection.commit()
+        print(f"Xóa bảng thành công.")
         # Tạo một bảng
         cursor.execute(
             f"""
                 CREATE TABLE IF NOT EXISTS {table_name} (
                     id SERIAL PRIMARY KEY,
                     Province VARCHAR(100) NOT NULL,
-                    Date TIMESTAMP NOT NULL,
+                    Time TIMESTAMP NOT NULL,
+                    Temperature DECIMAL(5,2),
                     Temp_Max DECIMAL(5,2),
                     Temp_Min DECIMAL(5,2),
-                    Weather_Code INTEGER,
-                    Weather_Description VARCHAR(100)
+                    Precipitation DECIMAL(5,2),
+                    Windspeed_Max DECIMAL(5,2),
+                    UV_Index_Max DECIMAL(5,2),
+                    Sunshine_Hours DECIMAL(5,2),
+                    Sundown_Hours DECIMAL(5,2),
+                    Weather_Code INTEGER
                 );
             """
         )
         connection.commit()
-        print(f"Tạo bảng dữ liệu dự đoán thành công")
+        print(f"Tạo bảng thành công")
 
         # cursor.execute(
         #     f"""
@@ -61,13 +65,14 @@ if connection is not None:
         # print(f"Các cột trong bảng '{table_name}':")
         # for column in columns:
         #     print(column[0])
-          # Đọc file CSV và chèn dữ liệu vào bảng
-        data_file = "xgboost_predictions/weather_forecast_7days.csv"
+        
+        # Đọc file CSV và chèn dữ liệu vào bảng
+        data_file = "weather_data/2025-04-01_2025-05-10.csv"
         with open(data_file, mode="r", encoding="utf-8") as csv_file:
             cursor.copy_expert(
                 f"""
                 COPY {table_name} (
-                    Province,Date,Temp_Max,Temp_Min,Weather_Code,Weather_Description
+                    Province,Time,Temperature,Temp_Max,Temp_Min,Precipitation,Windspeed_Max,UV_Index_Max,Sunshine_Hours,Sundown_Hours,Weather_Code
                 )
                 FROM STDIN
                 WITH (FORMAT CSV, HEADER TRUE);
@@ -75,7 +80,7 @@ if connection is not None:
                 csv_file
             )
         connection.commit()
-        print("Dữ liệu dự đoán đã được thêm vào cơ sở dữ liệu thành công!")
+        print("Dữ liệu từ file CSV đã được chèn vào cơ sở dữ liệu thành công!")
 
         # # Lấy dữ liệu
         # cursor.execute(f"SELECT * FROM {table_name};")
