@@ -86,7 +86,33 @@ def subscribe_weather(request):
                     'subscriber': serializer.data
                 }, status=status.HTTP_201_CREATED)
             except Exception as e:
-                print(e)
+                return Response({
+                    'message': 'Email này đã được đăng ký.',
+                    'error': str(e)
+                }, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# API lưu email và tỉnh của user
+@api_view(['POST'])
+def SubscribeApiView(request):
+    if request.method == 'POST':
+        email = request.data.get('email')
+        province = request.data.get('province')
+        
+        if not email or not province:
+            return Response(
+                {"error": "Email and province are required"}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        serializer = SubscriberSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                subscriber = serializer.save()
+                return Response({
+                    'message': 'Đăng ký thành công! Bạn sẽ nhận được dự báo thời tiết hàng ngày vào lúc 7h sáng.',
+                    'subscriber': serializer.data
+                }, status=status.HTTP_201_CREATED)
+            except Exception as e:
                 return Response({
                     'message': 'Email này đã được đăng ký.',
                     'error': str(e)
