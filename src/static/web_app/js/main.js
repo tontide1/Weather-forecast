@@ -1181,7 +1181,22 @@ function updateClock(element) {
   const minutes = String(now.getMinutes()).padStart(2, '0');
   const seconds = String(now.getSeconds()).padStart(2, '0');
 
+  // Thêm định dạng ngày
+  const day = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const year = now.getFullYear();
+  // Chỉ hiển thị thời gian (HH:mm:ss)
   element.textContent = `${hours}:${minutes}:${seconds}`;
+
+  // Cập nhật thẻ current-date nếu tồn tại
+  const currentDateElement = document.getElementById('current-date');
+  if (currentDateElement) {
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const dayName = dayNames[now.getDay()];
+    const monthName = monthNames[now.getMonth()];
+    currentDateElement.textContent = `${dayName}, ${day} ${monthName} ${year}`;
+  }
 }
 
 // Update the UI with the weather data
@@ -1869,6 +1884,11 @@ function generateHoChiMinhMockData() {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
+  // Khởi tạo đồng hồ
+  const dayTimeElement = document.querySelector('.day-time span');
+  updateClock(dayTimeElement);
+  setInterval(() => updateClock(dayTimeElement), 1000);
+
   // Cải thiện hiệu ứng mưa
   enhanceRainAnimation();
 
