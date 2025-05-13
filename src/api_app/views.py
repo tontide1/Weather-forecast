@@ -76,29 +76,40 @@ def SubscribeApiView(request):
             
             if not email or not province:
                 return Response(
-                    {"error": "Email and province are required"}, 
+                    {"error": "Email and province are required", "type": "error"}, 
                     status=status.HTTP_400_BAD_REQUEST
                 )
             
-            # Check if subscriber already exists
-            subscriber, created = Subscriber.objects.get_or_create(
-                email=email,
-                defaults={'province': province}
-            )
+            # Check if subscriber already exists with the same email and province
+            subscriber = Subscriber.objects.filter(email=email, province=province).first()
             
-            if not created:
-                # Update province if subscriber exists
-                subscriber.province = province
-                subscriber.is_active = True
-                subscriber.save()
-                message = "Cập nhật thông tin đăng ký thành công!"
+            if subscriber:
+                # If subscriber exists with same email and province, just activate if inactive
+                if not subscriber.is_active:
+                    subscriber.is_active = True
+                    subscriber.save()
+                    return Response({
+                        "message": "Kích hoạt lại đăng ký thành công!",
+                        "type": "success"
+                    }, status=status.HTTP_200_OK)
+                else:
+                    return Response({
+                        "message": "Bạn đã đăng ký tỉnh này rồi!",
+                        "type": "error"
+                    }, status=status.HTTP_200_OK)
             else:
-                message = "Đăng ký thành công!"
-            
-            return Response({"message": message}, status=status.HTTP_200_OK)
+                # Create new subscription
+                subscriber = Subscriber.objects.create(
+                    email=email,
+                    province=province
+                )
+                return Response({
+                    "message": "Đăng ký thành công! Bạn sẽ nhận email về thời tiết vào lúc 7h sáng mỗi ngày!",
+                    "type": "success"
+                }, status=status.HTTP_200_OK)
             
         except Exception as e:
             return Response(
-                {"error": str(e)}, 
+                {"error": str(e), "type": "error"}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
