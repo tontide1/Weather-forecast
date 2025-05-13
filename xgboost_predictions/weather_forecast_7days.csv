@@ -1,0 +1,15 @@
+Province,Time,Temp_Max,Temp_Min,Weather_Code,Weather_Description
+An Giang,2025-05-14,33.699608,25.806822,3,Overcast
+An Giang,2025-05-15,33.37471,25.727041,0,Clear sky
+An Giang,2025-05-16,33.555286,25.79381,45,Fog
+An Giang,2025-05-17,33.53641,25.782368,3,Overcast
+An Giang,2025-05-18,33.43962,25.298462,3,Overcast
+An Giang,2025-05-19,33.441948,25.84786,45,Fog
+An Giang,2025-05-20,33.527214,25.853384,0,Clear sky
+Bà Rịa - Vũng Tàu,2025-05-14,31.303446,27.192232,3,Overcast
+Bà Rịa - Vũng Tàu,2025-05-15,31.668503,27.282648,3,Overcast
+Bà Rịa - Vũng Tàu,2025-05-16,31.321686,27.174145,3,Overcast
+Bà Rịa - Vũng Tàu,2025-05-17,31.33325,27.212055,3,Overcast
+Bà Rịa - Vũng Tàu,2025-05-18,31.450645,27.223633,3,Overcast
+Bà Rịa - Vũng Tàu,2025-05-19,31.367624,27.146793,3,Overcast
+Bà Rịa - Vũng Tàu,2025-05-20,31.324253,27.218866,2,Partly cloudy

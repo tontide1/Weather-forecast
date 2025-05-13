@@ -39,21 +39,21 @@ services:
       retries: 3
     restart: unless-stopped
 
-  # PostgreSQL database for Airflow
-  airflow-db:
-    image: postgres:15
-    environment:
-      POSTGRES_DB: airflow
-      POSTGRES_USER: ${DATABASE_USER}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-    volumes:
-      - airflow_postgres_data:/var/lib/postgresql/data/
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${DATABASE_USER}" ]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-    restart: unless-stopped
+  # # PostgreSQL database for Airflow
+  # airflow-db:
+  #   image: postgres:15
+  #   environment:
+  #     POSTGRES_DB: airflow
+  #     POSTGRES_USER: ${DATABASE_USER}
+  #     POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+  #   volumes:
+  #     - airflow_postgres_data:/var/lib/postgresql/data/
+  #   healthcheck:
+  #     test: [ "CMD-SHELL", "pg_isready -U ${DATABASE_USER}" ]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 3
+  #   restart: unless-stopped
   # Airflow webserver
   airflow-webserver:
     build:
@@ -64,22 +64,22 @@ services:
     env_file:
       - .env
     environment:
-      - DATABASE_HOST=db
-      - DATABASE_PORT=${DATABASE_PORT}
-      - DATABASE_NAME=${DATABASE_NAME}
-      - DATABASE_USER=${DATABASE_USER}
-      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
-      - WEATHER_DATA_TABLE_NAME=${WEATHER_DATA_TABLE_NAME}
-      - PREDICT_WEATHER_DATA_TABLE_NAME=${PREDICT_WEATHER_DATA_TABLE_NAME}
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://${DATABASE_USER}:${DATABASE_PASSWORD}@airflow-db:${DATABASE_PORT}/airflow
+      # - DATABASE_HOST=db
+      # - DATABASE_PORT=${DATABASE_PORT}
+      # - DATABASE_NAME=${DATABASE_NAME}
+      # - DATABASE_USER=${DATABASE_USER}
+      # - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      # - WEATHER_DATA_TABLE_NAME=${WEATHER_DATA_TABLE_NAME}
+      # - PREDICT_WEATHER_DATA_TABLE_NAME=${PREDICT_WEATHER_DATA_TABLE_NAME}
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=${AIRFLOW__DATABASE__SQL_ALCHEMY_CONN}
     ports:
       - 8080:8080
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./weather_data:/opt/airflow/weather_data
     depends_on:
-      airflow-db:
-        condition: service_healthy
+      # airflow-db:
+        # condition: service_healthy
       airflow-init:
         condition: service_completed_successfully
   # Airflow scheduler
@@ -92,14 +92,14 @@ services:
     env_file:
       - .env
     environment:
-      - DATABASE_HOST=db
-      - DATABASE_PORT=${DATABASE_PORT}
-      - DATABASE_NAME=${DATABASE_NAME}
-      - DATABASE_USER=${DATABASE_USER}
-      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
-      - WEATHER_DATA_TABLE_NAME=${WEATHER_DATA_TABLE_NAME}
-      - PREDICT_WEATHER_DATA_TABLE_NAME=${PREDICT_WEATHER_DATA_TABLE_NAME}
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://${DATABASE_USER}:${DATABASE_PASSWORD}@airflow-db:${DATABASE_PORT}/airflow
+      # - DATABASE_HOST=db
+      # - DATABASE_PORT=${DATABASE_PORT}
+      # - DATABASE_NAME=${DATABASE_NAME}
+      # - DATABASE_USER=${DATABASE_USER}
+      # - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      # - WEATHER_DATA_TABLE_NAME=${WEATHER_DATA_TABLE_NAME}
+      # - PREDICT_WEATHER_DATA_TABLE_NAME=${PREDICT_WEATHER_DATA_TABLE_NAME}
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=${AIRFLOW__DATABASE__SQL_ALCHEMY_CONN}
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./weather_data:/opt/airflow/weather_data
@@ -116,14 +116,15 @@ services:
     env_file:
       - .env
     environment:
-      - DATABASE_HOST=airflow-db
-      - DATABASE_PORT=${DATABASE_PORT}
-      - DATABASE_NAME=airflow
-      - DATABASE_USER=${DATABASE_USER}
-      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://${DATABASE_USER}:${DATABASE_PASSWORD}@airflow-db:${DATABASE_PORT}/airflow
+      # - DATABASE_HOST=airflow-db
+      # - DATABASE_PORT=${DATABASE_PORT}
+      # - DATABASE_NAME=airflow
+      # - DATABASE_USER=${DATABASE_USER}
+      # - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=${AIRFLOW__DATABASE__SQL_ALCHEMY_CONN}
     depends_on:
-      airflow-db:
+      # airflow-db:
+      db:
         condition: service_healthy
 
 # Persistent data volumes

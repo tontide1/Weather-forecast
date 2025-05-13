@@ -31,7 +31,7 @@ class Weather(models.Model):
 
 class PredictWeather(models.Model):
     province = models.CharField(max_length=100, verbose_name="Province")
-    date = models.DateTimeField(verbose_name="Date")
+    time = models.DateField(verbose_name="time")
     temp_max = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Max Temperature")
     temp_min = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Min Temperature")
     weather_code = models.IntegerField(verbose_name="Weather Code")
@@ -40,10 +40,13 @@ class PredictWeather(models.Model):
     class Meta:
         managed = False
         db_table = config("PREDICT_WEATHER_DATA_TABLE_NAME", default="predict_weather")
-        ordering = ["province", "date"]
+        ordering = ["province", "time"]
+        constraints = [
+            models.UniqueConstraint(fields=['province', 'time'], name='unique_province_time')
+        ]
 
     def __str__(self):
-        return f'{self.province} - {self.date}: {self.weather_description}'
+        return f'{self.province} - {self.time}: {self.weather_description}'
 
 #save gmail and province of user to send information weather's information to user
 
