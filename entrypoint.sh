@@ -72,9 +72,13 @@ if [ ! -d src ]; then
     exit 1
 fi
 
-echo "=== CREATE DATABASE TABLE ==="
+echo "=== INSERT HISTORICAL DATA INTO DB ==="
 python src_data/insert_crawl_data_to_db.py
-echo "=== CREATE DATABASE TABLE COMPLETELY ==="
+echo "=== INSERT HISTORICAL DATA INTO DB COMPLETELY ==="
+
+echo "=== INSERT PREDICT DATA INTO DB ==="
+python test_model/insert_predict_data_to_db.py
+echo "=== INSERT PREDICT DATA INTO DB COMPLETELY ==="
 
 echo "=== NAVIGATE TO PROJECT DIRECTORY ==="
 cd /app/src

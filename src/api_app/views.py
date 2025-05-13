@@ -41,12 +41,11 @@ def GetWeatherProvinceApiView(request):
             return Response({"error": "Missing 'province' parameter"}, status=status.HTTP_400_BAD_REQUEST)
         
         try:
-            weather_data = list(Weather.objects.filter(province=province).values(
-                'id', 'province', 'time', 'temperature', 'temp_max', 'temp_min',
-                'precipitation', 'windspeed_max', 'uv_index_max', 'sunshine_hours',
-                'sundown_hours', 'weather_code'
-            ))[-8:]
-            return Response({"weather_data":weather_data}, status=status.HTTP_200_OK)
+            weather_data = Weather.objects.filter(province=province).order_by('time')
+            # print(weather_data)
+            serialize = WeatherSerializer(weather_data, many=True)
+            # print(serialize)
+            return Response(serialize.data[-8:], status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
@@ -59,13 +58,21 @@ def GetPredictWeatherApiView(request):
         if not province:
             return Response({"error": "Missing 'province' parameter"}, status=status.HTTP_400_BAD_REQUEST)
         try:
-            predict_weather = PredictWeather.objects.filter(province=province)
-            print(predict_weather)
+            # if province=="TP Hồ Chí Minh":
+            #     province = "TP. Hồ Chí Minh"
+            if "Hồ Chí Minh" in province:
+                province = "TP. Hồ Chí Minh"
+            else:
+                province = province.title()
+            # print(province)
+            predict_weather = PredictWeather.objects.filter(province=province).order_by('date')
+            # print(predict_weather)
             serialize = PredictWeatherSerializer(predict_weather, many=True)
             # print(serialize)
             return Response(serialize.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
 
 @api_view(['POST'])
 def SubscribeApiView(request):
