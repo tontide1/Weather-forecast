@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Weather, PredictWeather, Subscriber
+from .models import Weather, PredictWeather
 
 
 
@@ -13,10 +13,3 @@ class PredictWeatherSerializer(serializers.ModelSerializer):
     class Meta:
         model = PredictWeather
         fields = "__all__"
-
-# ... existing serializers ...
-
-class SubscriberSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Subscriber
-        fields = ['email', 'province']

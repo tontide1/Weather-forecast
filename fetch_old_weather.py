@@ -72,8 +72,8 @@ provinces = [
 ]
 # Tạo thư mục weather_data nếu chưa tồn tại
 os.makedirs("weather_data", exist_ok=True)
-start_date = date(2025, 4, 1)
-end_date = date(2025, 5, 10)
+start_date = date(2025, 5, 1)
+end_date = date(2025, 5, 31)
 csv_file = f"weather_data/{start_date.isoformat()}_{end_date.isoformat()}.csv"
 header = ["Province", "Time", "Temperature", "Temp_Max", "Temp_Min", "Precipitation", "Windspeed_Max", "UV_Index_Max", "Sunshine_Hours", "Sundown_Hours", "Weather_Code", "Humidity", "Feel_Like"]
 

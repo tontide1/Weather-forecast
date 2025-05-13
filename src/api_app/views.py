@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 
 from .models import Weather, PredictWeather, Subscriber
-from .serializers import WeatherSerializer, PredictWeatherSerializer, SubscriberSerializer
+from .serializers import WeatherSerializer, PredictWeatherSerializer
 
 
 
@@ -73,48 +73,50 @@ def GetPredictWeatherApiView(request):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-# API lưu email và tỉnh của user
-@api_view(['POST'])
-def subscribe_weather(request):
-    if request.method == 'POST':
-        serializer = SubscriberSerializer(data=request.data)
-        if serializer.is_valid():
-            try:
-                subscriber = serializer.save()
-                return Response({
-                    'message': 'Đăng ký thành công! Bạn sẽ nhận được dự báo thời tiết hàng ngày vào lúc 7h sáng.',
-                    'subscriber': serializer.data
-                }, status=status.HTTP_201_CREATED)
-            except Exception as e:
-                return Response({
-                    'message': 'Email này đã được đăng ký.',
-                    'error': str(e)
-                }, status=status.HTTP_400_BAD_REQUEST)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# API lưu email và tỉnh của user
 @api_view(['POST'])
 def SubscribeApiView(request):
     if request.method == 'POST':
-        email = request.data.get('email')
-        province = request.data.get('province')
-        
-        if not email or not province:
+        try:
+            email = request.data.get('email')
+            province = request.data.get('province')
+            
+            if not email or not province:
+                return Response(
+                    {"error": "Email and province are required", "type": "error"}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            # Check if subscriber already exists with the same email and province
+            subscriber = Subscriber.objects.filter(email=email, province=province).first()
+            
+            if subscriber:
+                # If subscriber exists with same email and province, just activate if inactive
+                if not subscriber.is_active:
+                    subscriber.is_active = True
+                    subscriber.save()
+                    return Response({
+                        "message": "Kích hoạt lại đăng ký thành công!",
+                        "type": "success"
+                    }, status=status.HTTP_200_OK)
+                else:
+                    return Response({
+                        "message": "Bạn đã đăng ký tỉnh này rồi!",
+                        "type": "error"
+                    }, status=status.HTTP_200_OK)
+            else:
+                # Create new subscription
+                subscriber = Subscriber.objects.create(
+                    email=email,
+                    province=province
+                )
+                return Response({
+                    "message": "Đăng ký thành công! Bạn sẽ nhận email về thời tiết vào lúc 7h sáng mỗi ngày!",
+                    "type": "success"
+                }, status=status.HTTP_200_OK)
+            
+        except Exception as e:
             return Response(
-                {"error": "Email and province are required"}, 
-                status=status.HTTP_400_BAD_REQUEST
+                {"error": str(e), "type": "error"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-        serializer = SubscriberSerializer(data=request.data)
-        if serializer.is_valid():
-            try:
-                subscriber = serializer.save()
-                return Response({
-                    'message': 'Đăng ký thành công! Bạn sẽ nhận được dự báo thời tiết hàng ngày vào lúc 7h sáng.',
-                    'subscriber': serializer.data
-                }, status=status.HTTP_201_CREATED)
-            except Exception as e:
-                return Response({
-                    'message': 'Email này đã được đăng ký.',
-                    'error': str(e)
-                }, status=status.HTTP_400_BAD_REQUEST)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

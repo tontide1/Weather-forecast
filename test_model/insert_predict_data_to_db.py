@@ -62,7 +62,7 @@ if connection is not None:
         # for column in columns:
         #     print(column[0])
           # Đọc file CSV và chèn dữ liệu vào bảng
-        data_file = "xgboost_predictions/weather_forecast_7days.csv"
+        data_file = "test_model/xgboost_predictions/weather_forecast_7days.csv"
         with open(data_file, mode="r", encoding="utf-8") as csv_file:
             cursor.copy_expert(
                 f"""
