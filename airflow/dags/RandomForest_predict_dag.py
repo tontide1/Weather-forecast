@@ -1,15 +1,18 @@
 import os
 import numpy as np
 import pandas as pd
-import xgboost as xgb
-from datetime import datetime, timedelta
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import LabelEncoder
+from datetime import datetime, timedelta
+import os
+import pandas as pd
+import numpy as np
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 
 # Định nghĩa các biến
 DATA_DIR = "/opt/airflow/weather_data"
-PREDICTION_DIR = "/opt/airflow/xgboost_predictions"
+PREDICTION_DIR = "/opt/airflow/RandomForest_predictions"
 # PREDICTION_DIR = "/opt/airflow/weather_data"
 PREDICTION_FILE = os.path.join(PREDICTION_DIR, "weather_forecast_7days.csv")
 
@@ -18,7 +21,7 @@ PREDICTION_FILE = os.path.join(PREDICTION_DIR, "weather_forecast_7days.csv")
 def start_task():
     print("Bắt đầu xây dựng mô hình dự báo thời tiết.")
 
-def build_model_xgboost():
+def build_randomforest_model():
     # Đọc dữ liệu
     print("Đang đọc dữ liệu...")
     csv_filename = 'historical_weather_data.csv'
@@ -29,10 +32,7 @@ def build_model_xgboost():
 
     # Kiểm tra và làm sạch dữ liệu
     print("Đang xử lý dữ liệu...")
-    # df['Time'] = pd.to_datetime(df['Time'])
-    # print(df['Time'].head())
     df['Time'] = pd.to_datetime(df['Time']).dt.normalize()
-    print(df['Time'].head())
     df = df.dropna(subset=['Temp_Max', 'Temp_Min', 'Weather_Code'])
     df['Weather_Code'] = df['Weather_Code'].astype(int)
 
@@ -139,39 +139,36 @@ def build_model_xgboost():
         unique_weather_codes = y_weather_code.unique()
         print(f"  Mã thời tiết trong dữ liệu của {province_name}: {unique_weather_codes}")
         
-        # Huấn luyện mô hình XGBoost cho nhiệt độ cao
-        model_temp_max = xgb.XGBRegressor(
+        # Huấn luyện mô hình Random Forest cho nhiệt độ cao
+        model_temp_max = RandomForestRegressor(
             n_estimators=100,
-            learning_rate=0.1,
-            max_depth=5,
-            subsample=0.8,
-            colsample_bytree=0.8,
-            objective='reg:squarederror',
-            random_state=42
+            max_depth=10,
+            min_samples_split=5,
+            min_samples_leaf=2,
+            random_state=42,
+            n_jobs=-1
         )
         model_temp_max.fit(X_train, y_temp_max)
         
-        # Huấn luyện mô hình XGBoost cho nhiệt độ thấp
-        model_temp_min = xgb.XGBRegressor(
+        # Huấn luyện mô hình Random Forest cho nhiệt độ thấp
+        model_temp_min = RandomForestRegressor(
             n_estimators=100,
-            learning_rate=0.1,
-            max_depth=5,
-            subsample=0.8,
-            colsample_bytree=0.8,
-            objective='reg:squarederror',
-            random_state=42
+            max_depth=10,
+            min_samples_split=5,
+            min_samples_leaf=2,
+            random_state=42,
+            n_jobs=-1
         )
         model_temp_min.fit(X_train, y_temp_min)
         
-        # Huấn luyện mô hình XGBoost cho mã thời tiết (cũng sử dụng hồi quy)
-        model_weather_code = xgb.XGBRegressor(
+        # Huấn luyện mô hình Random Forest cho mã thời tiết
+        model_weather_code = RandomForestRegressor(
             n_estimators=100,
-            learning_rate=0.1,
-            max_depth=5,
-            subsample=0.8,
-            colsample_bytree=0.8,
-            objective='reg:squarederror',
-            random_state=42
+            max_depth=10,
+            min_samples_split=5,
+            min_samples_leaf=2,
+            random_state=42,
+            n_jobs=-1
         )
         model_weather_code.fit(X_train, y_weather_code)
         
@@ -318,20 +315,10 @@ def build_model_xgboost():
         
         print(f"  ✓ Đã dự báo cho tỉnh {province_name}")
 
-
-    # Tạo thư mục lưu kết quả dự đoán
-    os.makedirs(PREDICTION_DIR, exist_ok=True)
-
-    # Xếp lại và lưu kết quả dự đoán (chỉ lưu file này)
     prediction_results = prediction_results[['Province', 'Time', 'Temp_Max', 'Temp_Min', 'Weather_Code', 'Weather_Description']]
     print(prediction_results.head())
-    prediction_results.to_csv(PREDICTION_FILE, index=False)
-
-    print(f"\nĐã hoàn thành dự báo thời tiết cho {len(provinces)} tỉnh thành!")
-    print(f"File dự báo: {PREDICTION_FILE}")
-
-
-def insert_predict_data_to_postgresql():
+    prediction_results_tuples = list(prediction_results.itertuples(index=False, name=None))
+    
     import psycopg2
     try:
         # Kết nối đến PostgreSQL
@@ -362,22 +349,6 @@ def insert_predict_data_to_postgresql():
         )
         connection.commit()
 
-        # query = """
-        # SELECT table_name
-        # FROM information_schema.tables
-        # WHERE table_schema = 'public'
-        # AND table_type = 'BASE TABLE';
-        # """
-        # cursor.execute(query)
-        # # Lấy kết quả từ truy vấn
-        # tables = cursor.fetchall()
-        # # In tên các bảng
-        # print("Danh sách các bảng trong cơ sở dữ liệu:")
-        # for table in tables:
-        #     print(table[0])
-        
-        # Đọc dữ liệu từ file dự đoán
-        # prediction_df = pd.read_csv(PREDICTION_FILE)
         # Tạo bảng tạm để chứa dữ liệu từ CSV
         temp_table_name = table_name+"_temp"
         cursor.execute(
@@ -393,21 +364,18 @@ def insert_predict_data_to_postgresql():
             """
         )
         connection.commit()
+
         # Chèn dữ liệu từ CSV vào bảng tạm
-        data_file = PREDICTION_FILE
-        with open(data_file, mode="r", encoding="utf-8") as csv_file:
-            cursor.copy_expert(
-                f"""
-                COPY {temp_table_name} (
-                    Province, Time, Temp_Max, Temp_Min, Weather_Code, Weather_Description
-                )
-                FROM STDIN
-                WITH (FORMAT CSV, HEADER TRUE);
-                """,
-                csv_file
+        query = f"""
+            INSERT INTO {temp_table_name} (
+                Province, Time, Temp_Max, Temp_Min, Weather_Code, Weather_Description
             )
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """
+        cursor.executemany(query, prediction_results_tuples)
         connection.commit()
-        # Chuyển dữ liệu từ bảng tạm sang bảng chính với ON CONFLICT
+
+        # Ghi dữ liệu từ bảng tạm vào bảng chính
         cursor.execute(
             f"""
             INSERT INTO {table_name} (
@@ -434,6 +402,19 @@ def insert_predict_data_to_postgresql():
         cursor.close()
         connection.close()
 
+    # Tạo thư mục lưu kết quả dự đoán
+    # os.makedirs(PREDICTION_DIR, exist_ok=True)
+
+    # Xếp lại và lưu kết quả dự đoán (chỉ lưu file này)
+    # prediction_results.to_csv(PREDICTION_FILE, index=False)
+
+    print(f"\nĐã hoàn thành dự báo thời tiết cho {len(provinces)} tỉnh thành!")
+    # print(f"File dự báo: {PREDICTION_FILE}")
+
+
+def insert_predict_data_to_postgresql():
+    pass
+
 def end_task():
     print("Hoàn thành xây dựng mô hình dự báo thời tiết.")
 
@@ -444,15 +425,15 @@ default_args = {
     'owner': 'Predictor',
     'start_date': datetime(2025, 5, 10),
     'retries': 1,
-    # 'retry_delay': timedelta(minutes=5),
-    'retry_delay': timedelta(seconds=5),
+    'retry_delay': timedelta(minutes=5),
+    # 'retry_delay': timedelta(seconds=5),
 }
 
 # Define the DAG
 dag = DAG(
-    dag_id='Build_XGBoost_Model',
+    dag_id='Build_RandomForest_Model',
     default_args=default_args,
-    description="DAG dự báo thời tiết bằng XGBoost",
+    description="DAG dự báo thời tiết bằng RandomForest",
     schedule_interval='@daily',
     catchup=False,
 )
@@ -465,15 +446,9 @@ start_task = PythonOperator(
     dag=dag,
 )
 
-build_model_xgboost_task = PythonOperator(
-    task_id='build_model_xgboost',
-    python_callable=build_model_xgboost,
-    dag=dag,
-)
-
-insert_predict_data_to_postgresql_task = PythonOperator(
-    task_id='insert_predict_data_to_postgresql',
-    python_callable=insert_predict_data_to_postgresql,
+build_model_randomforest_task = PythonOperator(
+    task_id='build_randomforest_model',
+    python_callable=build_randomforest_model,
     dag=dag,
 )
 
@@ -484,4 +459,4 @@ end_task = PythonOperator(
 )
 
 # Set task dependencies
-start_task >> build_model_xgboost_task >> insert_predict_data_to_postgresql_task >> end_task
+start_task >> build_model_randomforest_task >> end_task

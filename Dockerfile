@@ -1,37 +1,73 @@
-# Base image
-FROM python:3.11-slim-bullseye
+# filepath: c:\Users\tontide1\Desktop\weather\Weather-forecast_1\Dockerfile
+# FROM apache/airflow:2.7.3-python3.11
 
-# Set environment variables for Python optimization
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PIP_NO_CACHE_DIR=1 \
-    PYTHONPATH=/app
+# USER root
 
-# Working directory
-WORKDIR /app
+# # Install system dependencies
+# RUN apt-get update && \
+#     apt-get install -y \
+#     build-essential \
+#     postgresql-client \
+#     && apt-get clean \
+#     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements and install dependencies
+# USER airflow
+
+# # Copy requirements files
+# COPY requirements.txt .
+# COPY airflow/requirements.txt ./airflow-requirements.txt
+
+# # Install Python dependencies and setup directories
+# RUN mkdir -p /RandomForest_predictions && \
+#     mkdir -p ${AIRFLOW_HOME}/weather_data && \
+#     pip install --no-cache-dir -r requirements.txt && \
+#     pip install --no-cache-dir -r airflow-requirements.txt
+
+# # Set the AIRFLOW_HOME environment variable
+# ENV AIRFLOW_HOME=/opt/airflow
+
+# # Copy DAGs, plugins, and data
+# COPY --chown=airflow:root airflow/dags/ ${AIRFLOW_HOME}/dags/
+# COPY --chown=airflow:root weather_data/ ${AIRFLOW_HOME}/weather_data/
+
+# # Copy entrypoint script
+# COPY airflow-entrypoint.sh /entrypoint.sh
+# RUN chmod +x /entrypoint.sh
+
+# # Configure for Railway deployment
+# ENV PORT=8080
+# ENV AIRFLOW__CORE__LOAD_EXAMPLES=False
+# ENV AIRFLOW__WEBSERVER__EXPOSE_CONFIG=True
+# ENV AIRFLOW__WEBSERVER__BASE_URL=https://${RAILWAY_PUBLIC_DOMAIN}
+# ENV AIRFLOW__WEBSERVER__ENABLE_PROXY_FIX=True
+# ENV AIRFLOW__WEBSERVER__PROXY_FIX_X_FOR=1
+# ENV AIRFLOW__WEBSERVER__PROXY_FIX_X_PROTO=1
+# ENV AIRFLOW__WEBSERVER__PROXY_FIX_X_HOST=1
+# ENV AIRFLOW__WEBSERVER__PROXY_FIX_X_PORT=1
+
+# # Health check
+# EXPOSE 8080
+# HEALTHCHECK --interval=30s --timeout=30s --retries=3 CMD curl -f http://localhost:8080/health || exit 1
+
+# ENTRYPOINT ["/entrypoint.sh"]
+
+
+
+# Dockerfile
+FROM apache/airflow:2.7.3-python3.11
+
+# Chuyển sang user root để cài đặt thư viện
+USER root
+
+# Cài đặt các gói hệ thống cần thiết (nếu cần)
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+# Chuyển về user airflow để cài đặt thư viện Python
+USER airflow
+
+# Cài đặt các thư viện Python bổ sung
 COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
-
-# Install system dependencies including PostgreSQL client
-RUN apt-get update && \
-    apt-get install -y postgresql-client && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-# Create directories for weather data storage
-RUN mkdir -p /app/weather_data
-
-# Copy source code
-COPY . .
-
-# Make entrypoint script executable
-RUN chmod +x ./entrypoint.sh
-
-# Use entrypoint script
-ENTRYPOINT ["./entrypoint.sh"]
-
-# Run server
-CMD ["gunicorn", "--chdir", "/app/src", "weather_forecast_management.wsgi:application", "--bind", "0.0.0.0:8000"]
+RUN pip install --no-cache-dir -r requirements.txt

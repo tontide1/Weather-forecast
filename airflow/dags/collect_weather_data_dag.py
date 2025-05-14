@@ -5,6 +5,10 @@ import numpy as np
 import pandas as pd
 import xgboost as xgb
 from datetime import date, datetime, timedelta
+import os
+import requests
+import pandas as pd
+import json
 from sklearn.preprocessing import LabelEncoder
 from airflow import DAG
 from airflow.operators.python import PythonOperator
@@ -236,8 +240,8 @@ def collect_weather_data():
         print(f"✅ Đã chèn {len(all_rows)} dòng vào PostgreSQL")
 
 
-        for row in all_rows:
-            print(row)
+        # for row in all_rows:
+        #     print(row)
         # Kiểm tra file có tồn tại không
         file_exists = os.path.isfile(csv_file)
         # Ghi vào file CSV một lần
@@ -267,8 +271,8 @@ default_args = {
     'owner': 'Collector',
     'start_date': datetime(2025, 5, 10),
     'retries': 3,
-    # 'retry_delay': timedelta(minutes=5),
-    'retry_delay': timedelta(seconds=5),
+    'retry_delay': timedelta(minutes=5),
+    # 'retry_delay': timedelta(seconds=5),
 }
 
 # Define the DAG
@@ -276,7 +280,7 @@ dag = DAG(
     dag_id='Collect_Weather_Data',
     default_args=default_args,
     description="DAG thu thập dữ liệu thời tiết",
-    schedule_interval='0 */3 * * *',
+    schedule_interval="@daily",
     catchup=False,
 )
 

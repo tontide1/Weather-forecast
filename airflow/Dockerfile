@@ -5,8 +5,8 @@ USER root
 # Install system dependencies
 RUN apt-get update && \
     apt-get install -y \
-    build-essential \
     postgresql-client \
+    build-essential \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -23,3 +23,10 @@ ENV AIRFLOW_HOME=/opt/airflow
 
 # Initialize directories
 RUN mkdir -p ${AIRFLOW_HOME}/weather_data
+
+# Copy DAGs if you have them
+COPY --chown=airflow:root dags/ ${AIRFLOW_HOME}/dags/
+
+# Copy any other necessary files (plugins, configs, etc.)
+# COPY --chown=airflow:root plugins/ ${AIRFLOW_HOME}/plugins/
+# COPY --chown=airflow:root config/ ${AIRFLOW_HOME}/config/
