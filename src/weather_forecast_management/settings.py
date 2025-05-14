@@ -24,9 +24,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-jua5dhr7mlu!a8$d6hdd=$vic51b5#(d0o0r9yvgu*y3vgm3yv'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# Default settings that will be overridden if DB_LIVE is True
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# Always include Railway domains in ALLOWED_HOSTS to prevent DisallowedHost errors
+ALLOWED_HOSTS = ['weather-forecast-production-b9bd.up.railway.app', '.railway.app', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -75,22 +77,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'weather_forecast_management.wsgi.application'
 
-DB_LIVE = os.getenv('DB_LIVE')
+DB_LIVE = os.getenv('DATABASE_LIVE')
 
-if DB_LIVE == 'True':
+# Check if we're running on Railway by looking for specific environment variables
+IS_RAILWAY = os.getenv('RAILWAY_ENVIRONMENT') is not None or os.getenv('RAILWAY_SERVICE_ID') is not None
+
+if DB_LIVE == 'True' or IS_RAILWAY:
     # Production settings
     DEBUG = False
-    ALLOWED_HOSTS = ['weather-forecast-production-b9bd.up.railway.app', '.railway.app']  # Railway domain
-    # Add whitenoise for static files in production
-    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-    # Improve security
+    # We already set ALLOWED_HOSTS globally to include Railway domains
+    
+    # Improve security in production
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
 else:
     # Development settings
     DEBUG = True
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 #     DEBUG = True
 #     ALLOWED_HOSTS = ['localhost', '127.0.0.1']
     # Database
