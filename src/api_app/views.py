@@ -39,12 +39,9 @@ def GetWeatherProvinceApiView(request):
         province = request.GET.get('province', None)
         if not province:
             return Response({"error": "Missing 'province' parameter"}, status=status.HTTP_400_BAD_REQUEST)
-        
         try:
             weather_data = Weather.objects.filter(province=province).order_by('time')
-            # print(weather_data)
             serialize = WeatherSerializer(weather_data, many=True)
-            # print(serialize)
             return Response(serialize.data[-8:], status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -58,17 +55,14 @@ def GetPredictWeatherApiView(request):
         if not province:
             return Response({"error": "Missing 'province' parameter"}, status=status.HTTP_400_BAD_REQUEST)
         try:
-            # if province=="TP Hồ Chí Minh":
-            #     province = "TP. Hồ Chí Minh"
             if "Hồ Chí Minh" in province:
-                province = "TP. Hồ Chí Minh"
+                province = "TP Hồ Chí Minh"
             else:
                 province = province.title()
-            # print(province)
-            predict_weather = PredictWeather.objects.filter(province=province).order_by('date')
-            # print(predict_weather)
+            predict_weather = PredictWeather.objects.filter(province=province).order_by('time')
+            if not predict_weather.exists():
+                return Response({"error": f"No data found for province: {province}"}, status=status.HTTP_404_NOT_FOUND)
             serialize = PredictWeatherSerializer(predict_weather, many=True)
-            # print(serialize)
             return Response(serialize.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

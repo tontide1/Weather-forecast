@@ -3,70 +3,71 @@ import csv
 import os
 from datetime import date, timedelta, datetime
 
+
 provinces = [
     {"name": "An Giang", "lat": 10.521, "lon": 105.125},
     {"name": "Bà Rịa - Vũng Tàu", "lat": 10.541, "lon": 107.242},
-    # {"name": "Bạc Liêu", "lat": 9.294, "lon": 105.724},
-    # {"name": "Bắc Giang", "lat": 21.273, "lon": 106.194},
-    # {"name": "Bắc Kạn", "lat": 22.147, "lon": 105.834},
-    # {"name": "Bắc Ninh", "lat": 21.186, "lon": 106.076},
-    # {"name": "Bến Tre", "lat": 10.243, "lon": 106.375},
-    # {"name": "Bình Dương", "lat": 11.325, "lon": 106.477},
-    # {"name": "Bình Định", "lat": 14.166, "lon": 108.902},
-    # {"name": "Bình Phước", "lat": 11.751, "lon": 106.723},
-    # {"name": "Bình Thuận", "lat": 11.090, "lon": 108.072},
-    # {"name": "Cà Mau", "lat": 9.176, "lon": 105.152},
-    # {"name": "Cao Bằng", "lat": 22.665, "lon": 106.257},
-    # {"name": "Cần Thơ", "lat": 10.045, "lon": 105.746},
-    # {"name": "Đà Nẵng", "lat": 16.047, "lon": 108.206},
-    # {"name": "Đắk Lắk", "lat": 12.710, "lon": 108.237},
-    # {"name": "Đắk Nông", "lat": 12.264, "lon": 107.609},
-    # {"name": "Điện Biên", "lat": 21.383, "lon": 103.016},
-    # {"name": "Đồng Nai", "lat": 10.948, "lon": 106.824},
-    # {"name": "Đồng Tháp", "lat": 10.535, "lon": 105.636},
-    # {"name": "Gia Lai", "lat": 13.807, "lon": 108.109},
-    # {"name": "Hà Giang", "lat": 22.750, "lon": 104.983},
-    # {"name": "Hà Nam", "lat": 20.583, "lon": 105.922},
-    # {"name": "Hà Nội", "lat": 21.028, "lon": 105.854},
-    # {"name": "Hà Tĩnh", "lat": 18.342, "lon": 105.905},
-    # {"name": "Hải Dương", "lat": 20.938, "lon": 106.330},
-    # {"name": "Hải Phòng", "lat": 20.844, "lon": 106.688},
-    # {"name": "Hậu Giang", "lat": 9.757, "lon": 105.641},
-    # {"name": "Hòa Bình", "lat": 20.817, "lon": 105.337},
-    # {"name": "Hưng Yên", "lat": 20.646, "lon": 106.051},
-    # {"name": "Khánh Hòa", "lat": 12.259, "lon": 109.196},
-    # {"name": "Kiên Giang", "lat": 10.012, "lon": 105.080},
-    # {"name": "Kon Tum", "lat": 14.349, "lon": 108.000},
-    # {"name": "Lai Châu", "lat": 22.396, "lon": 103.458},
-    # {"name": "Lâm Đồng", "lat": 11.575, "lon": 108.142},
-    # {"name": "Lạng Sơn", "lat": 21.853, "lon": 106.761},
-    # {"name": "Lào Cai", "lat": 22.485, "lon": 103.970},
-    # {"name": "Long An", "lat": 10.543, "lon": 106.411},
-    # {"name": "Nam Định", "lat": 20.438, "lon": 106.162},
-    # {"name": "Nghệ An", "lat": 19.234, "lon": 104.920},
-    # {"name": "Ninh Bình", "lat": 20.250, "lon": 105.974},
-    # {"name": "Ninh Thuận", "lat": 11.564, "lon": 108.988},
-    # {"name": "Phú Thọ", "lat": 21.345, "lon": 105.254},
-    # {"name": "Phú Yên", "lat": 13.088, "lon": 109.092},
-    # {"name": "Quảng Bình", "lat": 17.468, "lon": 106.622},
-    # {"name": "Quảng Nam", "lat": 15.539, "lon": 108.019},
-    # {"name": "Quảng Ngãi", "lat": 15.120, "lon": 108.800},
-    # {"name": "Quảng Ninh", "lat": 21.006, "lon": 107.292},
-    # {"name": "Quảng Trị", "lat": 16.744, "lon": 107.189},
-    # {"name": "Sóc Trăng", "lat": 9.602, "lon": 105.973},
-    # {"name": "Sơn La", "lat": 21.325, "lon": 103.918},
-    # {"name": "Tây Ninh", "lat": 11.365, "lon": 106.098},
-    # {"name": "Thái Bình", "lat": 20.446, "lon": 106.342},
-    # {"name": "Thái Nguyên", "lat": 21.594, "lon": 105.848},
-    # {"name": "Thanh Hóa", "lat": 19.807, "lon": 105.776},
-    # {"name": "Thừa Thiên Huế", "lat": 16.463, "lon": 107.590},
-    # {"name": "Tiền Giang", "lat": 10.449, "lon": 106.342},
-    # {"name": "TP Hồ Chí Minh", "lat": 10.776, "lon": 106.700},
-    # {"name": "Trà Vinh", "lat": 9.812, "lon": 106.299},
-    # {"name": "Tuyên Quang", "lat": 21.823, "lon": 105.218},
-    # {"name": "Vĩnh Long", "lat": 10.253, "lon": 105.973},
-    # {"name": "Vĩnh Phúc", "lat": 21.308, "lon": 105.604},
-    # {"name": "Yên Bái", "lat": 21.705, "lon": 104.870}
+    {"name": "Bạc Liêu", "lat": 9.294, "lon": 105.724},
+    {"name": "Bắc Giang", "lat": 21.273, "lon": 106.194},
+    {"name": "Bắc Kạn", "lat": 22.147, "lon": 105.834},
+    {"name": "Bắc Ninh", "lat": 21.186, "lon": 106.076},
+    {"name": "Bến Tre", "lat": 10.243, "lon": 106.375},
+    {"name": "Bình Dương", "lat": 11.325, "lon": 106.477},
+    {"name": "Bình Định", "lat": 14.166, "lon": 108.902},
+    {"name": "Bình Phước", "lat": 11.751, "lon": 106.723},
+    {"name": "Bình Thuận", "lat": 11.090, "lon": 108.072},
+    {"name": "Cà Mau", "lat": 9.176, "lon": 105.152},
+    {"name": "Cao Bằng", "lat": 22.665, "lon": 106.257},
+    {"name": "Cần Thơ", "lat": 10.045, "lon": 105.746},
+    {"name": "Đà Nẵng", "lat": 16.047, "lon": 108.206},
+    {"name": "Đắk Lắk", "lat": 12.710, "lon": 108.237},
+    {"name": "Đắk Nông", "lat": 12.264, "lon": 107.609},
+    {"name": "Điện Biên", "lat": 21.383, "lon": 103.016},
+    {"name": "Đồng Nai", "lat": 10.948, "lon": 106.824},
+    {"name": "Đồng Tháp", "lat": 10.535, "lon": 105.636},
+    {"name": "Gia Lai", "lat": 13.807, "lon": 108.109},
+    {"name": "Hà Giang", "lat": 22.750, "lon": 104.983},
+    {"name": "Hà Nam", "lat": 20.583, "lon": 105.922},
+    {"name": "Hà Nội", "lat": 21.028, "lon": 105.854},
+    {"name": "Hà Tĩnh", "lat": 18.342, "lon": 105.905},
+    {"name": "Hải Dương", "lat": 20.938, "lon": 106.330},
+    {"name": "Hải Phòng", "lat": 20.844, "lon": 106.688},
+    {"name": "Hậu Giang", "lat": 9.757, "lon": 105.641},
+    {"name": "Hòa Bình", "lat": 20.817, "lon": 105.337},
+    {"name": "Hưng Yên", "lat": 20.646, "lon": 106.051},
+    {"name": "Khánh Hòa", "lat": 12.259, "lon": 109.196},
+    {"name": "Kiên Giang", "lat": 10.012, "lon": 105.080},
+    {"name": "Kon Tum", "lat": 14.349, "lon": 108.000},
+    {"name": "Lai Châu", "lat": 22.396, "lon": 103.458},
+    {"name": "Lâm Đồng", "lat": 11.575, "lon": 108.142},
+    {"name": "Lạng Sơn", "lat": 21.853, "lon": 106.761},
+    {"name": "Lào Cai", "lat": 22.485, "lon": 103.970},
+    {"name": "Long An", "lat": 10.543, "lon": 106.411},
+    {"name": "Nam Định", "lat": 20.438, "lon": 106.162},
+    {"name": "Nghệ An", "lat": 19.234, "lon": 104.920},
+    {"name": "Ninh Bình", "lat": 20.250, "lon": 105.974},
+    {"name": "Ninh Thuận", "lat": 11.564, "lon": 108.988},
+    {"name": "Phú Thọ", "lat": 21.345, "lon": 105.254},
+    {"name": "Phú Yên", "lat": 13.088, "lon": 109.092},
+    {"name": "Quảng Bình", "lat": 17.468, "lon": 106.622},
+    {"name": "Quảng Nam", "lat": 15.539, "lon": 108.019},
+    {"name": "Quảng Ngãi", "lat": 15.120, "lon": 108.800},
+    {"name": "Quảng Ninh", "lat": 21.006, "lon": 107.292},
+    {"name": "Quảng Trị", "lat": 16.744, "lon": 107.189},
+    {"name": "Sóc Trăng", "lat": 9.602, "lon": 105.973},
+    {"name": "Sơn La", "lat": 21.325, "lon": 103.918},
+    {"name": "Tây Ninh", "lat": 11.365, "lon": 106.098},
+    {"name": "Thái Bình", "lat": 20.446, "lon": 106.342},
+    {"name": "Thái Nguyên", "lat": 21.594, "lon": 105.848},
+    {"name": "Thanh Hóa", "lat": 19.807, "lon": 105.776},
+    {"name": "Thừa Thiên Huế", "lat": 16.463, "lon": 107.590},
+    {"name": "Tiền Giang", "lat": 10.449, "lon": 106.342},
+    {"name": "TP Hồ Chí Minh", "lat": 10.776, "lon": 106.700},
+    {"name": "Trà Vinh", "lat": 9.812, "lon": 106.299},
+    {"name": "Tuyên Quang", "lat": 21.823, "lon": 105.218},
+    {"name": "Vĩnh Long", "lat": 10.253, "lon": 105.973},
+    {"name": "Vĩnh Phúc", "lat": 21.308, "lon": 105.604},
+    {"name": "Yên Bái", "lat": 21.705, "lon": 104.870}
 ]
 
 # Tạo thư mục weather_data nếu chưa tồn tại
@@ -76,7 +77,6 @@ today = date.today()
 start_date = today - timedelta(days=30)
 end_date = today
 
-
 current_hour = datetime.now().hour
 print(f"📅 Ngày bắt đầu: {start_date}")
 print(f"📅 Ngày kết thúc: {end_date}")
@@ -84,6 +84,10 @@ print(f"📅 Ngày kết thúc: {end_date}")
 csv_file = "weather_data/historical_weather_data.csv"
 header = ["Province", "Time", "Temperature", "Temp_Max", "Temp_Min", "Precipitation", "Windspeed_Max", "UV_Index_Max", "Sunshine_Hours", "Sundown_Hours", "Weather_Code", "Humidity", "Feel_Like"]
 
+# Kiểm tra file có tồn tại không
+# file_exists = os.path.isfile(csv_file)
+
+# Danh sách chứa tất cả dữ liệu thu thập được
 all_rows = []
 
 for province in provinces:
@@ -179,7 +183,7 @@ try:
         'host': os.environ.get("DATABASE_HOST"),
         'port': os.environ.get("DATABASE_PORT")
     }
-    print(DB_PARAMS)
+    # print(DB_PARAMS)
 
     # Kết nối đến PostgreSQL
     connection = psycopg2.connect(**DB_PARAMS)

@@ -73,12 +73,12 @@ if [ ! -d src ]; then
 fi
 
 echo "=== INSERT HISTORICAL DATA INTO DB ==="
-python src_data/insert_crawl_data_to_db.py
+python src_data/fetch_old_weather.py
 echo "=== INSERT HISTORICAL DATA INTO DB COMPLETELY ==="
 
-echo "=== INSERT PREDICT DATA INTO DB ==="
-python test_model/insert_predict_data_to_db.py
-echo "=== INSERT PREDICT DATA INTO DB COMPLETELY ==="
+echo "=== FORECAST FUTURE WEATHER ==="
+python test_model/xgboost_model.py
+echo "=== INSERT FORECAST WEATHER INTO DB COMPLETELY ==="
 
 echo "=== NAVIGATE TO PROJECT DIRECTORY ==="
 cd /app/src
@@ -88,9 +88,6 @@ mkdir -p static media
 
 echo "=== COLLECT STATIC FILES ==="
 python manage.py collectstatic --noinput
-
-# echo "=== LIST STATICFILES ==="
-# ls -R /app/src/staticfiles/web_app
 
 echo "=== CREATE MIGRATIONS ==="
 find /app/src/*/migrations/ -type f -name "*.py" ! -name "__init__.py" -exec rm -f {} +
