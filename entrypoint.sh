@@ -19,8 +19,7 @@ fi
 echo "=== LOAD ENVIRONMENT VARIABLES COMPLETELY ==="
 
 # Create necessary directories for Airflow data
-mkdir -p /app/weather_data
-
+mkdir -p /weather_data
 
 echo "=== WAIT FOR DATABASE ==="
 until pg_isready -h $DATABASE_HOST -p $DATABASE_PORT -U $DATABASE_USER; do
@@ -39,12 +38,12 @@ if [ $? -ne 0 ]; then
 fi
 echo "=== DATABASE IS READY ==="
 
-echo "=== CREATE DATABASE ==="
-psql -h "$DATABASE_HOST" -U "$DATABASE_USER" -p "$DATABASE_PORT" -c "DROP DATABASE IF EXISTS $DATABASE_NAME;"
-psql -h "$DATABASE_HOST" -U "$DATABASE_USER" -p "$DATABASE_PORT" -c "CREATE DATABASE $DATABASE_NAME WITH ENCODING='UTF8' TEMPLATE=template0;"
-echo "=== CREATE DATABASE COMPLETELY ==="
+# echo "=== CREATE DATABASE ==="
+# psql -h "$DATABASE_HOST" -U "$DATABASE_USER" -p "$DATABASE_PORT" -c "DROP DATABASE IF EXISTS $DATABASE_NAME;"
+# psql -h "$DATABASE_HOST" -U "$DATABASE_USER" -p "$DATABASE_PORT" -c "CREATE DATABASE $DATABASE_NAME WITH ENCODING='UTF8' TEMPLATE=template0;"
+# echo "=== CREATE DATABASE COMPLETELY ==="
 
-echo "=== UPDATE METADATA OF DATABASE ==="
+echo "UPDATE METADATA OF DATABASE"
 psql -h "$DATABASE_HOST" -U "$DATABASE_USER" -p "$DATABASE_PORT" -c "ALTER DATABASE $DATABASE_NAME REFRESH COLLATION VERSION;"
 echo "=== UPDATE METADATA OF DATABASE COMPLETELY ==="
 
@@ -77,7 +76,7 @@ python src_data/fetch_old_weather.py
 echo "=== INSERT HISTORICAL DATA INTO DB COMPLETELY ==="
 
 echo "=== FORECAST FUTURE WEATHER ==="
-python test_model/xgboost_model.py
+python test_model/randomforest_model.py
 echo "=== INSERT FORECAST WEATHER INTO DB COMPLETELY ==="
 
 echo "=== NAVIGATE TO PROJECT DIRECTORY ==="
