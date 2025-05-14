@@ -18,7 +18,7 @@ else
 fi
 echo "=== LOAD ENVIRONMENT VARIABLES COMPLETELY ==="
 
-# Create necessary directories for Airflow data
+# Create necessary directories for weather data
 mkdir -p /weather_data
 
 echo "=== WAIT FOR DATABASE ==="
