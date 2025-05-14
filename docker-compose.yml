@@ -16,30 +16,30 @@ services:
     volumes:
       - ./:/app
       - ./weather_data:/weather_data
-    depends_on:
-      db:
-        condition: service_healthy
+    # depends_on:
+    #   db:
+    #     condition: service_healthy
     restart: unless-stopped
 
   # PostgreSQL database
-  db:
-    image: postgres:15
-    environment:
-      POSTGRES_DB: ${DATABASE_NAME}
-      POSTGRES_USER: ${DATABASE_USER}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-    ports:
-      - 5432:5432
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${DATABASE_USER}" ]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-    restart: unless-stopped
+  # db:
+  #   image: postgres:15
+  #   environment:
+  #     POSTGRES_DB: ${DATABASE_NAME}
+  #     POSTGRES_USER: ${DATABASE_USER}
+  #     POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+  #   ports:
+  #     - 5432:5432
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data/
+  #   healthcheck:
+  #     test: [ "CMD-SHELL", "pg_isready -U ${DATABASE_USER}" ]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 3
+  #   restart: unless-stopped
   # Airflow services have been moved to a separate codebase
 
   # Persistent data volumes
-volumes:
-  postgres_data: # Database data
+# volumes:
+  # postgres_data: # Database data
