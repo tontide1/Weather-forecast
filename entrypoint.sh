@@ -19,8 +19,7 @@ fi
 echo "=== LOAD ENVIRONMENT VARIABLES COMPLETELY ==="
 
 # Create necessary directories for Airflow data
-# mkdir -p /app/weather_data
-
+mkdir -p /weather_data
 
 echo "=== WAIT FOR DATABASE ==="
 until pg_isready -h $DATABASE_HOST -p $DATABASE_PORT -U $DATABASE_USER; do
@@ -44,7 +43,7 @@ echo "=== DATABASE IS READY ==="
 # psql -h "$DATABASE_HOST" -U "$DATABASE_USER" -p "$DATABASE_PORT" -c "CREATE DATABASE $DATABASE_NAME WITH ENCODING='UTF8' TEMPLATE=template0;"
 # echo "=== CREATE DATABASE COMPLETELY ==="
 
-echo "=== UPDATE METADATA OF DATABASE ==="
+echo "UPDATE METADATA OF DATABASE"
 psql -h "$DATABASE_HOST" -U "$DATABASE_USER" -p "$DATABASE_PORT" -c "ALTER DATABASE $DATABASE_NAME REFRESH COLLATION VERSION;"
 echo "=== UPDATE METADATA OF DATABASE COMPLETELY ==="
 

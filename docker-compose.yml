@@ -15,7 +15,7 @@ services:
       DATABASE_PORT: ${DATABASE_PORT}
     volumes:
       - ./:/app
-      - ./weather_data:/app/weather_data
+      - ./weather_data:/weather_data
     depends_on:
       db:
         condition: service_healthy
@@ -131,4 +131,4 @@ services:
 volumes:
   postgres_data: # Database data
   # airflow_postgres_data: # Airflow database data
-  src_web_volume: # Django web
+  # src_web_volume: # Django web

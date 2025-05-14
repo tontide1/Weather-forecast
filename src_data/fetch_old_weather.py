@@ -128,7 +128,7 @@ for province in provinces:
             day = t.split("T")[0]
 
             # Chỉ lấy giờ chia hết cho 3, không vượt quá current_hour - 3
-            if hour % 3 != 0 or hour > current_hour - 3:
+            if hour % 3 != 0:
                 continue
 
             indices = day_indices[day]
@@ -162,16 +162,6 @@ for province in provinces:
         print(f"✅ {province['name']}: xong")
     else:
         print(f"❌ {province['name']}: lỗi API")
-
-# Ghi vào file CSV một lần
-with open(csv_file, mode="w", newline='', encoding="utf-8-sig") as f:
-    writer = csv.writer(f)
-    # if not file_exists:
-    writer.writerow(header)
-    writer.writerows(all_rows)
-
-print(f"\n📄 Đã lưu {len(all_rows)} dòng vào file: {csv_file}")
-
 
 try:
     import psycopg2
@@ -232,7 +222,15 @@ try:
     connection.commit()
 
     print(f"✅ Đã chèn {len(all_rows)} dòng vào PostgreSQL")
+    # Ghi vào file CSV một lần
+    with open(csv_file, mode="w", newline='', encoding="utf-8-sig") as f:
+        writer = csv.writer(f)
+        # if not file_exists:
+        writer.writerow(header)
+        writer.writerows(all_rows)
 
+    print(f"\n📄 Đã lưu {len(all_rows)} dòng vào file: {csv_file}")
+    
 except Exception as e:
     print(f"❌ Lỗi khi ghi vào PostgreSQL: {e}")
 
