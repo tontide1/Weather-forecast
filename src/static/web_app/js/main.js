@@ -6,6 +6,8 @@ const charts = document.querySelectorAll('.chart');
 let currentWeatherData = null;
 let hasSearched = false; // Track whether user has searched for a location
 const defaultCity = "TP Hồ Chí Minh"; // Đặt TP Hồ Chí Minh làm thành phố mặc định
+let currentViewedProvince = defaultCity; // Tỉnh đang xem hiện tại
+let weatherUpdateInterval = null; // Biến lưu trữ interval để cập nhật dữ liệu
 
 // Thêm hàm getCookie để lấy CSRF token từ cookie
 function getCookie(name) {
@@ -1219,8 +1221,17 @@ function updateWeatherUI(weatherData, forecastWeatherData) {
   // Update temperature
   const temperatureElement = document.querySelector('.temperature');
   if (temperatureElement) {
-    
-    temperatureElement.textContent = `${parseFloat(currentWeather.temperature).toFixed(1)}°C`;
+    console.log(weatherData);
+    for (let i=weatherData.length-1; i>=0 ; i--) {
+      if (new Date(weatherData[i].time).getHours()<=new Date().getHours()) {
+        const weather = weatherData[i].time;
+        // const timestamp = Date.parse(weather);
+        const dateObject = new Date(weather);
+        console.log(dateObject.getHours());
+        temperatureElement.textContent = `${parseFloat(weatherData[i].temperature).toFixed(1)}°C`;
+        break;
+      }
+    }
   }
 
   // Update feels like (using a simple formula since API doesn't provide it)
@@ -1923,6 +1934,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize email subscription form for home_1.html
   initializeEmailSubscription();
 
+  // Bắt đầu cập nhật dữ liệu tự động mỗi 30 giây
+  startAutomaticUpdates(30);
+
   // Handle window resize
   window.addEventListener('resize', () => {
     if (hasSearched && currentWeatherData) {
@@ -1990,6 +2004,9 @@ function saveRecentLocation(province) {
 
 // Cập nhật hàm fetchWeatherData để lưu địa điểm đã xem
 async function fetchWeatherData(province) {
+  // Cập nhật tỉnh hiện tại đang xem
+  currentViewedProvince = province;
+  
   // console.log(`Fetching weather data for ${province}...`);
 
   try {
@@ -2057,92 +2074,32 @@ async function fetchWeatherData(province) {
   }
 }
 
+// Hàm bắt đầu cập nhật dữ liệu tự động (gọi sau khi init)
+function startAutomaticUpdates(intervalInSeconds = 60) {
+  // Dừng interval cũ nếu có
+  stopAutomaticUpdates();
+  
+  // Tạo interval mới (chuyển đổi giây thành mili giây)
+  weatherUpdateInterval = setInterval(() => {
+    if (currentViewedProvince && hasSearched) {
+      console.log(`Đang tự động cập nhật dữ liệu cho ${currentViewedProvince}...`);
+      fetchWeatherData(currentViewedProvince);
+    }
+  }, intervalInSeconds * 1000);
+  
+  console.log(`Dữ liệu thời tiết sẽ được cập nhật tự động mỗi ${intervalInSeconds} giây.`);
+}
 
-
-// Display subscription message for home_1.html
-function showEmailSubscriptionMessage(message, type) {
-  // Remove any existing message
-  const existingMessage = document.querySelector('.email-subscription .subscription-message');
-  if (existingMessage) {
-    existingMessage.remove();
-  }
-
-  // Create message element
-  const messageElement = document.createElement('div');
-  messageElement.className = `subscription-message ${type}`;
-
-  // Add icon to the message based on type
-  let iconSvg = '';
-  if (type === 'success') {
-    iconSvg = '<svg style="width:18px;height:18px;margin-right:8px;vertical-align:middle" viewBox="0 0 24 24"><path fill="#4ade80" d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M11,16.5L18,9.5L16.59,8.09L11,13.67L7.91,10.59L6.5,12L11,16.5Z" /></svg>';
-  } else {
-    iconSvg = '<svg style="width:18px;height:18px;margin-right:8px;vertical-align:middle" viewBox="0 0 24 24"><path fill="#f87171" d="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" /></svg>';
-  }
-
-  messageElement.innerHTML = iconSvg + message;
-
-  // Add message to the container
-  const subscriptionContainer = document.querySelector('.email-subscription');
-  if (subscriptionContainer) {
-    subscriptionContainer.appendChild(messageElement);
-
-    // Add entrance animation
-    setTimeout(() => {
-      messageElement.style.transform = 'translateY(5px)';
-      setTimeout(() => {
-        messageElement.style.transform = '';
-      }, 200);
-    }, 10);
-
-    // Scroll to message if not in view
-    messageElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-    // Auto remove message after 5 seconds
-    setTimeout(() => {
-      messageElement.classList.add('fade-out');
-      setTimeout(() => messageElement.remove(), 500);
-    }, 5000);
+// Hàm dừng cập nhật dữ liệu tự động
+function stopAutomaticUpdates() {
+  if (weatherUpdateInterval) {
+    clearInterval(weatherUpdateInterval);
+    weatherUpdateInterval = null;
+    console.log('Đã dừng cập nhật dữ liệu tự động.');
   }
 }
-// //Gửi request lưu email và tỉnh của user
-// async function handleEmailSubscription() {
-//   const emailInput = document.getElementById('emailInput');
-//   const provinceInput = document.getElementById('provinceInput');
-//   const subscribeButton = document.getElementById('subscribeButton');
 
-//   const email = emailInput.value.trim();
-//   const province = provinceInput.value.trim();
-
-//   if (!email || !province) {
-//     showEmailSubscriptionMessage('Vui lòng nhập đầy đủ email và tỉnh/thành phố', 'error');
-//     return;
-//   }
-
-//   // Validate email format
-//   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-//   if (!emailRegex.test(email)) {
-//     showEmailSubscriptionMessage('Địa chỉ email không hợp lệ', 'error');
-//     return;
-//   }
-
-//   try {
-//     const response = await fetch('/api/subscribe/', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'X-CSRFToken': getCookie('csrftoken')
-//       },
-//       body: JSON.stringify({ email, province })
-//     });
-//     const data = await response.json();
-//     if (response.ok) {
-//       showEmailSubscriptionMessage(data.message, 'success');
-//       emailInput.value = '';
-//       provinceInput.value = '';
-//     } else {
-//       showEmailSubscriptionMessage(data.message || 'Có lỗi xảy ra.', 'error');
-//     }
-//   } catch (error) {
-//     showEmailSubscriptionMessage('Có lỗi xảy ra.', 'error');
-//   }
-// }
+// Hàm thay đổi tần suất cập nhật
+function changeUpdateFrequency(intervalInSeconds) {
+  startAutomaticUpdates(intervalInSeconds);
+}
