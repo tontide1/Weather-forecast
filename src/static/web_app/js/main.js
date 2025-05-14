@@ -1221,13 +1221,9 @@ function updateWeatherUI(weatherData, forecastWeatherData) {
   // Update temperature
   const temperatureElement = document.querySelector('.temperature');
   if (temperatureElement) {
-    console.log(weatherData);
+    // console.log(weatherData);
     for (let i=weatherData.length-1; i>=0 ; i--) {
       if (new Date(weatherData[i].time).getHours()<=new Date().getHours()) {
-        const weather = weatherData[i].time;
-        // const timestamp = Date.parse(weather);
-        const dateObject = new Date(weather);
-        console.log(dateObject.getHours());
         temperatureElement.textContent = `${parseFloat(weatherData[i].temperature).toFixed(1)}°C`;
         break;
       }
@@ -2082,12 +2078,12 @@ function startAutomaticUpdates(intervalInSeconds = 60) {
   // Tạo interval mới (chuyển đổi giây thành mili giây)
   weatherUpdateInterval = setInterval(() => {
     if (currentViewedProvince && hasSearched) {
-      console.log(`Đang tự động cập nhật dữ liệu cho ${currentViewedProvince}...`);
+      // console.log(`Đang tự động cập nhật dữ liệu cho ${currentViewedProvince}...`);
       fetchWeatherData(currentViewedProvince);
     }
   }, intervalInSeconds * 1000);
   
-  console.log(`Dữ liệu thời tiết sẽ được cập nhật tự động mỗi ${intervalInSeconds} giây.`);
+  // console.log(`Dữ liệu thời tiết sẽ được cập nhật tự động mỗi ${intervalInSeconds} giây.`);
 }
 
 // Hàm dừng cập nhật dữ liệu tự động
