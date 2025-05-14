@@ -6,6 +6,8 @@ const charts = document.querySelectorAll('.chart');
 let currentWeatherData = null;
 let hasSearched = false; // Track whether user has searched for a location
 const defaultCity = "TP Hồ Chí Minh"; // Đặt TP Hồ Chí Minh làm thành phố mặc định
+let currentViewedProvince = defaultCity; // Tỉnh đang xem hiện tại
+let weatherUpdateInterval = null; // Biến lưu trữ interval để cập nhật dữ liệu
 
 // Thêm hàm getCookie để lấy CSRF token từ cookie
 function getCookie(name) {
@@ -1219,7 +1221,13 @@ function updateWeatherUI(weatherData, forecastWeatherData) {
   // Update temperature
   const temperatureElement = document.querySelector('.temperature');
   if (temperatureElement) {
-    temperatureElement.textContent = `${parseFloat(currentWeather.temperature).toFixed(1)}°C`;
+    // console.log(weatherData);
+    for (let i=weatherData.length-1; i>=0 ; i--) {
+      if (new Date(weatherData[i].time).getHours()<=new Date().getHours()) {
+        temperatureElement.textContent = `${parseFloat(weatherData[i].temperature).toFixed(1)}°C`;
+        break;
+      }
+    }
   }
 
   // Update feels like (using a simple formula since API doesn't provide it)
@@ -1282,6 +1290,8 @@ function updateWeatherUI(weatherData, forecastWeatherData) {
   // forecast-item today
   const todayWeather = document.querySelector('.forecast-item.today');
   if (todayWeather) {
+    const currentDay = todayWeather.querySelector('.day-name');
+    currentDay.textContent = getCurrentDay(weatherData[0].time);
     const todayHigh = todayWeather.querySelector('.high');
     todayHigh.textContent = `${(parseFloat(currentWeather.temp_max)).toFixed(1)}°C`;
     const todayLow = todayWeather.querySelector('.low');
@@ -1289,6 +1299,14 @@ function updateWeatherUI(weatherData, forecastWeatherData) {
   }
   // Update forecast days if available (this would need proper forecast data)
   updateForecastDays(forecastWeatherData);
+}
+
+function getCurrentDay(time){
+  // Assuming you have a date string like "2025-05-17" or in ISO format
+    const dateObject = new Date(time);
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const dayName = days[dateObject.getDay()];
+    return dayName;
 }
 
 // Update forecast days based on weather data
@@ -1305,8 +1323,13 @@ function updateForecastDays(forecastWeatherData) {
   const forecastItems = document.querySelectorAll('.forecast-item');
   forecastItems.forEach((item, index) => {
     // Update high temperature (with a random variation for demo)
-    const highTemp = item.querySelector('.high');
     if (index != 0) {
+      const dayName = item.querySelector('.day-name');
+      if (dayName) {
+        dayName.textContent = getCurrentDay(forecastWeatherData[index - 1]['time']);
+      }
+      
+      const highTemp = item.querySelector('.high');
       if (highTemp) {
         highTemp.textContent = `${(parseFloat(forecastWeatherData[index - 1]['temp_max'])).toFixed(1)}°C`;
       }
@@ -1907,6 +1930,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize email subscription form for home_1.html
   initializeEmailSubscription();
 
+  // Bắt đầu cập nhật dữ liệu tự động mỗi 30 giây
+  startAutomaticUpdates(30);
+
   // Handle window resize
   window.addEventListener('resize', () => {
     if (hasSearched && currentWeatherData) {
@@ -1974,6 +2000,9 @@ function saveRecentLocation(province) {
 
 // Cập nhật hàm fetchWeatherData để lưu địa điểm đã xem
 async function fetchWeatherData(province) {
+  // Cập nhật tỉnh hiện tại đang xem
+  currentViewedProvince = province;
+  
   // console.log(`Fetching weather data for ${province}...`);
 
   try {
@@ -2015,7 +2044,7 @@ async function fetchWeatherData(province) {
     if (data && data.length > 0) {
       hideWelcomeTemplate(); // Hide welcome template
       currentWeatherData = data;
-      updateWeatherUI(data, forecast_data);
+      updateWeatherUI(currentWeatherData, forecast_data);
 
       // Lưu địa điểm đã xem vào localStorage
       saveRecentLocation(province);
@@ -2041,92 +2070,40 @@ async function fetchWeatherData(province) {
   }
 }
 
+// Hàm bắt đầu cập nhật dữ liệu tự động (gọi sau khi init)
+function startAutomaticUpdates(intervalInSeconds = 60) {
+  // Dừng interval cũ nếu có
+  stopAutomaticUpdates();
+  
+  // Tạo interval mới (chuyển đổi giây thành mili giây)
+  weatherUpdateInterval = setInterval(() => {
+    if (currentViewedProvince && hasSearched) {
+      // console.log(`Đang tự động cập nhật dữ liệu cho ${currentViewedProvince}...`);
+      fetchWeatherData(currentViewedProvince);
+    }
+  }, intervalInSeconds * 1000);
+  
+  // console.log(`Dữ liệu thời tiết sẽ được cập nhật tự động mỗi ${intervalInSeconds} giây.`);
+}
 
-
-// Display subscription message for home_1.html
-function showEmailSubscriptionMessage(message, type) {
-  // Remove any existing message
-  const existingMessage = document.querySelector('.email-subscription .subscription-message');
-  if (existingMessage) {
-    existingMessage.remove();
-  }
-
-  // Create message element
-  const messageElement = document.createElement('div');
-  messageElement.className = `subscription-message ${type}`;
-
-  // Add icon to the message based on type
-  let iconSvg = '';
-  if (type === 'success') {
-    iconSvg = '<svg style="width:18px;height:18px;margin-right:8px;vertical-align:middle" viewBox="0 0 24 24"><path fill="#4ade80" d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M11,16.5L18,9.5L16.59,8.09L11,13.67L7.91,10.59L6.5,12L11,16.5Z" /></svg>';
-  } else {
-    iconSvg = '<svg style="width:18px;height:18px;margin-right:8px;vertical-align:middle" viewBox="0 0 24 24"><path fill="#f87171" d="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" /></svg>';
-  }
-
-  messageElement.innerHTML = iconSvg + message;
-
-  // Add message to the container
-  const subscriptionContainer = document.querySelector('.email-subscription');
-  if (subscriptionContainer) {
-    subscriptionContainer.appendChild(messageElement);
-
-    // Add entrance animation
-    setTimeout(() => {
-      messageElement.style.transform = 'translateY(5px)';
-      setTimeout(() => {
-        messageElement.style.transform = '';
-      }, 200);
-    }, 10);
-
-    // Scroll to message if not in view
-    messageElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-    // Auto remove message after 5 seconds
-    setTimeout(() => {
-      messageElement.classList.add('fade-out');
-      setTimeout(() => messageElement.remove(), 500);
-    }, 5000);
+// Hàm dừng cập nhật dữ liệu tự động
+function stopAutomaticUpdates() {
+  if (weatherUpdateInterval) {
+    clearInterval(weatherUpdateInterval);
+    weatherUpdateInterval = null;
+    console.log('Đã dừng cập nhật dữ liệu tự động.');
   }
 }
-// //Gửi request lưu email và tỉnh của user
-// async function handleEmailSubscription() {
-//   const emailInput = document.getElementById('emailInput');
-//   const provinceInput = document.getElementById('provinceInput');
-//   const subscribeButton = document.getElementById('subscribeButton');
 
-//   const email = emailInput.value.trim();
-//   const province = provinceInput.value.trim();
+// Hàm thay đổi tần suất cập nhật
+function changeUpdateFrequency(intervalInSeconds) {
+  startAutomaticUpdates(intervalInSeconds);
+}
 
-//   if (!email || !province) {
-//     showEmailSubscriptionMessage('Vui lòng nhập đầy đủ email và tỉnh/thành phố', 'error');
-//     return;
-//   }
+// Hàm này đảm bảo hiển thị đúng thứ ngày theo tiếng Việt
+function getWeekdayName(date) {
+  const weekdayNames = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+  return weekdayNames[date.getDay()];
+}
 
-//   // Validate email format
-//   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-//   if (!emailRegex.test(email)) {
-//     showEmailSubscriptionMessage('Địa chỉ email không hợp lệ', 'error');
-//     return;
-//   }
-
-//   try {
-//     const response = await fetch('/api/subscribe/', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'X-CSRFToken': getCookie('csrftoken')
-//       },
-//       body: JSON.stringify({ email, province })
-//     });
-//     const data = await response.json();
-//     if (response.ok) {
-//       showEmailSubscriptionMessage(data.message, 'success');
-//       emailInput.value = '';
-//       provinceInput.value = '';
-//     } else {
-//       showEmailSubscriptionMessage(data.message || 'Có lỗi xảy ra.', 'error');
-//     }
-//   } catch (error) {
-//     showEmailSubscriptionMessage('Có lỗi xảy ra.', 'error');
-//   }
-// }
+// Sử dụng hàm này khi hiển thị thứ ngày thay vì dựa vào cài đặt locale của hệ thống
