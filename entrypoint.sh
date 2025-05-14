@@ -76,7 +76,7 @@ python src_data/fetch_old_weather.py
 echo "=== INSERT HISTORICAL DATA INTO DB COMPLETELY ==="
 
 echo "=== FORECAST FUTURE WEATHER ==="
-python test_model/xgboost_model.py
+python test_model/randomforest_model.py
 echo "=== INSERT FORECAST WEATHER INTO DB COMPLETELY ==="
 
 echo "=== NAVIGATE TO PROJECT DIRECTORY ==="
