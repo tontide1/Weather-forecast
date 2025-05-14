@@ -6,6 +6,7 @@ USER root
 RUN apt-get update && \
     apt-get install -y \
     postgresql-client \
+    build-essential \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -22,7 +23,6 @@ ENV AIRFLOW_HOME=/opt/airflow
 
 # Initialize directories
 RUN mkdir -p ${AIRFLOW_HOME}/weather_data
-RUN mkdir -p ${AIRFLOW_HOME}/RandomForest_predictions
 
 # Copy DAGs if you have them
 COPY --chown=airflow:root dags/ ${AIRFLOW_HOME}/dags/

@@ -1,3 +1,4 @@
+// filepath: c:\Users\tontide1\Desktop\weather\Weather-forecast_1\docker-compose.yml
 services:
   # PostgreSQL database
   db:
@@ -35,8 +36,6 @@ services:
       - ./weather_data:/opt/airflow/weather_data
       - ./airflow/plugins:/opt/airflow/plugins
     depends_on:
-      # airflow-db:
-        # condition: service_healthy
       airflow-init:
         condition: service_completed_successfully
 
@@ -69,19 +68,11 @@ services:
     env_file:
       - .env
     environment:
-      # - DATABASE_HOST=airflow-db
-      # - DATABASE_PORT=${DATABASE_PORT}
-      # - DATABASE_NAME=airflow
-      # - DATABASE_USER=${DATABASE_USER}
-      # - DATABASE_PASSWORD=${DATABASE_PASSWORD}
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=${AIRFLOW__DATABASE__SQL_ALCHEMY_CONN}
     depends_on:
-      # airflow-db:
       db:
         condition: service_healthy
 
 # Persistent data volumes
 volumes:
   postgres_data: # Database data
-  # airflow_postgres_data: # Airflow database data
-  # src_web_volume: # Django web

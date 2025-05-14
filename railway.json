@@ -1,12 +1,11 @@
-// filepath: c:\Users\tontide1\Desktop\weather\Weather-forecast_1\airflow\railway.json
 {
     "$schema": "https://railway.app/railway.schema.json",
     "build": {
         "builder": "DOCKERFILE",
-        "dockerfilePath": "./Dockerfile"
+        "dockerfilePath": "Dockerfile"
     },
     "deploy": {
-        "startCommand": "airflow standalone",
+        "startCommand": "",
         "healthcheckPath": "/health",
         "healthcheckTimeout": 300,
         "restartPolicyType": "ON_FAILURE",
