@@ -15,7 +15,10 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
-    restart: unless-stopped  airflow-webserver:
+    restart: unless-stopped
+
+  # Airflow webserver  
+  airflow-webserver:
     build:
       context: ./airflow
       dockerfile: Dockerfile
@@ -36,7 +39,9 @@ services:
         # condition: service_healthy
       airflow-init:
         condition: service_completed_successfully
-  # Airflow scheduler  airflow-scheduler:
+
+  # Airflow scheduler  
+  airflow-scheduler:
     build:
       context: ./airflow
       dockerfile: Dockerfile
@@ -52,6 +57,7 @@ services:
       - ./airflow/plugins:/opt/airflow/plugins
     depends_on:
       - airflow-webserver
+
   # Airflow initialization
   airflow-init:
     build:
