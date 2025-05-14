@@ -1,13 +1,12 @@
 import pandas as pd
 import numpy as np
-import xgboost as xgb
+from sklearn.ensemble import RandomForestRegressor
 from datetime import datetime, timedelta
 from sklearn.preprocessing import LabelEncoder
 import os
 import psycopg2
 from psycopg2 import sql
 from psycopg2.extras import execute_batch
-
 
 # Đọc dữ liệu
 print("Đang đọc dữ liệu...")
@@ -20,7 +19,6 @@ df = pd.read_csv(csv_files)
 
 # Kiểm tra và làm sạch dữ liệu
 print("Đang xử lý dữ liệu...")
-# df['Time'] = pd.to_datetime(df['Time'])
 df['Time'] = pd.to_datetime(df['Time']).dt.normalize()
 df = df.dropna(subset=['Temp_Max', 'Temp_Min', 'Weather_Code'])
 df['Weather_Code'] = df['Weather_Code'].astype(int)
@@ -67,9 +65,9 @@ df['DayOfWeek'] = df['Time'].dt.dayofweek
 le_province = LabelEncoder()
 df['Province_Code'] = le_province.fit_transform(df['Province'])
 
-# Tạo thư mục lưu kết quả dự đoán (optional, if you still want to save CSV)
-os.makedirs('xgboost_predictions', exist_ok=True)
-predict_csvfiles = "xgboost_predictions/weather_forecast_7days.csv"
+# Tạo thư mục lưu kết quả dự đoán
+os.makedirs('random_forest_predictions', exist_ok=True)
+predict_csvfiles = "random_forest_predictions/weather_forecast_7days.csv"
 
 # Dự đoán 7 ngày tiếp theo
 last_date = df['Time'].max()
@@ -131,39 +129,36 @@ for province_name in provinces:
     unique_weather_codes = y_weather_code.unique()
     print(f"  Mã thời tiết trong dữ liệu của {province_name}: {unique_weather_codes}")
     
-    # Huấn luyện mô hình XGBoost cho nhiệt độ cao
-    model_temp_max = xgb.XGBRegressor(
+    # Huấn luyện mô hình Random Forest cho nhiệt độ cao
+    model_temp_max = RandomForestRegressor(
         n_estimators=100,
-        learning_rate=0.1,
-        max_depth=5,
-        subsample=0.8,
-        colsample_bytree=0.8,
-        objective='reg:squarederror',
-        random_state=42
+        max_depth=10,
+        min_samples_split=5,
+        min_samples_leaf=2,
+        random_state=42,
+        n_jobs=-1
     )
     model_temp_max.fit(X_train, y_temp_max)
     
-    # Huấn luyện mô hình XGBoost cho nhiệt độ thấp
-    model_temp_min = xgb.XGBRegressor(
+    # Huấn luyện mô hình Random Forest cho nhiệt độ thấp
+    model_temp_min = RandomForestRegressor(
         n_estimators=100,
-        learning_rate=0.1,
-        max_depth=5,
-        subsample=0.8,
-        colsample_bytree=0.8,
-        objective='reg:squarederror',
-        random_state=42
+        max_depth=10,
+        min_samples_split=5,
+        min_samples_leaf=2,
+        random_state=42,
+        n_jobs=-1
     )
     model_temp_min.fit(X_train, y_temp_min)
     
-    # Huấn luyện mô hình XGBoost cho mã thời tiết (cũng sử dụng hồi quy)
-    model_weather_code = xgb.XGBRegressor(
+    # Huấn luyện mô hình Random Forest cho mã thời tiết
+    model_weather_code = RandomForestRegressor(
         n_estimators=100,
-        learning_rate=0.1,
-        max_depth=5,
-        subsample=0.8,
-        colsample_bytree=0.8,
-        objective='reg:squarederror',
-        random_state=42
+        max_depth=10,
+        min_samples_split=5,
+        min_samples_leaf=2,
+        random_state=42,
+        n_jobs=-1
     )
     model_weather_code.fit(X_train, y_weather_code)
     
@@ -312,7 +307,7 @@ for province_name in provinces:
 # Xếp lại các cột trong prediction_results
 prediction_results = prediction_results[['Province', 'Time', 'Temp_Max', 'Temp_Min', 'Weather_Code', 'Weather_Description']]
 
-# Lưu kết quả dự đoán vào CSV (optional)
+# Lưu kết quả dự đoán vào CSV
 prediction_results.to_csv(predict_csvfiles, index=False)
 
 # Kết nối đến PostgreSQL và chèn dữ liệu
@@ -328,7 +323,6 @@ try:
         'host': os.environ.get("DATABASE_HOST"),
         'port': os.environ.get("DATABASE_PORT")
     }
-    # print(DB_PARAMS)
 
     # Kết nối đến PostgreSQL
     connection = psycopg2.connect(**DB_PARAMS)
@@ -418,4 +412,4 @@ finally:
     print("Đã đóng kết nối PostgreSQL.")
 
 print(f"\nĐã hoàn thành dự báo thời tiết cho {len(provinces)} tỉnh thành!")
-print(f"File CSV (tùy chọn): '{predict_csvfiles}'")
+print(f"File CSV: '{predict_csvfiles}'")

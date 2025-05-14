@@ -8,6 +8,5 @@ gunicorn==23.0.0
 whitenoise==6.9.0
 requests==2.31.0
 apscheduler==3.10.4
-xgboost
-pandas
-scikit-learn
+numpy==1.26.4
+scikit-learn==1.4.2
