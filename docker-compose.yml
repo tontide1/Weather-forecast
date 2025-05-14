@@ -1,26 +1,4 @@
 services:
-  # Django web application
-  web:
-    build: .
-    ports:
-      - 8000:8000
-    env_file:
-      - .env
-    # Keep native DATABASE_* variables for consistency with entrypoint.sh
-    environment:
-      DATABASE_NAME: ${DATABASE_NAME}
-      DATABASE_USER: ${DATABASE_USER}
-      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
-      DATABASE_HOST: ${DATABASE_HOST}
-      DATABASE_PORT: ${DATABASE_PORT}
-    volumes:
-      - ./:/app
-      - ./weather_data:/weather_data
-    depends_on:
-      db:
-        condition: service_healthy
-    restart: unless-stopped
-
   # PostgreSQL database
   db:
     image: postgres:15
@@ -37,25 +15,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
-    restart: unless-stopped
-
-  # # PostgreSQL database for Airflow
-  # airflow-db:
-  #   image: postgres:15
-  #   environment:
-  #     POSTGRES_DB: airflow
-  #     POSTGRES_USER: ${DATABASE_USER}
-  #     POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-  #   volumes:
-  #     - airflow_postgres_data:/var/lib/postgresql/data/
-  #   healthcheck:
-  #     test: [ "CMD-SHELL", "pg_isready -U ${DATABASE_USER}" ]
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 3
-  #   restart: unless-stopped
-  # Airflow webserver
-  airflow-webserver:
+    restart: unless-stopped  airflow-webserver:
     build:
       context: ./airflow
       dockerfile: Dockerfile
@@ -70,13 +30,13 @@ services:
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./weather_data:/opt/airflow/weather_data
+      - ./airflow/plugins:/opt/airflow/plugins
     depends_on:
       # airflow-db:
         # condition: service_healthy
       airflow-init:
         condition: service_completed_successfully
-  # Airflow scheduler
-  airflow-scheduler:
+  # Airflow scheduler  airflow-scheduler:
     build:
       context: ./airflow
       dockerfile: Dockerfile
@@ -89,6 +49,7 @@ services:
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./weather_data:/opt/airflow/weather_data
+      - ./airflow/plugins:/opt/airflow/plugins
     depends_on:
       - airflow-webserver
   # Airflow initialization

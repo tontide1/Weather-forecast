@@ -1,37 +1,25 @@
-# Base image
-FROM python:3.11-slim-bullseye
+FROM apache/airflow:2.7.3-python3.11
 
-# Set environment variables for Python optimization
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PIP_NO_CACHE_DIR=1 \
-    PYTHONPATH=/app
+USER root
 
-# Working directory
-WORKDIR /app
-
-# Copy requirements and install dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
-
-# Install system dependencies including PostgreSQL client
+# Install system dependencies
 RUN apt-get update && \
-    apt-get install -y postgresql-client && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y \
+    build-essential \
+    postgresql-client \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Create directories for weather data storage
-RUN mkdir -p /app/weather_data
+USER airflow
 
-# Copy source code
-COPY . .
+# Copy requirements file
+COPY requirements.txt .
 
-# Make entrypoint script executable
-RUN chmod +x ./entrypoint.sh
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Use entrypoint script
-ENTRYPOINT ["./entrypoint.sh"]
+# Set the AIRFLOW_HOME environment variable
+ENV AIRFLOW_HOME=/opt/airflow
 
-# Run server
-CMD ["gunicorn", "--chdir", "/app/src", "weather_forecast_management.wsgi:application", "--bind", "0.0.0.0:8000"]
+# Initialize directories
+RUN mkdir -p ${AIRFLOW_HOME}/weather_data

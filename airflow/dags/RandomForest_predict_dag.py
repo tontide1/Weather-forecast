@@ -4,7 +4,9 @@ import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import LabelEncoder
 from datetime import datetime, timedelta
-from sklearn.preprocessing import LabelEncoder
+import os
+import pandas as pd
+import numpy as np
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 
@@ -429,9 +431,9 @@ default_args = {
 
 # Define the DAG
 dag = DAG(
-    dag_id='Build_XGBoost_Model',
+    dag_id='Build_RandomForest_Model',
     default_args=default_args,
-    description="DAG dự báo thời tiết bằng XGBoost",
+    description="DAG dự báo thời tiết bằng RandomForest",
     schedule_interval='@daily',
     catchup=False,
 )
