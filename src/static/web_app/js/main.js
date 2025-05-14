@@ -2099,3 +2099,11 @@ function stopAutomaticUpdates() {
 function changeUpdateFrequency(intervalInSeconds) {
   startAutomaticUpdates(intervalInSeconds);
 }
+
+// Hàm này đảm bảo hiển thị đúng thứ ngày theo tiếng Việt
+function getWeekdayName(date) {
+  const weekdayNames = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+  return weekdayNames[date.getDay()];
+}
+
+// Sử dụng hàm này khi hiển thị thứ ngày thay vì dựa vào cài đặt locale của hệ thống

@@ -21,6 +21,13 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# Thêm vào Dockerfile
+RUN apt-get update && apt-get install -y locales tzdata
+RUN locale-gen vi_VN.UTF-8
+ENV LANG=vi_VN.UTF-8
+ENV TZ=Asia/Ho_Chi_Minh
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 # Create directories for weather data storage
 RUN mkdir -p /app/weather_data
 

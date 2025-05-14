@@ -13,6 +13,7 @@ services:
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
       DATABASE_HOST: ${DATABASE_HOST}
       DATABASE_PORT: ${DATABASE_PORT}
+      TZ: "Asia/Ho_Chi_Minh" # Thêm múi giờ Việt Nam
     volumes:
       - ./:/app
       - ./weather_data:/weather_data
@@ -20,7 +21,6 @@ services:
     #   db:
     #     condition: service_healthy
     restart: unless-stopped
-
   # PostgreSQL database
   # db:
   #   image: postgres:15
@@ -41,5 +41,5 @@ services:
   # Airflow services have been moved to a separate codebase
 
   # Persistent data volumes
-# volumes:
+  # volumes:
   # postgres_data: # Database data
