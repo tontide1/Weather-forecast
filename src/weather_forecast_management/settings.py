@@ -75,15 +75,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'weather_forecast_management.wsgi.application'
 
-# DB_LIVE = os.getenv('DB_LIVE')
+DB_LIVE = os.getenv('DB_LIVE')
 
-# if DB_LIVE == 'True':
-#     # Production settings
-#     DEBUG = False
-#     ALLOWED_HOSTS = ['your-production-domain.com']  # Replace with your production domain
-#     # Add any other production-specific settings here   
-# else:
-#     # Development settings
+if DB_LIVE == 'True':
+    # Production settings
+    DEBUG = False
+    ALLOWED_HOSTS = ['weather-forecast-production-b9bd.up.railway.app', '.railway.app']  # Railway domain
+    # Add whitenoise for static files in production
+    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    # Improve security
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+else:
+    # Development settings
+    DEBUG = True
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 #     DEBUG = True
 #     ALLOWED_HOSTS = ['localhost', '127.0.0.1']
     # Database
