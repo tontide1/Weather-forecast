@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -77,17 +78,21 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'weather_forecast_management.wsgi.application'
 
-DB_LIVE = os.getenv('DATABASE_LIVE')
+# Lấy giá trị DATABASE_LIVE từ biến môi trường
+DB_LIVE = os.getenv('DATABASE_LIVE', 'False')
 
-# Check if we're running on Railway by looking for specific environment variables
+# Kiểm tra nếu đang chạy trên Railway bằng cách tìm các biến môi trường đặc trưng
 IS_RAILWAY = os.getenv('RAILWAY_ENVIRONMENT') is not None or os.getenv('RAILWAY_SERVICE_ID') is not None
 
-if DB_LIVE == 'True' or IS_RAILWAY:
+# Chuyển đổi 'True' hoặc True thành True, tất cả các giá trị khác thành False
+IS_PRODUCTION = DB_LIVE.lower() == 'true' or IS_RAILWAY
+
+if IS_PRODUCTION:
     # Production settings
     DEBUG = False
-    # We already set ALLOWED_HOSTS globally to include Railway domains
+    # Sử dụng ALLOWED_HOSTS đã đặt toàn cục
     
-    # Improve security in production
+    # Tăng cường bảo mật trong môi trường production
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
 else:
@@ -104,8 +109,6 @@ else:
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
-
-from decouple import config
 
 DATABASES = {
     'default': {
