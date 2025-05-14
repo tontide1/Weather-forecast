@@ -10,7 +10,8 @@ from psycopg2.extras import execute_batch
 
 # Đọc dữ liệu
 print("Đang đọc dữ liệu...")
-csv_files = "weather_data/historical_weather_data.csv"
+DATA_DIR = "./weather_data"
+csv_files = os.path.join(DATA_DIR, "historical_weather_data.csv")
 
 if not os.path.exists(csv_files):
     raise FileNotFoundError("Không tìm thấy file CSV trong thư mục weather_data")
@@ -359,7 +360,7 @@ try:
         f"""
         CREATE TEMPORARY TABLE {temp_table_name} (
             Province VARCHAR(100),
-            Time TIMESTAMP,
+            Time DATE,
             Temp_Max DECIMAL(5,2),
             Temp_Min DECIMAL(5,2),
             Weather_Code INTEGER,

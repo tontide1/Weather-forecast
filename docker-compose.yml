@@ -14,8 +14,8 @@ services:
       DATABASE_HOST: ${DATABASE_HOST}
       DATABASE_PORT: ${DATABASE_PORT}
     volumes:
-      - static_volume:/app/src/staticfiles
-      - media_volume:/app/src/media
+      - ./:/app
+      - ./weather_data:/app/weather_data
     depends_on:
       db:
         condition: service_healthy
@@ -130,6 +130,5 @@ services:
 # Persistent data volumes
 volumes:
   postgres_data: # Database data
-  airflow_postgres_data: # Airflow database data
-  static_volume: # Django static files
-  media_volume: # Django uploaded media
+  # airflow_postgres_data: # Airflow database data
+  src_web_volume: # Django web
