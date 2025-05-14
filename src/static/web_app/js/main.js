@@ -1219,6 +1219,7 @@ function updateWeatherUI(weatherData, forecastWeatherData) {
   // Update temperature
   const temperatureElement = document.querySelector('.temperature');
   if (temperatureElement) {
+    
     temperatureElement.textContent = `${parseFloat(currentWeather.temperature).toFixed(1)}°C`;
   }
 
@@ -1282,6 +1283,8 @@ function updateWeatherUI(weatherData, forecastWeatherData) {
   // forecast-item today
   const todayWeather = document.querySelector('.forecast-item.today');
   if (todayWeather) {
+    const currentDay = todayWeather.querySelector('.day-name');
+    currentDay.textContent = getCurrentDay(weatherData[0].time);
     const todayHigh = todayWeather.querySelector('.high');
     todayHigh.textContent = `${(parseFloat(currentWeather.temp_max)).toFixed(1)}°C`;
     const todayLow = todayWeather.querySelector('.low');
@@ -1289,6 +1292,14 @@ function updateWeatherUI(weatherData, forecastWeatherData) {
   }
   // Update forecast days if available (this would need proper forecast data)
   updateForecastDays(forecastWeatherData);
+}
+
+function getCurrentDay(time){
+  // Assuming you have a date string like "2025-05-17" or in ISO format
+    const dateObject = new Date(time);
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const dayName = days[dateObject.getDay()];
+    return dayName;
 }
 
 // Update forecast days based on weather data
@@ -1305,8 +1316,13 @@ function updateForecastDays(forecastWeatherData) {
   const forecastItems = document.querySelectorAll('.forecast-item');
   forecastItems.forEach((item, index) => {
     // Update high temperature (with a random variation for demo)
-    const highTemp = item.querySelector('.high');
     if (index != 0) {
+      const dayName = item.querySelector('.day-name');
+      if (dayName) {
+        dayName.textContent = getCurrentDay(forecastWeatherData[index - 1]['time']);
+      }
+      
+      const highTemp = item.querySelector('.high');
       if (highTemp) {
         highTemp.textContent = `${(parseFloat(forecastWeatherData[index - 1]['temp_max'])).toFixed(1)}°C`;
       }
@@ -2015,7 +2031,7 @@ async function fetchWeatherData(province) {
     if (data && data.length > 0) {
       hideWelcomeTemplate(); // Hide welcome template
       currentWeatherData = data;
-      updateWeatherUI(data, forecast_data);
+      updateWeatherUI(currentWeatherData, forecast_data);
 
       // Lưu địa điểm đã xem vào localStorage
       saveRecentLocation(province);

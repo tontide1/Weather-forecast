@@ -1941,16 +1941,3 @@ body {
   filter: drop-shadow(0 0 3px rgba(125, 211, 252, 0.8));
   transform: scale(1.1);
 }
-
-/* --- BẮT ĐẦU: Làm nổi bật thông tin gió ở phần chi tiết --- */
-.wind-detail {
-  color: #38bdf8 !important;
-  font-weight: 600;
-  text-shadow: 0 0 8px #7dd3fc, 0 0 2px #fff;
-}
-.wind-detail-value {
-  color: #fff !important;
-  font-weight: bold;
-  text-shadow: 0 0 8px #38bdf8, 0 0 2px #fff;
-}
-/* --- KẾT THÚC: Làm nổi bật thông tin gió ở phần chi tiết --- */
