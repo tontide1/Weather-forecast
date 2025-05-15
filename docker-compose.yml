@@ -1,3 +1,16 @@
+x-airflow-common: &airflow-common
+  build:
+    context: ./airflow
+    dockerfile: Dockerfile
+  env_file:
+    - .env
+  environment:
+    - AIRFLOW__CORE__EXECUTOR=${AIRFLOW__CORE__EXECUTOR}
+    - AIRFLOW__CORE__FERNET_KEY={AIRFLOW__CORE__FERNET_KEY}
+    - AIRFLOW__WEBSERVER__SECRET_KEY=${AIRFLOW__WEBSERVER__SECRET_KEY}
+    - AIRFLOW__CORE__DEFAULT_TIMEZONE=${AIRFLOW__CORE__DEFAULT_TIMEZONE}
+    - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=${AIRFLOW__DATABASE__SQL_ALCHEMY_CONN}
+
 services:
   # Django web application
   web:
@@ -6,7 +19,6 @@ services:
       - 8000:8000
     env_file:
       - .env
-    # Keep native DATABASE_* variables for consistency with entrypoint.sh
     environment:
       DATABASE_NAME: ${DATABASE_NAME}
       DATABASE_USER: ${DATABASE_USER}
@@ -14,122 +26,53 @@ services:
       DATABASE_HOST: ${DATABASE_HOST}
       DATABASE_PORT: ${DATABASE_PORT}
     volumes:
-      - static_volume:/app/src/staticfiles
-      - media_volume:/app/src/media
-    depends_on:
-      db:
-        condition: service_healthy
+      - ./src:/app/src
     restart: unless-stopped
 
   # PostgreSQL database
-  db:
-    image: postgres:15
-    environment:
-      POSTGRES_DB: ${DATABASE_NAME}
-      POSTGRES_USER: ${DATABASE_USER}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-    ports:
-      - 5432:5432
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${DATABASE_USER}" ]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-    restart: unless-stopped
-
-  # # PostgreSQL database for Airflow
-  # airflow-db:
-  #   image: postgres:15
+  # db:
+  #   image: postgres:16.8
   #   environment:
-  #     POSTGRES_DB: airflow
+  #     POSTGRES_DB: ${DATABASE_NAME}
   #     POSTGRES_USER: ${DATABASE_USER}
   #     POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+  #   ports:
+  #     - 5432:5432
   #   volumes:
-  #     - airflow_postgres_data:/var/lib/postgresql/data/
+  #     - postgres_data:/var/lib/postgresql/data/
   #   healthcheck:
   #     test: [ "CMD-SHELL", "pg_isready -U ${DATABASE_USER}" ]
   #     interval: 10s
   #     timeout: 5s
   #     retries: 3
   #   restart: unless-stopped
-  # Airflow webserver
+
   airflow-webserver:
-    build:
-      context: ./airflow
-      dockerfile: Dockerfile
+    <<: *airflow-common
     command: webserver
     restart: unless-stopped
-    env_file:
-      - .env
-    environment:
-      # - DATABASE_HOST=db
-      # - DATABASE_PORT=${DATABASE_PORT}
-      # - DATABASE_NAME=${DATABASE_NAME}
-      # - DATABASE_USER=${DATABASE_USER}
-      # - DATABASE_PASSWORD=${DATABASE_PASSWORD}
-      # - WEATHER_DATA_TABLE_NAME=${WEATHER_DATA_TABLE_NAME}
-      # - PREDICT_WEATHER_DATA_TABLE_NAME=${PREDICT_WEATHER_DATA_TABLE_NAME}
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=${AIRFLOW__DATABASE__SQL_ALCHEMY_CONN}
     ports:
       - 8080:8080
     volumes:
       - ./airflow/dags:/opt/airflow/dags
-      - ./weather_data:/opt/airflow/weather_data
     depends_on:
-      # airflow-db:
-        # condition: service_healthy
       airflow-init:
         condition: service_completed_successfully
   # Airflow scheduler
   airflow-scheduler:
-    build:
-      context: ./airflow
-      dockerfile: Dockerfile
+    <<: *airflow-common
     command: scheduler
     restart: unless-stopped
-    env_file:
-      - .env
-    environment:
-      # - DATABASE_HOST=db
-      # - DATABASE_PORT=${DATABASE_PORT}
-      # - DATABASE_NAME=${DATABASE_NAME}
-      # - DATABASE_USER=${DATABASE_USER}
-      # - DATABASE_PASSWORD=${DATABASE_PASSWORD}
-      # - WEATHER_DATA_TABLE_NAME=${WEATHER_DATA_TABLE_NAME}
-      # - PREDICT_WEATHER_DATA_TABLE_NAME=${PREDICT_WEATHER_DATA_TABLE_NAME}
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=${AIRFLOW__DATABASE__SQL_ALCHEMY_CONN}
     volumes:
       - ./airflow/dags:/opt/airflow/dags
-      - ./weather_data:/opt/airflow/weather_data
     depends_on:
       - airflow-webserver
   # Airflow initialization
   airflow-init:
-    build:
-      context: ./airflow
-      dockerfile: Dockerfile
+    <<: *airflow-common
     entrypoint: /bin/bash
     command: >
-      -c " sleep 10 && airflow db init && airflow users create --username ${ADMIN_USERNAME} --firstname Admin --lastname User --role Admin --email ${ADMIN_EMAIL} --password ${ADMIN_PASSWORD} "
-    env_file:
-      - .env
-    environment:
-      # - DATABASE_HOST=airflow-db
-      # - DATABASE_PORT=${DATABASE_PORT}
-      # - DATABASE_NAME=airflow
-      # - DATABASE_USER=${DATABASE_USER}
-      # - DATABASE_PASSWORD=${DATABASE_PASSWORD}
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=${AIRFLOW__DATABASE__SQL_ALCHEMY_CONN}
-    depends_on:
-      # airflow-db:
-      db:
-        condition: service_healthy
+      -c " sleep 10 && airflow db migrate && airflow users create --username ${ADMIN_USERNAME} --firstname Admin --lastname User --role Admin --email ${ADMIN_EMAIL} --password ${ADMIN_PASSWORD} "
 
-# Persistent data volumes
 volumes:
   postgres_data: # Database data
-  airflow_postgres_data: # Airflow database data
-  static_volume: # Django static files
-  media_volume: # Django uploaded media

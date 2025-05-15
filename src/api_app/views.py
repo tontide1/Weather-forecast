@@ -63,7 +63,7 @@ def GetPredictWeatherApiView(request):
             if not predict_weather.exists():
                 return Response({"error": f"No data found for province: {province}"}, status=status.HTTP_404_NOT_FOUND)
             serialize = PredictWeatherSerializer(predict_weather, many=True)
-            return Response(serialize.data, status=status.HTTP_200_OK)
+            return Response(serialize.data[-8:], status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         

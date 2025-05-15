@@ -1,6 +1,6 @@
-import requests
-import csv
+# import csv
 import os
+import requests
 from datetime import date, timedelta, datetime
 
 
@@ -71,21 +71,20 @@ provinces = [
 ]
 
 # Tạo thư mục weather_data nếu chưa tồn tại
-os.makedirs("weather_data", exist_ok=True)
+# DATA_DIR = "./weather_data"
+# os.makedirs(DATA_DIR, exist_ok=True)
 # Ngày hôm nay (YYYY-MM-DD)
 today = date.today()
-start_date = today - timedelta(days=30)
-end_date = today
+number_of_days = 30
+start_date = today - timedelta(days=number_of_days)
+end_date = today + timedelta(days=1)
 
 current_hour = datetime.now().hour
 print(f"📅 Ngày bắt đầu: {start_date}")
 print(f"📅 Ngày kết thúc: {end_date}")
 
-csv_file = "weather_data/historical_weather_data.csv"
-header = ["Province", "Time", "Temperature", "Temp_Max", "Temp_Min", "Precipitation", "Windspeed_Max", "UV_Index_Max", "Sunshine_Hours", "Sundown_Hours", "Weather_Code", "Humidity", "Feel_Like"]
-
-# Kiểm tra file có tồn tại không
-# file_exists = os.path.isfile(csv_file)
+# csv_file = os.path.join(DATA_DIR,"historical_weather_data.csv")
+# header = ["Province", "Time", "Temperature", "Temp_Max", "Temp_Min", "Precipitation", "Windspeed_Max", "UV_Index_Max", "Sunshine_Hours", "Sundown_Hours", "Weather_Code", "Humidity", "Feel_Like"]
 
 # Danh sách chứa tất cả dữ liệu thu thập được
 all_rows = []
@@ -125,9 +124,8 @@ for province in provinces:
         for i, t in enumerate(times):
             hour = int(t.split("T")[1][:2])
             day = t.split("T")[0]
-
-            # Chỉ lấy giờ chia hết cho 3, không vượt quá current_hour - 3
-            if hour % 3 != 0 or hour > current_hour - 3:
+            # Chỉ lấy giờ chia hết cho 3, không vượt quá current_hour
+            if (hour % 3 != 0):
                 continue
 
             indices = day_indices[day]
@@ -162,15 +160,6 @@ for province in provinces:
     else:
         print(f"❌ {province['name']}: lỗi API")
 
-# Ghi vào file CSV một lần
-with open(csv_file, mode="w", newline='', encoding="utf-8-sig") as f:
-    writer = csv.writer(f)
-    # if not file_exists:
-    writer.writerow(header)
-    writer.writerows(all_rows)
-
-print(f"\n📄 Đã lưu {len(all_rows)} dòng vào file: {csv_file}")
-
 
 try:
     import psycopg2
@@ -191,10 +180,10 @@ try:
     
     table_name = os.environ.get("WEATHER_DATA_TABLE_NAME", default="weather_data")
     # Xóa bảng nếu đã tồn tại
-    cursor.execute(f"""
-        DROP TABLE IF EXISTS {table_name};
-    """)
-    connection.commit()
+    # cursor.execute(f"""
+    #     DROP TABLE IF EXISTS {table_name};
+    # """)
+    # connection.commit()
     # Tạo bảng mới
     cursor.execute(
         f"""
@@ -214,24 +203,69 @@ try:
                 Humidity DECIMAL(5,2),
                 Feel_Like DECIMAL(5,2),
 
-                UNIQUE (Province, Time)
+                CONSTRAINT unique_historical_province_time UNIQUE (Province, Time)
             );
         """
     )
     connection.commit()
-    print(f"Tạo bảng thành công")
+    # print(f"Tạo bảng thành công")
+    # Tạo bảng tạm để chứa dữ liệu
+    temp_table_name = table_name+"_temp"
+    cursor.execute(
+        f"""
+        CREATE TEMPORARY TABLE {temp_table_name} (
+            id SERIAL PRIMARY KEY,
+                Province VARCHAR(100) NOT NULL,
+                Time TIMESTAMP NOT NULL,
+                Temperature DECIMAL(5,2),
+                Temp_Max DECIMAL(5,2),
+                Temp_Min DECIMAL(5,2),
+                Precipitation DECIMAL(5,2),
+                Windspeed_Max DECIMAL(5,2),
+                UV_Index_Max DECIMAL(5,2),
+                Sunshine_Hours DECIMAL(5,2),
+                Sundown_Hours DECIMAL(5,2),
+                Weather_Code INTEGER,
+                Humidity DECIMAL(5,2),
+                Feel_Like DECIMAL(5,2)
+        );
+        """
+    )
     connection.commit()
+    # Chèn dữ liệu vào bảng tạm
     insert_query = f"""
-        INSERT INTO {table_name} (
+        INSERT INTO {temp_table_name} (
             Province,Time,Temperature,Temp_Max,Temp_Min,Precipitation,Windspeed_Max,UV_Index_Max,Sunshine_Hours,Sundown_Hours,Weather_Code,Humidity,Feel_Like
         ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     """
-
     cursor.executemany(insert_query, all_rows)
     connection.commit()
-
+    # Ghi dữ liệu từ bảng tạm vào bảng chính
+    cursor.execute(
+        f"""
+        INSERT INTO {table_name} (
+            Province,Time,Temperature,Temp_Max,Temp_Min,Precipitation,Windspeed_Max,UV_Index_Max,Sunshine_Hours,Sundown_Hours,Weather_Code,Humidity,Feel_Like
+        )
+        SELECT
+            Province,Time,Temperature,Temp_Max,Temp_Min,Precipitation,Windspeed_Max,UV_Index_Max,Sunshine_Hours,Sundown_Hours,Weather_Code,Humidity,Feel_Like
+        FROM {temp_table_name}
+        ON CONFLICT ON CONSTRAINT unique_historical_province_time
+        DO UPDATE SET
+            Temperature = EXCLUDED.Temperature,
+            Temp_Max = EXCLUDED.Temp_Max,
+            Temp_Min = EXCLUDED.Temp_Min,
+            Precipitation = EXCLUDED.Precipitation,
+            Windspeed_Max = EXCLUDED.Windspeed_Max,
+            UV_Index_Max = EXCLUDED.UV_Index_Max,
+            Sunshine_Hours = EXCLUDED.Sunshine_Hours,
+            Sundown_Hours = EXCLUDED.Sundown_Hours,
+            Weather_Code = EXCLUDED.Weather_Code,
+            Humidity = EXCLUDED.Humidity,
+            Feel_Like = EXCLUDED.Feel_Like;
+        """
+    )
+    connection.commit()
     print(f"✅ Đã chèn {len(all_rows)} dòng vào PostgreSQL")
-
 except Exception as e:
     print(f"❌ Lỗi khi ghi vào PostgreSQL: {e}")
 

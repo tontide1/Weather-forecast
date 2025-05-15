@@ -1,23 +1,25 @@
+# import csv
+# import numpy as np
+# import pandas as pd
+# import xgboost as xgb
+# from sklearn.preprocessing import LabelEncoder
+
 import os
-import csv
 import requests
-import numpy as np
-import pandas as pd
-import xgboost as xgb
 from datetime import date, datetime, timedelta
-from sklearn.preprocessing import LabelEncoder
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 
 
 # Định nghĩa các biến
-DATA_DIR = "/opt/airflow/weather_data"
-PREDICTION_DIR = "/opt/airflow/xgboost_predictions"
-PREDICTION_FILE = os.path.join(PREDICTION_DIR, "weather_forecast_7days.csv")
+# DATA_DIR = "/opt/airflow/weather_data"
+# PREDICTION_DIR = "/opt/airflow/xgboost_predictions"
+# PREDICTION_FILE = os.path.join(PREDICTION_DIR, "weather_forecast_7days.csv")
 
 
 
 def start_task():
+    print(datetime.now())
     print("Bắt đầu xây dựng mô hình dự báo thời tiết.")
 
 def collect_weather_data():
@@ -88,7 +90,7 @@ def collect_weather_data():
     ]
 
     # Tạo thư mục weather_data nếu chưa tồn tại
-    os.makedirs("weather_data", exist_ok=True)
+    # os.makedirs("weather_data", exist_ok=True)
     # Ngày hôm nay (YYYY-MM-DD)
     today = date.today()
     start_date = today - timedelta(days=0)
@@ -98,8 +100,8 @@ def collect_weather_data():
     print(f"📅 Ngày bắt đầu: {start_date}")
     print(f"📅 Ngày kết thúc: {end_date}")
 
-    csv_file = os.path.join(DATA_DIR,"historical_weather_data.csv")
-    header = ["Province", "Time", "Temperature", "Temp_Max", "Temp_Min", "Precipitation", "Windspeed_Max", "UV_Index_Max", "Sunshine_Hours", "Sundown_Hours", "Weather_Code", "Humidity", "Feel_Like"]
+    # csv_file = os.path.join(DATA_DIR,"historical_weather_data.csv")
+    # header = ["Province", "Time", "Temperature", "Temp_Max", "Temp_Min", "Precipitation", "Windspeed_Max", "UV_Index_Max", "Sunshine_Hours", "Sundown_Hours", "Weather_Code", "Humidity", "Feel_Like"]
 
     # Danh sách chứa tất cả dữ liệu thu thập được
     all_rows = []
@@ -218,36 +220,69 @@ def collect_weather_data():
                     Humidity DECIMAL(5,2),
                     Feel_Like DECIMAL(5,2),
 
-                    UNIQUE (Province, Time)
+                    CONSTRAINT unique_historical_province_time UNIQUE (Province, Time)
                 );
             """
         )
         connection.commit()
         # print(f"Tạo bảng thành công")
+        # Tạo bảng tạm để chứa dữ liệu
+        temp_table_name = table_name+"_temp"
+        cursor.execute(
+            f"""
+            CREATE TEMPORARY TABLE {temp_table_name} (
+                id SERIAL PRIMARY KEY,
+                    Province VARCHAR(100) NOT NULL,
+                    Time TIMESTAMP NOT NULL,
+                    Temperature DECIMAL(5,2),
+                    Temp_Max DECIMAL(5,2),
+                    Temp_Min DECIMAL(5,2),
+                    Precipitation DECIMAL(5,2),
+                    Windspeed_Max DECIMAL(5,2),
+                    UV_Index_Max DECIMAL(5,2),
+                    Sunshine_Hours DECIMAL(5,2),
+                    Sundown_Hours DECIMAL(5,2),
+                    Weather_Code INTEGER,
+                    Humidity DECIMAL(5,2),
+                    Feel_Like DECIMAL(5,2)
+            );
+            """
+        )
         connection.commit()
+        # Chèn dữ liệu vào bảng tạm
         insert_query = f"""
-            INSERT INTO {table_name} (
+            INSERT INTO {temp_table_name} (
                 Province,Time,Temperature,Temp_Max,Temp_Min,Precipitation,Windspeed_Max,UV_Index_Max,Sunshine_Hours,Sundown_Hours,Weather_Code,Humidity,Feel_Like
             ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
-
         cursor.executemany(insert_query, all_rows)
         connection.commit()
+        # Ghi dữ liệu từ bảng tạm vào bảng chính
+        cursor.execute(
+            f"""
+            INSERT INTO {table_name} (
+                Province,Time,Temperature,Temp_Max,Temp_Min,Precipitation,Windspeed_Max,UV_Index_Max,Sunshine_Hours,Sundown_Hours,Weather_Code,Humidity,Feel_Like
+            )
+            SELECT
+                Province,Time,Temperature,Temp_Max,Temp_Min,Precipitation,Windspeed_Max,UV_Index_Max,Sunshine_Hours,Sundown_Hours,Weather_Code,Humidity,Feel_Like
+            FROM {temp_table_name}
+            ON CONFLICT ON CONSTRAINT unique_historical_province_time
+            DO UPDATE SET
+                Temperature = EXCLUDED.Temperature,
+                Temp_Max = EXCLUDED.Temp_Max,
+                Temp_Min = EXCLUDED.Temp_Min,
+                Precipitation = EXCLUDED.Precipitation,
+                Windspeed_Max = EXCLUDED.Windspeed_Max,
+                UV_Index_Max = EXCLUDED.UV_Index_Max,
+                Sunshine_Hours = EXCLUDED.Sunshine_Hours,
+                Sundown_Hours = EXCLUDED.Sundown_Hours,
+                Weather_Code = EXCLUDED.Weather_Code,
+                Humidity = EXCLUDED.Humidity,
+                Feel_Like = EXCLUDED.Feel_Like;
+            """
+        )
+        connection.commit()
         print(f"✅ Đã chèn {len(all_rows)} dòng vào PostgreSQL")
-
-
-        for row in all_rows:
-            print(row)
-        # Kiểm tra file có tồn tại không
-        file_exists = os.path.isfile(csv_file)
-        # Ghi vào file CSV một lần
-        with open(csv_file, mode="a", newline='', encoding="utf-8-sig") as f:
-            writer = csv.writer(f)
-            if not file_exists:
-                writer.writerow(header)
-            writer.writerows(all_rows)
-
-        print(f"\n📄 Đã lưu {len(all_rows)} dòng vào file: {csv_file}")
     except Exception as e:
         print(f"❌ Lỗi khi ghi vào PostgreSQL: {e}")
 
@@ -267,16 +302,17 @@ default_args = {
     'owner': 'Collector',
     'start_date': datetime(2025, 5, 10),
     'retries': 3,
-    # 'retry_delay': timedelta(minutes=5),
-    'retry_delay': timedelta(seconds=5),
+    'retry_delay': timedelta(minutes=3),
+    # 'retries': 0,
+    # 'retry_delay': timedelta(seconds=5),
 }
 
 # Define the DAG
 dag = DAG(
-    dag_id='Collect_Weather_Data',
+    dag_id='Collector',
     default_args=default_args,
     description="DAG thu thập dữ liệu thời tiết",
-    schedule_interval='0 */3 * * *',
+    schedule_interval="@daily",
     catchup=False,
 )
 
