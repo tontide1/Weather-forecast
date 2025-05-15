@@ -1,6 +1,5 @@
 web: airflow db init
-
-
+web: airflow webserver --port $POST
 
 
 heroku auth:whoami
