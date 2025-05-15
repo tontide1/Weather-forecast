@@ -212,7 +212,7 @@ def build_randomforest_model():
             # Lấy dữ liệu gần nhất để dự đoán ngày đầu tiên
             last_row = province_data.iloc[-1].copy()
             
-            for i in range(7):
+            for i in range(8):
                 # Chuẩn bị dữ liệu cho ngày dự đoán
                 future_date = future_dates[i]
                 predict_row = pd.Series(dtype='float64')

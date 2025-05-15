@@ -5,4 +5,4 @@ psycopg2-binary==2.9.9
 pandas==2.2.3
 numpy==1.25.2
 apache-airflow-providers-postgres==5.6.1
-scikit-learn
+scikit-learn==1.6.1
