@@ -77,7 +77,7 @@ provinces = [
 today = date.today()
 number_of_days = 30
 start_date = today - timedelta(days=number_of_days)
-end_date = today
+end_date = today + timedelta(days=1)
 
 current_hour = datetime.now().hour
 print(f"📅 Ngày bắt đầu: {start_date}")
