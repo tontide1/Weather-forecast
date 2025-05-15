@@ -1,0 +1,24 @@
+heroku auth:whoami
+heroku create dtdm
+heroku config -a dtdm
+heroku config:set DISABLE_COLLECTSTATIC=1
+git push heroku main
+
+heroku addons:create heroku-postgresql
+heroku run python manage.py migrate
+heroku git:remote -a dtdm
+heroku addons:create heroku-postgresql:heroku-postgresql:essential-0 -a dtdm
+
+heroku logs --app dtdm
+
+heroku apps
+heroku pg:psql -a dtdm
+
+
+- init
+AIRFLOW__CORE__EXECUTOR: LocalExecutor
+AIRFLOW__CORE__SQL_ALCHEMY_CONN
+AIRFLOW__CELERY__RESULT_BACKEND
+AIRFLOW__CORE__LOAD_EXAMPLES: False
+AIRFLOW__WEBSERVER__SECRET_KEY: 92ZjcW-acJG5RKu-lAH5eEn5JbGQwSGP1ezDn2hrJi4
+AIRFLOW__CORE__FERNET_KEY: Vbpa0SOLcCrTlKazmj646Fww8wDLwAlgYBZBd0tXK-c=
