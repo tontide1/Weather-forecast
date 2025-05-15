@@ -2,12 +2,13 @@ web: airflow db init
 web: airflow webserver --port $POST
 
 
+
 heroku auth:whoami
 heroku create dtdm
 heroku config -a dtdm
 heroku config:set DISABLE_COLLECTSTATIC=1
 git push heroku main
-
+heroku addons:plans heroku-postgresql
 heroku addons:create heroku-postgresql
 heroku run python manage.py migrate
 heroku git:remote -a dtdm

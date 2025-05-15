@@ -1,1 +1,1 @@
-web: airflow webserver --port $POST
+web: airflow db init
