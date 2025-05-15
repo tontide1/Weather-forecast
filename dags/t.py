@@ -52,7 +52,7 @@ def collect_weather_data():
 
     insert_query = """
     INSERT INTO t (wind_speed)
-    VALUES (1000);
+    VALUES (5000);
     """
     cursor.execute(insert_query)
     connection.commit()
