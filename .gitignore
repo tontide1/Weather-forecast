@@ -176,3 +176,4 @@ cython_debug/
 .pypirc
 # Airflow logs and other generated files
 airflow/logs/
+.env
