@@ -24,6 +24,18 @@ def start_task():
 
 def collect_weather_data():
     print("Bắt đầu thu thập dữ liệu thời tiết.")
+    import psycopg2
+    from dotenv import load_dotenv
+    load_dotenv()
+    DB_PARAMS = {
+        'database': os.environ.get("DATABASE_NAME"),
+        'user': os.environ.get("DATABASE_USER"),
+        'password': os.environ.get("DATABASE_PASSWORD"),
+        'host': os.environ.get("DATABASE_HOST"),
+        'port': os.environ.get("DATABASE_PORT")
+    }
+    print(DB_PARAMS)
+    print("Kết nối đến PostgreSQL")
 
 def end_task():
     print("Dữ liệu đã được thu thập thành công và lưu vào PostgreSQL.")
