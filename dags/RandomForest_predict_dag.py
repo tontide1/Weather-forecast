@@ -7,13 +7,6 @@ from sklearn.preprocessing import LabelEncoder
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 
-# Định nghĩa các biến
-# DATA_DIR = "/opt/airflow/weather_data"
-# PREDICTION_DIR = "/opt/airflow/RandomForest_predictions"
-# PREDICTION_DIR = "/opt/airflow/weather_data"
-# PREDICTION_FILE = os.path.join(PREDICTION_DIR, "weather_forecast_7days.csv")
-
-
 
 def start_task():
     print("Bắt đầu xây dựng mô hình dự báo thời tiết.")

@@ -189,7 +189,7 @@ def collect_weather_data():
             'host': os.environ.get("DATABASE_HOST"),
             'port': os.environ.get("DATABASE_PORT")
         }
-        # print(DB_PARAMS)
+        print(DB_PARAMS)
 
         # Kết nối đến PostgreSQL
         connection = psycopg2.connect(**DB_PARAMS)
