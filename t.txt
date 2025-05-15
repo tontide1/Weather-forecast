@@ -20,10 +20,10 @@ heroku apps
 heroku pg:psql -a dtdm
 
 
-DATABASE_URL: postgres://ubdrp0iv2rdilj:p8afe14cba5635c6add1c15acb7f0b6cecfc3730877711946aeecbb37e0f2f930@c8m0261h0c7idk.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/dblkbft8ng47gs
+postgres://u5b5jqsfdmdgfu:p73b5c9873079ea8a323c8307b3f2060a142fd143b59e562df358d8e7209527b2@c8lj070d5ubs83.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/dge46vgv72emq
 - init
 AIRFLOW__CORE__EXECUTOR=LocalExecutor
-AIRFLOW__CORE__SQL_ALCHEMY_CONN
+AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgres://u5b5jqsfdmdgfu:p73b5c9873079ea8a323c8307b3f2060a142fd143b59e562df358d8e7209527b2@c8lj070d5ubs83.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/dge46vgv72emq
 AIRFLOW__CORE__LOAD_EXAMPLES=False
 AIRFLOW__CORE__FERNET_KEY=Vbpa0SOLcCrTlKazmj646Fww8wDLwAlgYBZBd0tXK-c=
 AIRFLOW_HOME=/app
