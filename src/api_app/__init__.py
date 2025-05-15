@@ -3,10 +3,17 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from django.conf import settings
 from django.db import connection
 import requests
 from datetime import datetime
+import logging
+from pytz import timezone
+
+# Cấu hình logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 MAIL_USERNAME = 'weatherforecast.ad@gmail.com'
 MAIL_PASSWORD = 'vtdxbfhajlvdmspe'
@@ -110,19 +117,63 @@ def get_weather_data(province):
 
 # Hàm gửi email cho tất cả subscriber
 def send_daily_weather_emails():
-    print(f"[Scheduler] Bắt đầu gửi email lúc {datetime.now()}")
-    for sub in get_all_subscribers():
-        weather = get_weather_data(sub.province)
-        if weather:
-            send_weather_email(sub.email, sub.province, weather)
+    logger.info(f"[Scheduler] Bắt đầu gửi email lúc {datetime.now()}")
+    try:
+        for sub in get_all_subscribers():
+            weather = get_weather_data(sub.province)
+            if weather:
+                send_weather_email(sub.email, sub.province, weather)
+                logger.info(f"Đã gửi email thành công cho {sub.email}")
+    except Exception as e:
+        logger.error(f"Lỗi khi gửi email: {str(e)}")
 
-# Chỉ khởi tạo scheduler khi chạy server thật sự (tránh khi migrate, shell, v.v.)
-def is_runserver():
-    import sys
-    return (len(sys.argv) > 1 and sys.argv[1] == 'runserver')
+# Hàm kiểm tra trạng thái scheduler
+def check_scheduler_health():
+    if not scheduler.running:
+        logger.error("Scheduler không chạy, đang khởi động lại...")
+        scheduler.start()
 
-if is_runserver() and os.environ.get('RUN_MAIN', None) != 'true':
-    scheduler = BackgroundScheduler()
-    scheduler.add_job(send_daily_weather_emails, 'cron', hour=7, minute=0)
+# Khởi tạo scheduler với timezone Việt Nam và persistent job store
+vietnam_tz = timezone('Asia/Ho_Chi_Minh')
+jobstores = {
+    'default': SQLAlchemyJobStore(url='sqlite:///jobs.sqlite')
+}
+
+scheduler = BackgroundScheduler(
+    jobstores=jobstores,
+    timezone=vietnam_tz
+)
+
+# Thêm job gửi email hàng ngày
+try:
+    scheduler.add_job(
+        send_daily_weather_emails,
+        'cron',
+        hour=18,
+        minute=45,
+        id='send_daily_weather_emails',
+        replace_existing=True
+    )
+    logger.info("Đã thêm job gửi email hàng ngày vào lúc 17:40")
+except Exception as e:
+    logger.error(f"Lỗi khi thêm job gửi email: {str(e)}")
+
+# Thêm job kiểm tra sức khỏe scheduler mỗi 5 phút
+try:
+    scheduler.add_job(
+        check_scheduler_health,
+        'interval',
+        minutes=5,
+        id='check_scheduler_health',
+        replace_existing=True
+    )
+    logger.info("Đã thêm job kiểm tra sức khỏe scheduler")
+except Exception as e:
+    logger.error(f"Lỗi khi thêm job kiểm tra sức khỏe: {str(e)}")
+
+# Khởi động scheduler
+try:
     scheduler.start()
-    print('APScheduler for daily weather email started!')
+    logger.info('APScheduler đã được khởi động thành công!')
+except Exception as e:
+    logger.error(f'Lỗi khi khởi động APScheduler: {str(e)}')
