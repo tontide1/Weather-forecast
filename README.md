@@ -40,7 +40,7 @@ Hệ thống được xây dựng với các thành phần chính:
 ### 1. Clone dự án
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/tontide1/Weather-forecast.git
 cd Weather-forecast
 ```
 
