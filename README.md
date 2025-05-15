@@ -1,3 +1,10 @@
+## Danh sách thành viên
+
+- Phan Tấn Tài - 22684181
+- Hoa Xuân Hoàn - 22689381
+- Nguyễn Gia Lâm - 22685611
+- Trương Công Đạt - 22685561
+
 # Hệ Thống Dự Báo Thời Tiết Việt Nam
 
 ![Logo](./src/static/web_app/images/logo.png)
@@ -121,14 +128,3 @@ Dữ liệu thời tiết được lấy từ [Open-Meteo API](https://api.open-
 ## Tác giả
 
 Dự án được phát triển như một công cụ giúp người dùng dễ dàng tiếp cận thông tin thời tiết chính xác cho các tỉnh thành Việt Nam, sử dụng mô hình dự báo hiện đại.
-
-## Danh sách thành viên
-
-- Phan Tấn Tài - 22684181
-- Hoa Xuân Hoàn - 22689381
-- Nguyễn Gia Lâm - 22685611
-- Trương Công Đạt - 22685561
-
-## Giấy phép
-
-[MIT](LICENSE)
