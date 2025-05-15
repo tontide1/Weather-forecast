@@ -39,32 +39,9 @@ cd Weather-forecast
 
 ### 2. Cấu hình môi trường
 
-Tạo file `.env` trong thư mục gốc với nội dung sau:
+Tạo file `.env` trong thư mục gốc bằng cách sao chép từ file `env_example.txt` có sẵn:
 
-```ini
-# Database
-DATABASE_NAME=weather_db
-DATABASE_USER=postgres
-DATABASE_PASSWORD=postgres
-DATABASE_HOST=db
-DATABASE_PORT=5432
-
-# Weather Data
-WEATHER_DATA_TABLE_NAME=weather_data
-PREDICT_WEATHER_DATA_TABLE_NAME=predict_weather
-
-# Airflow
-AIRFLOW__CORE__EXECUTOR=LocalExecutor
-AIRFLOW__CORE__FERNET_KEY=your_fernet_key
-AIRFLOW__WEBSERVER__SECRET_KEY=your_secret_key
-AIRFLOW__CORE__DEFAULT_TIMEZONE=Asia/Ho_Chi_Minh
-AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://postgres:postgres@db/weather_db
-
-# Admin account
-ADMIN_USERNAME=admin
-ADMIN_EMAIL=admin@example.com
-ADMIN_PASSWORD=your_password
-```
+Sau đó chỉnh sửa file `.env` để cập nhật các thông số cấu hình phù hợp với môi trường của bạn. Đặc biệt là cần tạo `FERNET_KEY` và `SECRET_KEY` mới.
 
 Bạn có thể tạo Fernet key bằng cách chạy:
 
