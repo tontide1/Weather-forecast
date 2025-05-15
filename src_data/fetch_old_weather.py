@@ -71,17 +71,18 @@ provinces = [
 ]
 
 # Tạo thư mục weather_data nếu chưa tồn tại
-os.makedirs("weather_data", exist_ok=True)
+DATA_DIR = "./weather_data"
+os.makedirs(DATA_DIR, exist_ok=True)
 # Ngày hôm nay (YYYY-MM-DD)
 today = date.today()
 start_date = today - timedelta(days=30)
-end_date = today
+end_date = today - timedelta(days=1)
 
 current_hour = datetime.now().hour
 print(f"📅 Ngày bắt đầu: {start_date}")
 print(f"📅 Ngày kết thúc: {end_date}")
 
-csv_file = "weather_data/historical_weather_data.csv"
+csv_file = os.path.join(DATA_DIR, "historical_weather_data.csv")
 header = ["Province", "Time", "Temperature", "Temp_Max", "Temp_Min", "Precipitation", "Windspeed_Max", "UV_Index_Max", "Sunshine_Hours", "Sundown_Hours", "Weather_Code", "Humidity", "Feel_Like"]
 
 # Kiểm tra file có tồn tại không
@@ -127,7 +128,7 @@ for province in provinces:
             day = t.split("T")[0]
 
             # Chỉ lấy giờ chia hết cho 3, không vượt quá current_hour - 3
-            if hour % 3 != 0 or hour > current_hour - 3:
+            if hour % 3 != 0:
                 continue
 
             indices = day_indices[day]
@@ -161,16 +162,6 @@ for province in provinces:
         print(f"✅ {province['name']}: xong")
     else:
         print(f"❌ {province['name']}: lỗi API")
-
-# Ghi vào file CSV một lần
-with open(csv_file, mode="w", newline='', encoding="utf-8-sig") as f:
-    writer = csv.writer(f)
-    # if not file_exists:
-    writer.writerow(header)
-    writer.writerows(all_rows)
-
-print(f"\n📄 Đã lưu {len(all_rows)} dòng vào file: {csv_file}")
-
 
 try:
     import psycopg2
@@ -231,7 +222,15 @@ try:
     connection.commit()
 
     print(f"✅ Đã chèn {len(all_rows)} dòng vào PostgreSQL")
+    # Ghi vào file CSV một lần
+    with open(csv_file, mode="w", newline='', encoding="utf-8-sig") as f:
+        writer = csv.writer(f)
+        # if not file_exists:
+        writer.writerow(header)
+        writer.writerows(all_rows)
 
+    print(f"\n📄 Đã lưu {len(all_rows)} dòng vào file: {csv_file}")
+    
 except Exception as e:
     print(f"❌ Lỗi khi ghi vào PostgreSQL: {e}")
 

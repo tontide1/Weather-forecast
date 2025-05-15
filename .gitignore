@@ -175,5 +175,4 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
-# Airflow logs and other generated files
-airflow/logs/
+# Airflow content is now in a separate repository
