@@ -85,11 +85,9 @@ body {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(125, 211, 252, 0.4) 0%,
-    rgba(125, 211, 252, 0) 70%
-  );
+  background: radial-gradient(circle,
+      rgba(125, 211, 252, 0.4) 0%,
+      rgba(125, 211, 252, 0) 70%);
   animation: glow 3s infinite alternate;
   z-index: 1;
 }
@@ -235,11 +233,9 @@ body {
 /* Current weather section */
 .current-weather-container {
   margin-bottom: 20px;
-  background: linear-gradient(
-    to right,
-    rgba(40, 41, 45, 0.7),
-    rgba(32, 33, 37, 0.8)
-  );
+  background: linear-gradient(to right,
+      rgba(40, 41, 45, 0.7),
+      rgba(32, 33, 37, 0.8));
   border-radius: 20px;
   padding: 30px;
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
@@ -291,6 +287,7 @@ body {
 }
 
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0);
@@ -545,10 +542,12 @@ body {
   text-shadow: 0 0 8px #7dd3fc, 0 0 2px #fff;
   font-weight: 700;
 }
+
 .tab[data-tab="wind"].active::after {
   background: linear-gradient(90deg, #38bdf8, #7dd3fc, #fff);
   box-shadow: 0 0 8px #7dd3fc;
 }
+
 /* --- KẾT THÚC: Làm nổi bật tab Wind --- */
 
 /* Chart styles */
@@ -596,13 +595,11 @@ body {
   left: 15px;
   right: 15px;
   bottom: 0;
-  background-image: repeating-linear-gradient(
-    to right,
-    transparent,
-    transparent calc(100% / 8),
-    rgba(255, 255, 255, 0.05) calc(100% / 8),
-    rgba(255, 255, 255, 0.05) calc(100% / 8 + 1px)
-  );
+  background-image: repeating-linear-gradient(to right,
+      transparent,
+      transparent calc(100% / 8),
+      rgba(255, 255, 255, 0.05) calc(100% / 8),
+      rgba(255, 255, 255, 0.05) calc(100% / 8 + 1px));
   pointer-events: none;
   z-index: 1;
 }
@@ -774,19 +771,29 @@ body {
   bottom: 30px;
   height: 40px;
   background-color: rgba(66, 133, 244, 0.1);
-  clip-path: polygon(
-    8% 100%,
-    /* Point 1 */ 20% 0%,
-    /* Point 2 */ 33% 0%,
-    /* Point 3 */ 37% 60%,
-    /* Point 4 */ 37% 100%,
-    /* Point 5 */ 78% 100%,
-    /* Point 6 */ 78% 50%,
-    /* Point 7 */ 85% 50%,
-    /* Point 8 */ 93% 75%,
-    /* Point 9 */ 97% 75%,
-    /* Point 10 */ 100% 100% /* Point 11 */
-  );
+  clip-path: polygon(8% 100%,
+      /* Point 1 */
+      20% 0%,
+      /* Point 2 */
+      33% 0%,
+      /* Point 3 */
+      37% 60%,
+      /* Point 4 */
+      37% 100%,
+      /* Point 5 */
+      78% 100%,
+      /* Point 6 */
+      78% 50%,
+      /* Point 7 */
+      85% 50%,
+      /* Point 8 */
+      93% 75%,
+      /* Point 9 */
+      97% 75%,
+      /* Point 10 */
+      100% 100%
+      /* Point 11 */
+    );
 }
 
 /* Wind chart */
@@ -834,10 +841,12 @@ body {
   text-shadow: 0 0 8px #38bdf8, 0 0 2px #fff;
   transition: color 0.3s, text-shadow 0.3s;
 }
+
 #windChart .wind-value:hover .wind-speed-value {
   color: #38bdf8 !important;
   text-shadow: 0 0 12px #7dd3fc, 0 0 4px #fff;
 }
+
 /* --- KẾT THÚC: Làm nổi bật giá trị gió trong biểu đồ --- */
 
 /* Forecast days */
@@ -873,27 +882,27 @@ body {
   border-radius: 16px;
   transition: transform 0.3s ease, box-shadow 0.3s ease,
     background-color 0.3s ease;
-  cursor: pointer;
+  cursor: default;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(5px);
   border: 1px solid rgba(255, 255, 255, 0.05);
   margin: 0 2px;
 }
 
-.forecast-item:hover {
+/* .forecast-item:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
   background-color: rgba(56, 59, 63, 0.9);
-}
+} */
 
 .forecast-item.today {
   background-color: rgba(56, 59, 63, 0.8);
   border: 1px solid rgba(138, 180, 248, 0.3);
 }
 
-.forecast-item.today:hover {
+/* .forecast-item.today:hover {
   background-color: rgba(64, 68, 75, 0.9);
-}
+} */
 
 .day-name {
   font-size: 14px;
@@ -1304,11 +1313,9 @@ body {
   display: flex;
   align-items: center;
   gap: 25px;
-  background: linear-gradient(
-    to right,
-    rgba(40, 41, 45, 0.7),
-    rgba(32, 33, 37, 0.8)
-  );
+  background: linear-gradient(to right,
+      rgba(40, 41, 45, 0.7),
+      rgba(32, 33, 37, 0.8));
   border-radius: 20px;
   padding: 30px;
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
@@ -1369,11 +1376,9 @@ body {
   right: -30px;
   width: 60px;
   height: 60px;
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.8) 0%,
-    rgba(255, 255, 255, 0) 70%
-  );
+  background: radial-gradient(circle,
+      rgba(255, 255, 255, 0.8) 0%,
+      rgba(255, 255, 255, 0) 70%);
   border-radius: 50%;
   animation: shine-effect 4s infinite;
   opacity: 0.6;
@@ -1381,6 +1386,7 @@ body {
 }
 
 @keyframes shine-effect {
+
   0%,
   100% {
     opacity: 0.2;
@@ -1400,6 +1406,7 @@ body {
 }
 
 @keyframes float-icon {
+
   0%,
   100% {
     transform: translateY(0) rotateZ(0deg);
@@ -1420,35 +1427,30 @@ body {
 
 /* Additional animation for envelope opening effect */
 .subscription-container:hover .email-icon path {
-  d: path(
-    "M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4M20,6L12,11L4,6M20,18H4V8L12,13L20,8"
-  );
+  d: path("M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4M20,6L12,11L4,6M20,18H4V8L12,13L20,8"
+    );
   animation: envelope-open 1.5s forwards;
 }
 
 @keyframes envelope-open {
   0% {
-    d: path(
-      "M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4M20,6L12,11L4,6M20,18H4V8L12,13L20,8"
-    );
+    d: path("M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4M20,6L12,11L4,6M20,18H4V8L12,13L20,8"
+      );
   }
 
   50% {
-    d: path(
-      "M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4M20,6L12,11L4,6M20,18H4V8L12,13L20,8"
-    );
+    d: path("M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4M20,6L12,11L4,6M20,18H4V8L12,13L20,8"
+      );
   }
 
   51% {
-    d: path(
-      "M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4M20,6L12,11L4,6M20,18H4V8L12,13L20,8"
-    );
+    d: path("M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4M20,6L12,11L4,6M20,18H4V8L12,13L20,8"
+      );
   }
 
   100% {
-    d: path(
-      "M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4M20,8L12,13L4,8"
-    );
+    d: path("M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4M20,8L12,13L4,8"
+      );
   }
 }
 
@@ -1541,8 +1543,8 @@ body {
   opacity: 1;
 }
 
-.email-input:focus ~ .input-icon svg,
-.province-input:focus ~ .input-icon svg {
+.email-input:focus~.input-icon svg,
+.province-input:focus~.input-icon svg {
   filter: drop-shadow(0 0 5px rgba(125, 211, 252, 0.7));
   opacity: 1;
   transform: scale(1.1);
@@ -1612,12 +1614,10 @@ body {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    to right,
-    transparent,
-    rgba(255, 255, 255, 0.2),
-    transparent
-  );
+  background: linear-gradient(to right,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent);
   transition: left 0.7s ease;
   z-index: -1;
 }
@@ -1831,8 +1831,8 @@ body {
   opacity: 1;
 }
 
-.email-input:focus ~ .input-icon svg,
-.province-input:focus ~ .input-icon svg {
+.email-input:focus~.input-icon svg,
+.province-input:focus~.input-icon svg {
   filter: drop-shadow(0 0 5px rgba(125, 211, 252, 0.7));
   opacity: 1;
   transform: scale(1.1);
@@ -1937,7 +1937,7 @@ body {
   transition: all 0.3s ease;
 }
 
-.province-input:focus ~ .location-input-icon svg {
+.province-input:focus~.location-input-icon svg {
   filter: drop-shadow(0 0 3px rgba(125, 211, 252, 0.8));
   transform: scale(1.1);
 }
