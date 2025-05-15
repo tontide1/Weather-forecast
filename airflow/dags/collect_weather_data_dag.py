@@ -1,21 +1,8 @@
-# import csv
-# import numpy as np
-# import pandas as pd
-# import xgboost as xgb
-# from sklearn.preprocessing import LabelEncoder
-
 import os
 import requests
 from datetime import date, datetime, timedelta
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-
-
-# Định nghĩa các biến
-# DATA_DIR = "/opt/airflow/weather_data"
-# PREDICTION_DIR = "/opt/airflow/xgboost_predictions"
-# PREDICTION_FILE = os.path.join(PREDICTION_DIR, "weather_forecast_7days.csv")
-
 
 
 def start_task():

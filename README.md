@@ -77,7 +77,7 @@ Docker Compose sẽ tạo và khởi động các container:
 ## Quy trình hoạt động
 
 1. **Thu thập dữ liệu**: Airflow DAG `Collector` thu thập dữ liệu thời tiết hiện tại và lịch sử từ API
-2. **Xây dựng mô hình dự báo**: Airflow DAG `Build_XGBoost_Model` xây dựng và cập nhật mô hình dự báo
+2. **Xây dựng mô hình dự báo**: Airflow DAG `Random Forest DAG` xây dựng và cập nhật mô hình dự báo
 3. **Hiển thị dữ liệu**: Ứng dụng Django phục vụ API và giao diện người dùng
 
 ## Cấu trúc dự án

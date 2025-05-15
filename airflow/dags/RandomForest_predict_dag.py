@@ -464,9 +464,9 @@ default_args = {
 
 # Define the DAG
 dag = DAG(
-    dag_id='Build_XGBoost_Model',
+    dag_id='Random Forest DAG',
     default_args=default_args,
-    description="DAG dự báo thời tiết bằng XGBoost",
+    description="DAG dự báo thời tiết bằng Random Forest",
     schedule_interval='@daily',
     catchup=False,
 )
