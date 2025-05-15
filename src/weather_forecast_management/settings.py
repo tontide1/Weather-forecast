@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,9 +25,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-jua5dhr7mlu!a8$d6hdd=$vic51b5#(d0o0r9yvgu*y3vgm3yv'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# Default settings that will be overridden if DB_LIVE is True
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# Always include Railway domains in ALLOWED_HOSTS to prevent DisallowedHost errors
+ALLOWED_HOSTS = ['weather-forecast-production-b9bd.up.railway.app', '.railway.app', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -46,7 +50,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    # 'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -74,8 +78,29 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'weather_forecast_management.wsgi.application'
 
+# Lấy giá trị DATABASE_LIVE từ biến môi trường
+DB_LIVE = os.getenv('DATABASE_LIVE', 'False')
 
-# Database
+# Kiểm tra nếu đang chạy trên Railway bằng cách tìm các biến môi trường đặc trưng
+IS_RAILWAY = os.getenv('RAILWAY_ENVIRONMENT') is not None or os.getenv('RAILWAY_SERVICE_ID') is not None
+
+# Chuyển đổi 'True' hoặc True thành True, tất cả các giá trị khác thành False
+IS_PRODUCTION = DB_LIVE.lower() == 'true' or IS_RAILWAY
+
+if IS_PRODUCTION:
+    # Production settings
+    DEBUG = False
+    # Sử dụng ALLOWED_HOSTS đã đặt toàn cục
+    
+    # Tăng cường bảo mật trong môi trường production
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+else:
+    # Development settings
+    DEBUG = True
+#     DEBUG = True
+#     ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+    # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 # DATABASES = {
@@ -85,11 +110,10 @@ WSGI_APPLICATION = 'weather_forecast_management.wsgi.application'
 #     }
 # }
 
-from decouple import config
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
+        # 'ENGINE': config('DATABASE_ENGINE'),
         'NAME': config('DATABASE_NAME'),
         'USER': config('DATABASE_USER'),
         'PASSWORD': config('DATABASE_PASSWORD'),
@@ -136,7 +160,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
