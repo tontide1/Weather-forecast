@@ -10,3 +10,5 @@ requests==2.31.0
 apscheduler==3.10.4
 numpy==1.26.4
 scikit-learn==1.4.2
+pytz==2024.1
+SQLAlchemy==2.0.28
