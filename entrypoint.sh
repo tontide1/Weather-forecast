@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Exit on any error
 set -e
 
 echo "=== CHECK PYTHON VERSION ==="
