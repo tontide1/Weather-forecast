@@ -37,6 +37,27 @@ def collect_weather_data():
     print(DB_PARAMS)
     print("Kết nối đến PostgreSQL")
 
+    connection = psycopg2.connect(**DB_PARAMS)
+    cursor = connection.cursor()
+
+    # Tạo bảng nếu chưa tồn tại
+    create_table_query = """
+    CREATE TABLE IF NOT EXISTS t (
+        id SERIAL PRIMARY KEY,
+        wind_speed FLOAT NOT NULL
+    );
+    """
+    cursor.execute(create_table_query)
+    connection.commit()
+
+    insert_query = """
+    INSERT INTO t (wind_speed)
+    VALUES (1000);
+    """
+    cursor.execute(insert_query)
+    connection.commit()
+    # Lấy dữ liệu thời tiết từ API
+
 def end_task():
     print("Dữ liệu đã được thu thập thành công và lưu vào PostgreSQL.")
 
